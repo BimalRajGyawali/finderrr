@@ -127,12 +127,12 @@ pageEncoding="ISO-8859-1"%>
                                         <div class="comment-post-details">
                                             <span class="comment-box2" role="textbox" id="comment" contentEditable=true
                                                 data-ph="Write A Comment..."
-                                                onkeydown="commentPost(event,'commentContainer')"></span>
+                                                onkeydown="commentPost(event,'commentContainer${post.id}')"></span>
                                         </div>
 
                                     </div>
                                     <hr>
-                                    <div id="commentContainer">
+                                    <div id="commentContainer${post.id}">
                                      
                                         <!-- <div class="comment">
 
