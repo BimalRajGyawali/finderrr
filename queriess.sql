@@ -13,6 +13,7 @@ CREATE TABLE posts(
     user_id INT, 
     comments_count INT,
     join_requests_count INT,
+    bio VARCHAR(100),
     FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
