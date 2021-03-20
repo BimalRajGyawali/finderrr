@@ -66,7 +66,15 @@ pageEncoding="ISO-8859-1"%>
                                                
                         <div class="line"></div>
 
+                    <c:choose>
+                        <c:when test="${hasPosts}">
+                           
+                        </c:when>
+                        <c:otherwise>
+                            <c:out value="NO POSTS AVAILABLE"/>
+                        </c:otherwise>
 
+                    </c:choose>
 					<c:forEach var="post" items="${posts}">
 
 
@@ -95,13 +103,8 @@ pageEncoding="ISO-8859-1"%>
   												<c:otherwise>
    													 <c:out value="${post.secondsTillNow} sec ago"/>
   												</c:otherwise>
-                                         	</c:choose>    
-                                            
-                                            
-                                            
-                                           
-                                            
-                                            
+                                         	</c:choose>  
+
                                             </p>
                                             
                                         </div>
@@ -166,6 +169,10 @@ pageEncoding="ISO-8859-1"%>
    				</c:forEach>
                 
                     </div>
+                    <c:if test="${hasPosts }">
+                        <a class="btn btn-primary mt-5 mb-5" href="/?before=${oldestDate}">Show older posts</a>
+                    </c:if>
+
                 </div>
                 <div class="col col3">
                     <div class="custom-card-container">
