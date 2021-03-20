@@ -17,7 +17,8 @@ import com.ncit.finder.models.User;
 public class PostRepository {
 	
 	
-	public List<Post> getPosts(){
+	public List<Post> getPosts(int n, LocalDateTime dateTime){
+		Timestamp before = Timestamp.valueOf(dateTime);
 		List<Post> posts = new ArrayList<>();
 		Connection connection = DB.makeConnection();
 		PreparedStatement preparedStatement;
@@ -25,8 +26,11 @@ public class PostRepository {
 				+ "u.id user_id, u.firstname, u.middlename, u.lastname, u.joined_on, u.bio\n"
 				+ "FROM posts p\n"
 				+ "INNER JOIN users u\n"
-				+ "WHERE p.user_id = u.id\n"
-				+ "ORDER BY p.posted_on DESC";
+				+ "WHERE p.user_id = u.id and p.posted_on < \""+before+"\"\n"
+				+ "ORDER BY p.posted_on DESC\n"
+				+ "LIMIT "+n;
+		System.err.println("\n\n\n\n"+sql+"\n\n\n");
+
 				
 		try {
 			preparedStatement = connection.prepareStatement(sql);
@@ -92,6 +96,7 @@ public class PostRepository {
 		return posts;
 	}
 	
+
 	
 	public boolean createPost(Post post) {
 		Connection connection =  DB.makeConnection();
