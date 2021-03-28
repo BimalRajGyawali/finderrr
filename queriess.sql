@@ -51,12 +51,12 @@ CREATE TABLE followings(
     FOREIGN KEY(hashtag_id) REFERENCES hashtags(id)
 );
 
-
 CREATE TABLE join_requests(
- 	user_id INT,
     post_id INT,
+    user_id INT,
     requested_on DATETIME,
-    PRIMARY KEY(user_id, post_id),
-    FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(post_id) REFERENCES posts(id)
+     PRIMARY KEY(user_id, user_id),
+   	FOREIGN KEY(post_id) REFERENCES posts(id),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+
 );
