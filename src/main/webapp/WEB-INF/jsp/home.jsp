@@ -57,28 +57,7 @@
                             </c:choose>
 
 
-                            <c:if test="${joinRequestResponse != null}">
-                                <c:choose>
-                                    <c:when test="${joinRequestResponse.successStatus}">
-                                        <div class="alert alert-success alert-dismissible">
-                                            <a href="#" class="close" data-dismiss="alert"
-                                                aria-label="close">&times;</a>
-                                            <p>${joinRequestResponse.responseMessage}</p>
-                                        </div>
-                                    </c:when>
-
-                                    <c:otherwise>
-                                        <div class="alert alert-danger alert-dismissible">
-                                            <a href="#" class="close" data-dismiss="alert"
-                                                aria-label="close">&times;</a>
-                                            <p>${joinRequestResponse.responseMessage}</p>
-                                        </div>
-                                    </c:otherwise>
-
-                                </c:choose>
-
-                            </c:if>
-
+                           
                             <div id="create-post-area">
                                 <form action="/create-post" method="POST" onsubmit="submitForm(event);">
                                     <input id="editor" />

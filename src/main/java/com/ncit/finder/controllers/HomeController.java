@@ -93,7 +93,7 @@ public class HomeController {
 		redirectAttributes.addFlashAttribute("joinRequestResponse", response);
 		
 		
-		return "redirect:/";
+		return "redirect:/"+post.getId()+"/join-requests";
 	}
 	
 }

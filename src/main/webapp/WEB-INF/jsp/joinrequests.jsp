@@ -39,89 +39,143 @@
                             </div>
                         </div>
                         <div class="col col2">
-             <c:choose>
-                <c:when test="${post != null}">
-                    <section class="posts-section">
-                        <div class="post-card-container">
-                            <div class="post-head">
-                                <div class="post-head-left">
-                                    <img class="profile-pic" src="/resources/images/pic.jpeg"
-                                        alt="Card image cap">
-                                    <div class="post-meta">
-                                        <p class="user-name post-user-name">
-                                            <c:out
-                                                value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  " />
-                                        </p>
-                                        <p class="desc post-desc">
-                                            <c:out value="${post.user.bio}" />
-                                        </p>
-                                        <p class="desc post-desc">
-                                            <c:choose>
-                                                <c:when test="${post.yearsTillNow != 0}">
-                                                    <c:out value="${post.yearsTillNow} y ago" />
-                                                </c:when>
-                                                <c:when test="${post.monthsTillNow != 0}">
-                                                    <c:out value="${post.monthsTillNow} m ago" />
-                                                </c:when>
-                                                <c:when test="${post.daysTillNow != 0}">
-                                                    <c:out value="${post.daysTillNow} d ago" />
-                                                </c:when>
-                                                <c:when test="${post.hoursTillNow != 0}">
-                                                    <c:out value="${post.hoursTillNow} h ago" />
-                                                </c:when>
-                                                <c:when test="${post.minutesTillNow != 0}">
-                                                    <c:out value="${post.minutesTillNow} min ago" />
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <c:out value="${post.secondsTillNow} sec ago" />
-                                                </c:otherwise>
-                                            </c:choose>
-        
-                                        </p>
-        
-                                    </div>
-                                </div>
-                                <div class="post-head-right">
-                                    <div class="dot"></div>
-                                    <div class="dot"></div>
-                                    <div class="dot"></div>
-                                </div>
-                            </div>
-                            <div class="post-body">
-                                ${post.content}
-                                <div class="line"></div>
-                                <div>
-                                    <form action="/${post.id}/join-requests" method="POST">
-                                        <!-- Join Request -->
-                                        <input class="interested-button styled-btn" type="submit"
-                                            value="Join Request">
-                                    </form>
-                                    <div class="comment-button">Comment</div>
-                                    <div class="share-button">Share</div>
-                                </div>
-                                <div class="line"></div>
-                                <p style="margin-left:35px;">
-                                    <c:choose>
-                                        <c:when test="${post.joinRequestsCount > 0}">
-                                            <a href="/${post.id}/join-requests"><c:out value="${post.joinRequestsCount}" /> people sent join requests</a>
-                                            
-                                            <c:forEach var="user" items="${post.usersRequestingToJoin}">
-                                                <p>${user.id} ${user.firstName} ${user.middleName} ${user.lastName}</p>
-                                            </c:forEach>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <p>No join requests in this post</p>
-                                        </c:otherwise>
-                                    </c:choose>
-                                    
-                                </p>
-                               
-                            </div>
-                    </section>
-                </c:when>
-                <c:otherwise>
-                    <c:out value="404 error"/>
-                </c:otherwise>
-            </c:choose>
+                            <c:choose>
+                                <c:when test="${post != null}">
+
+                                    <c:if test="${joinRequestResponse != null}">
+                                        <c:choose>
+                                            <c:when test="${joinRequestResponse.successStatus}">
+                                                <div class="alert alert-success alert-dismissible">
+                                                    <a href="#" class="close" data-dismiss="alert"
+                                                        aria-label="close">&times;</a>
+                                                    <p>${joinRequestResponse.responseMessage}</p>
+                                                </div>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <div class="alert alert-danger alert-dismissible">
+                                                    <a href="#" class="close" data-dismiss="alert"
+                                                        aria-label="close">&times;</a>
+                                                    <p>${joinRequestResponse.responseMessage}</p>
+                                                </div>
+                                            </c:otherwise>
+
+                                        </c:choose>
+
+                                    </c:if>
+
+
+
+
+                                    <section class="posts-section">
+                                        <div class="post-card-container">
+                                            <div class="post-head">
+                                                <div class="post-head-left">
+                                                    <img class="profile-pic" src="/resources/images/pic.jpeg"
+                                                        alt="Card image cap">
+                                                    <div class="post-meta">
+                                                        <p class="user-name post-user-name">
+                                                            <c:out
+                                                                value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  " />
+                                                        </p>
+                                                        <p class="desc post-desc">
+                                                            <c:out value="${post.user.bio}" />
+                                                        </p>
+                                                        <p class="desc post-desc">
+                                                            <c:choose>
+                                                                <c:when test="${post.yearsTillNow != 0}">
+                                                                    <c:out value="${post.yearsTillNow} y ago" />
+                                                                </c:when>
+                                                                <c:when test="${post.monthsTillNow != 0}">
+                                                                    <c:out value="${post.monthsTillNow} m ago" />
+                                                                </c:when>
+                                                                <c:when test="${post.daysTillNow != 0}">
+                                                                    <c:out value="${post.daysTillNow} d ago" />
+                                                                </c:when>
+                                                                <c:when test="${post.hoursTillNow != 0}">
+                                                                    <c:out value="${post.hoursTillNow} h ago" />
+                                                                </c:when>
+                                                                <c:when test="${post.minutesTillNow != 0}">
+                                                                    <c:out value="${post.minutesTillNow} min ago" />
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <c:out value="${post.secondsTillNow} sec ago" />
+                                                                </c:otherwise>
+                                                            </c:choose>
+
+                                                        </p>
+
+                                                    </div>
+                                                </div>
+                                                <div class="post-head-right">
+                                                    <div class="dot"></div>
+                                                    <div class="dot"></div>
+                                                    <div class="dot"></div>
+                                                </div>
+                                            </div>
+                                            <div class="post-body">
+                                                ${post.content}
+                                                <div class="line"></div>
+                                                <div>
+                                                    <form action="/${post.id}/join-requests" method="POST">
+                                                        <!-- Join Request -->
+                                                        <input class="interested-button styled-btn" type="submit"
+                                                            value="Join Request">
+                                                    </form>
+                                                    <div class="comment-button">Comment</div>
+                                                    <div class="share-button">Share</div>
+                                                </div>
+                                                <div class="line"></div>
+                                                <p style="margin-left:35px;">
+                                                    <c:choose>
+                                                        <c:when test="${post.joinRequestsCount > 0}">
+                                                            <a href="/${post.id}/join-requests">
+                                                                <c:out value="${post.joinRequestsCount}" /> people sent
+                                                                join requests
+                                                            </a>
+                                                            <div class="line"></div>
+                                                            <c:forEach var="user" items="${post.usersRequestingToJoin}">
+                                                               
+                                                                <a href="" class="link post-head-left" style="display: block;">
+                                                                    <img class="profile-pic"
+                                                                        src="/resources/images/pic.jpeg"
+                                                                        alt="Card image cap">
+                                                                    <div class="post-meta">
+                                                                        <p class="user-name post-user-name mt-4">
+                                                                            <c:out
+                                                                                value="${user.firstName} ${user.middleName} ${user.lastName}  " />
+                                                                        </p>
+                                                                        <p class="desc">
+                                                                            <c:out value="Student at Nepal College of Information Technology" />
+                                                                        </p>
+                                                                    </div>
+                                                                </a>
+
+
+
+
+                                                            </c:forEach>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <p>No join requests in this post</p>
+                                                        </c:otherwise>
+                                                    </c:choose>
+
+                                                </p>
+
+                                            </div>
+                                    </section>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="404 error" />
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </div>
+                </div>
             </div>
-          
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        </body>
+
+        </html>

@@ -19,6 +19,30 @@ import com.ncit.finder.models.User;
 
 public class PostRepository {
 
+	private static long[] parseDateTime(LocalDateTime fromTemp){
+		LocalDateTime to = LocalDateTime.now();
+
+		long years = fromTemp.until(to, ChronoUnit.YEARS);
+		fromTemp = fromTemp.plusYears(years);
+
+		long months = fromTemp.until(to, ChronoUnit.MONTHS);
+		fromTemp = fromTemp.plusMonths(months);
+
+		long days = fromTemp.until(to, ChronoUnit.DAYS);
+		fromTemp = fromTemp.plusDays(days);
+
+		long hours = fromTemp.until(to, ChronoUnit.HOURS);
+		fromTemp = fromTemp.plusHours(hours);
+
+		long minutes = fromTemp.until(to, ChronoUnit.MINUTES);
+		fromTemp = fromTemp.plusMinutes(minutes);
+
+		long seconds = fromTemp.until(to, ChronoUnit.SECONDS);
+
+		return new long[]{years, months, days, hours, minutes, seconds};
+	}
+
+
 	public List<Post> getPosts(int n, LocalDateTime dateTime) {
 		Timestamp before = Timestamp.valueOf(dateTime);
 		List<Post> posts = new ArrayList<>();
@@ -53,25 +77,14 @@ public class PostRepository {
 					post.setPostedDateTime(resultSet.getTimestamp("posted_on").toLocalDateTime());
 
 					LocalDateTime fromTemp = post.getPostedDateTime();
-					LocalDateTime to = LocalDateTime.now();
-
-					long years = fromTemp.until(to, ChronoUnit.YEARS);
-					fromTemp = fromTemp.plusYears(years);
-
-					long months = fromTemp.until(to, ChronoUnit.MONTHS);
-					fromTemp = fromTemp.plusMonths(months);
-
-					long days = fromTemp.until(to, ChronoUnit.DAYS);
-					fromTemp = fromTemp.plusDays(days);
-
-					long hours = fromTemp.until(to, ChronoUnit.HOURS);
-					fromTemp = fromTemp.plusHours(hours);
-
-					long minutes = fromTemp.until(to, ChronoUnit.MINUTES);
-					fromTemp = fromTemp.plusMinutes(minutes);
-
-					long seconds = fromTemp.until(to, ChronoUnit.SECONDS);
-
+					long[] parsedDateTime =  parseDateTime(fromTemp);
+					long years = parsedDateTime[0];
+					long months = parsedDateTime[1];
+					long days = parsedDateTime[2];
+					long hours = parsedDateTime[3];
+					long minutes = parsedDateTime[4];
+					long seconds = parsedDateTime[5];
+				
 					post.setYearsTillNow(years);
 					post.setMonthsTillNow(months);
 					post.setDaysTillNow(days);
@@ -215,6 +228,29 @@ public class PostRepository {
 				post.setContent(resultSet.getString("post_content"));	
 				post.setCommentsCount(resultSet.getInt("post_comments_count"));
 				post.setJoinRequestsCount(resultSet.getInt("post_join_requests_count"));
+				
+				if (resultSet.getTimestamp("post_posted_on") != null) {
+					post.setPostedDateTime(resultSet.getTimestamp("post_posted_on").toLocalDateTime());
+
+					LocalDateTime fromTemp = post.getPostedDateTime();
+					long[] parsedDateTime =  parseDateTime(fromTemp);
+					long years = parsedDateTime[0];
+					long months = parsedDateTime[1];
+					long days = parsedDateTime[2];
+					long hours = parsedDateTime[3];
+					long minutes = parsedDateTime[4];
+					long seconds = parsedDateTime[5];
+				
+					post.setYearsTillNow(years);
+					post.setMonthsTillNow(months);
+					post.setDaysTillNow(days);
+					post.setHoursTillNow(hours);
+					post.setMinutesTillNow(minutes);
+					post.setSecondsTillNow(seconds);
+
+				}
+
+
 
 				User user = new User();
 				user.setId(resultSet.getInt("post_user_id"));
@@ -228,7 +264,6 @@ public class PostRepository {
 
 				post.setUser(user);
 			}
-			System.out.println("users "+usersMakingJoinRequests);
 			post.setUsersRequestingToJoin(usersMakingJoinRequests);
 
 		} catch (SQLException e) {
