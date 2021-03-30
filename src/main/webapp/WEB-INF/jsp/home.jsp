@@ -36,6 +36,14 @@
                                     <p class="user-name"> Bimal Raj Gyawali</p>
                                     <p class="desc">Student at Nepal College of Information Technology</p>
                                 </div>
+                                <div class="post-body">
+                                   ${post.content}
+                                    <hr>
+                                    <div>
+                                        <div class="interested-button">Join Request</div>
+                                        <div class="comment-button" onclick="window.open('/post/${post.id}', '_blank');">Comment (${post.commentsCount})</div>
+                                        <div class="share-button">Share</div>
+
                             </div>
                         </div>
                         <div class="col col2">
@@ -44,6 +52,7 @@
                                     <div class="alert alert-success alert-dismissible">
                                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                                         <strong>Success!</strong> Post created successfully.
+
                                     </div>
                                 </c:when>
 
