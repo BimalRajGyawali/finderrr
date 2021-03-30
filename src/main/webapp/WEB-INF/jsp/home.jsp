@@ -117,7 +117,7 @@ pageEncoding="ISO-8859-1"%>
                                     <hr>
                                     <div>
                                         <div class="interested-button">Join Request</div>
-                                        <div class="comment-button">Comment</div>
+                                        <div class="comment-button" onclick="window.open('/post/${post.id}', '_blank');">Comment (${post.commentsCount})</div>
                                         <div class="share-button">Share</div>
                                     </div>
                                     <hr>

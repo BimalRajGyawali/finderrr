@@ -350,3 +350,7 @@ margin-left:40px;
  border-radius:15px;
 
 }
+
+.invisible-form{
+	visibility:hidden;
+}
