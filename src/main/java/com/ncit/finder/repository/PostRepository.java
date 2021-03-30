@@ -221,8 +221,10 @@ public class PostRepository {
 					userMakingJoinRequest.setJoinedOn(resultSet.getTimestamp("join_requests_user_joined_on").toLocalDateTime());
 				}
 				userMakingJoinRequest.setBio(resultSet.getString("join_requests_user_bio"));
-
-				usersMakingJoinRequests.add(userMakingJoinRequest);
+				if(userMakingJoinRequest.isValid()){
+					usersMakingJoinRequests.add(userMakingJoinRequest);
+				}
+				
 
 				post.setId(resultSet.getInt("post_id"));
 				post.setContent(resultSet.getString("post_content"));	

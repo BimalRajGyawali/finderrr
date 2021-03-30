@@ -69,6 +69,8 @@ public class HomeController {
 		PostRepository repository = new PostRepository();
 	 	Post post = repository.getPostWithJoinRequests(postId);
 		model.addAttribute("post", post);
+		model.addAttribute("hasJoinRequests", post.getUsersRequestingToJoin().size() > 0);
+		System.out.println(post.getUsersRequestingToJoin().size());
 		return "joinrequests";
 	}
 

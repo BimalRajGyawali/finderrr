@@ -61,6 +61,10 @@ public class User {
 		return "User [id=" + id + ", firstName=" + firstName + ", middleName=" + middleName + ", lastName=" + lastName
 				+ ", joinedOn=" + joinedOn + "]";
 	}
+
+	public boolean isValid(){
+		return this.getId() > 0 && this.firstName.length() > 0 && this.lastName.length() > 0;
+	}
 	
 	
 }
