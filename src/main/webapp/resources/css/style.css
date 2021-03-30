@@ -51,13 +51,6 @@ body{
     margin-bottom: 3px;
     word-wrap: break-word;
 }
-.desc{
-    font-family: 'Open Sans', sans-serif;
-    font-size: 0.8em;
-    color: #808080;
-    font-weight: 400;
-    word-wrap: break-word;
-}
 .custom-row{
    overflow: auto;
 }
@@ -135,7 +128,7 @@ body{
 }
 .desc{
     font-family: 'Open Sans', sans-serif;
-    font-size: 0.8em;
+    font-size: 0.9em;
     color: #808080;
     font-weight: 400;
     word-wrap: break-word;
@@ -279,6 +272,12 @@ body{
 
 }
 
+.styled-btn{
+    border: 0;
+    background-color: #fff;
+}
+
+
 .interested-button{
 padding-left: 35px;
 padding-top:8px;
@@ -353,4 +352,7 @@ margin-left:40px;
 
 .invisible-form{
 	visibility:hidden;
+
+.link{
+    color : black;
 }
