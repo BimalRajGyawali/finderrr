@@ -14,6 +14,8 @@
                 crossorigin="anonymous">
 
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 
 
             <link href="<c:url value=" /resources/css/style.css" />" rel="stylesheet">
@@ -36,14 +38,6 @@
                                     <p class="user-name"> Bimal Raj Gyawali</p>
                                     <p class="desc">Student at Nepal College of Information Technology</p>
                                 </div>
-                                <div class="post-body">
-                                   ${post.content}
-                                    <hr>
-                                    <div>
-                                        <div class="interested-button">Join Request</div>
-                                        <div class="comment-button" onclick="window.open('/post/${post.id}', '_blank');">Comment (${post.commentsCount})</div>
-                                        <div class="share-button">Share</div>
-
                             </div>
                         </div>
                         <div class="col col2">
@@ -52,7 +46,6 @@
                                     <div class="alert alert-success alert-dismissible">
                                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                                         <strong>Success!</strong> Post created successfully.
-
                                     </div>
                                 </c:when>
 
@@ -135,19 +128,24 @@
                                                 </div>
                                             </div>
                                             <div class="post-body">
+                                                <div class="post-content">
                                                 ${post.content}
+                                            </div>
                                                 <div class="line"></div>
                                                 <div>
-                                                    <form action="/${post.id}/join-requests" method="POST">
+                                                    
+                                                    <form  action="/${post.id}/join-requests" method="POST">
                                                         <!-- Join Request -->
-                                                        <input class="interested-button styled-btn" type="submit"
-                                                            value="Join Request">
+                                                       
+                                                        
+                                                            <input class="interested-button styled-btn" type="submit"
+                                                            value="Send a Join Request">
                                                     </form>
-                                                    <div class="comment-button">Comment</div>
-                                                    <div class="share-button">Share</div>
+                                                   <a class="comment-button" href="/post/${post.id}">Comments (${post.commentsCount})</a>
+                                                    <a class="share-button" href="/${post.id}/join-requests">Join Requests (${post.joinRequestsCount})</a>
                                                 </div>
-                                                <div class="line"></div>
-                                                <p style="margin-left:35px;">
+                                                
+                                                <!-- <p style="margin-left:35px;">
                                                     <c:choose>
                                                         <c:when test="${post.joinRequestsCount > 0}">
                                                             <a href="/${post.id}/join-requests"><c:out value="${post.joinRequestsCount}" /> people sent join requests</a>
@@ -157,9 +155,45 @@
                                                         </c:otherwise>
                                                     </c:choose>
                                                     
-                                                </p>
+                                                </p> -->
                                                 <div class="line"></div>
+
+
+
                                                 <div class="comment-posting">
+                                                    <img class="comment-profile-pic" src="/resources/images/pic.jpeg"
+                                                        alt="Card image cap">
+                                                    <div class="comment-post-details">
+                                                        <span class="comment-box2" role="textbox" id="comment" contentEditable=true
+                                                            data-ph="Write A Comment..."
+                                                            onkeydown="commentPost(event, '${post.id}')"></span>
+                                                            <div class="invisible-form">
+                                                                <form action="/write-comment" method="post">
+                                                                    <input type="text" name="post_id" value="${post.id}">
+                                                                    <input type="text" name="comments_count" value="${post.commentsCount}">
+                                                                      <input type="text" id="form_input${post.id}" name="form_comment_content">
+                                                                      <input type="submit" value="Submit" id="submit_button${post.id}">
+                                                                </form>
+                                                            </div>
+                                                    </div>
+            
+                                                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                <!-- <div class="comment-posting">
                                                     <img class="comment-profile-pic" src="resources/images/pic.jpeg"
                                                         alt="Card image cap">
                                                     <div class="comment-post-details">
@@ -170,7 +204,7 @@
 
                                                 </div>
                                                 <div class="line"></div>
-                                                <div id="commentContainer${post.id}">
+                                                <div id="commentContainer${post.id}"> -->
 
                                                     <!-- <div class="comment">
 
@@ -196,7 +230,7 @@
                                             </div>
                                         </div>
                                     </div> -->
-                                                </div>
+                                                <!-- </div> -->
 
 
                                             </div>
@@ -247,7 +281,7 @@
             </div>
 
             </div>
-            <script src="resources/js/script.js"></script>
+            <script src="resources/js/solo_post.js"></script>
 
             <script>
                 let ed;

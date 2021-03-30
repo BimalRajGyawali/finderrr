@@ -15,7 +15,9 @@ pageEncoding="ISO-8859-1"%>
     
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     
-    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
     <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
     
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
@@ -26,10 +28,21 @@ pageEncoding="ISO-8859-1"%>
 </head>
 
 <body>
+
     <div class="custom-container">
         <div class="main">
             <div class="custom-row">
-                
+                <div class="col col1">
+                    <div class="custom-card-container">
+                        <img class="custom-card-img" src="/resources/images/pic.jpeg" alt="Card image cap">
+                        <div class="custom-card-body">
+                            <p class="user-name"> Bimal Raj Gyawali</p>
+                            <p class="desc">Student at Nepal College of Information Technology</p>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="col col2">
                 <c:choose>
   				<c:when test="${success}">
@@ -49,15 +62,6 @@ pageEncoding="ISO-8859-1"%>
 				</c:choose>
                 
                 
-                    <div id="create-post-area">
-                	 
-                                               
-                        <div class="line"></div>
-
-
-			
-
-
                         <section class="posts-section">
                             <div class="post-card-container">
                                 <div class="post-head">
@@ -101,27 +105,33 @@ pageEncoding="ISO-8859-1"%>
                                     </div>
                                 </div>
                                 <div class="post-body">
-                                   ${post.content}
-                                    <hr>
-                                    <div>
-                                        <div class="interested-button">Join Request</div>
-                                        <div class="comment-button">Comment (${post.commentsCount})</div>
-                                        <div class="share-button">Share</div>
+                                    <div class="post-content">
+                                        ${post.content}
                                     </div>
-                                    <hr>
+                                    <div class="line"></div>
+                                    <div>
+                                        <form  action="/${post.id}/join-requests" method="POST">
+                                            <!-- Join Request -->
+                                                <input class="interested-button styled-btn" type="submit"
+                                                value="Send a Join Request">
+                                        </form>
+                                       <a class="comment-button" href="/post/${post.id}">Comments (${post.commentsCount})</a>
+                                        <a class="share-button" href="/${post.id}/join-requests">Join Requests (${post.joinRequestsCount})</a>
+                                    </div>
+                                    <div class="line"></div>
                                     <div class="comment-posting">
                                         <img class="comment-profile-pic" src="/resources/images/pic.jpeg"
                                             alt="Card image cap">
                                         <div class="comment-post-details">
                                             <span class="comment-box2" role="textbox" id="comment" contentEditable=true
                                                 data-ph="Write A Comment..."
-                                                onkeydown="commentPost(event)"></span>
+                                                onkeydown="commentPost(event, '${post.id}')"></span>
                                                 <div class="invisible-form">
                                                 	<form action="/write-comment" method="post">
                                                 		<input type="text" name="post_id" value="${post.id}">
                                                 		<input type="text" name="comments_count" value="${post.commentsCount}">
-  														<input type="text" id="form_input" name="form_comment_content">
-  														<input type="submit" value="Submit" id="submit_button">
+  														<input type="text" id="form_input${post.id}" name="form_comment_content">
+  														<input type="submit" value="Submit" id="submit_button${post.id}">
 													</form>
 												</div>
                                         </div>
@@ -138,7 +148,31 @@ pageEncoding="ISO-8859-1"%>
                                                 alt="Card image cap">
                                             <div class="comment-details">
                                                 <p class="account-name">${comment.user.firstName} ${comment.user.middleName} ${comment.user.lastName}</p>
+                                              
                                                 <p class="comment-data">${comment.content}</p>
+                                                <p class="comment-data desc post-desc">
+                                                 
+                                                    <c:choose>
+                                                        <c:when test="${comment.yearsTillNow != 0}">
+                                                            <c:out value="${comment.yearsTillNow} y ago" />
+                                                        </c:when>
+                                                        <c:when test="${comment.monthsTillNow != 0}">
+                                                            <c:out value="${comment.monthsTillNow} m ago" />
+                                                        </c:when>
+                                                        <c:when test="${comment.daysTillNow != 0}">
+                                                            <c:out value="${comment.daysTillNow} d ago" />
+                                                        </c:when>
+                                                        <c:when test="${comment.hoursTillNow != 0}">
+                                                            <c:out value="${comment.hoursTillNow} h ago" />
+                                                        </c:when>
+                                                        <c:when test="${comment.minutesTillNow != 0}">
+                                                            <c:out value="${comment.minutesTillNow} min ago" />
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="${comment.secondsTillNow} sec ago" />
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </p>
                                             </div>
                                           <!--   <p class="reply-button"><span class="reply-button-clickable">Reply</span>
                                             </p> -->

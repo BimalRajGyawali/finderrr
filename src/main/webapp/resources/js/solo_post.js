@@ -1,11 +1,11 @@
 
 
-function commentPost(event) {
+function commentPost(event, postId) {
 	
 	
 	if (event.keyCode === 13 && !event.shiftKey) {
 		
-		var form_input = document.getElementById("form_input");
+		var form_input = document.getElementById("form_input"+postId);
 		
 		event.preventDefault();
 		
@@ -17,7 +17,7 @@ function commentPost(event) {
 		}
 		
 		form_input.value=commentText;
-        document.getElementById('submit_button').click();
+        document.getElementById('submit_button'+postId).click();
 
 
 

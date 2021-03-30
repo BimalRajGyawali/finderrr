@@ -14,6 +14,8 @@
                 crossorigin="anonymous">
 
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 
 
             <link href="<c:url value=" /resources/css/style.css" />" rel="stylesheet">
@@ -114,26 +116,27 @@
                                                 </div>
                                             </div>
                                             <div class="post-body">
-                                                ${post.content}
-                                                <div class="line"></div>
-                                                <div>
-                                                    <form action="/${post.id}/join-requests" method="POST">
-                                                        <!-- Join Request -->
-                                                        <input class="interested-button styled-btn" type="submit"
-                                                            value="Join Request">
-                                                    </form>
-                                                    <div class="comment-button">Comment</div>
-                                                    <div class="share-button">Share</div>
+                                                <div class="post-content">
+                                                    ${post.content}
                                                 </div>
                                                 <div class="line"></div>
-                                                <p style="margin-left:35px;">
-                                                    <c:choose>
-                                                        <c:when test="${post.joinRequestsCount > 0}">
-                                                            <a href="/${post.id}/join-requests">
-                                                                <c:out value="${post.joinRequestsCount}" /> people sent
-                                                                join requests
-                                                            </a>
+                                                <div>
+                                                    
+                                                    <form  action="/${post.id}/join-requests" method="POST">
+                                                        <!-- Join Request -->
+                                                       
+                                                        
+                                                            <input class="interested-button styled-btn" type="submit"
+                                                            value="Send a Join Request">
+                                                    </form>
+                                                   <a class="comment-button" href="/post/${post.id}">Comments (${post.commentsCount})</a>
+                                                    <a class="share-button" href="/${post.id}/join-requests">Join Requests (${post.joinRequestsCount})</a>
+                                                </div>
+                                                
                                                             <div class="line"></div>
+                                                            <c:if test="${post.usersRequestingToJoin != null}">
+                                                                <p>People who sent join requests to this post :</p>
+                                                            </c:if>
                                                             <c:forEach var="user" items="${post.usersRequestingToJoin}">
                                                                
                                                                 <a href="" class="link post-head-left" style="display: block;">
@@ -155,11 +158,7 @@
 
 
                                                             </c:forEach>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <p>No join requests in this post</p>
-                                                        </c:otherwise>
-                                                    </c:choose>
+                                                        
 
                                                 </p>
 

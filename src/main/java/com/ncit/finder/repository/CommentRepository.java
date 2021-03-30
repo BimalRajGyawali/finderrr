@@ -26,7 +26,7 @@ public class CommentRepository {
 		Connection connection = DB.makeConnection();
 		PreparedStatement preparedStatement;
 		String sql = "SELECT sp.post_id, sp.post_content, sp.post_posted_on, sp.post_comments_count, sp.post_join_requests_count,\r\n"
-				+ "        sp.post_user_id, sp.post_user_firstname , sp.post_user_middlename, sp.post_user_lastname, sp.post_user_joined_on, sp.post_user_bio,c.id comment_id,c.content comment_content\r\n"
+				+ "        sp.post_user_id, sp.post_user_firstname , sp.post_user_middlename, sp.post_user_lastname, sp.post_user_joined_on, sp.post_user_bio,c.id comment_id,c.content comment_content, c.commented_on\r\n"
 				+ "        ,u.id comments_user_id, u.firstname comments_user_firstname, u.middlename comments_user_middlename, u.lastname comments_user_lastname, u.joined_on comments_user_joined_on, u.bio comments_user_bio\r\n"
 				+ "        FROM comments c\r\n"
 				+ "        INNER JOIN users u on c.user_id = u.id\r\n"
@@ -34,7 +34,7 @@ public class CommentRepository {
 				+ "        (SELECT\r\n"
 				+ "        p.id post_id, p.content post_content, p.posted_on post_posted_on, p.comments_count post_comments_count, p.join_requests_count post_join_requests_count,\r\n"
 				+ "        u.id post_user_id, u.firstname post_user_firstname , u.middlename post_user_middlename, u.lastname post_user_lastname, u.joined_on post_user_joined_on, u.bio post_user_bio\r\n"
-				+ "        FROM posts p INNER JOIN users u on p.user_id = u.id where p.id=?) sp ON c.post_id = sp.post_id";
+				+ "        FROM posts p INNER JOIN users u on p.user_id = u.id where p.id=?) sp ON c.post_id = sp.post_id ORDER BY c.commented_on DESC";
 				
 		try {
 			preparedStatement = connection.prepareStatement(sql);
@@ -84,7 +84,12 @@ public class CommentRepository {
 					post_user.setFirstName(resultSet.getString("post_user_firstname"));
 					post_user.setMiddleName(resultSet.getString("post_user_middlename"));
 					post_user.setLastName(resultSet.getString("post_user_lastname"));
-					post_user.setJoinedOn(resultSet.getTimestamp("post_user_joined_on").toLocalDateTime());
+
+					if (resultSet.getTimestamp("post_user_joined_on") != null) {
+						post_user.setJoinedOn(resultSet.getTimestamp("post_user_joined_on").toLocalDateTime());
+					}
+
+					
 					
 					post.setUser(post_user);
 //					System.out.println(post+"|"+post_user);
@@ -102,10 +107,42 @@ public class CommentRepository {
 					comment_user.setFirstName(resultSet.getString("comments_user_firstname"));
 					comment_user.setMiddleName(resultSet.getString("comments_user_middlename"));
 					comment_user.setLastName(resultSet.getString("comments_user_lastname"));
-					comment_user.setJoinedOn(resultSet.getTimestamp("comments_user_joined_on").toLocalDateTime());
+					if(resultSet.getTimestamp("comments_user_joined_on") != null){
+						comment_user.setJoinedOn(resultSet.getTimestamp("comments_user_joined_on").toLocalDateTime());
+					}
 				
 					temp_comment.setUser(comment_user);
-//					temp_comment.setCommentedOn(resultSet.getTimestamp("comment").toLocalDateTime());
+					if(resultSet.getTimestamp("commented_on") != null){
+					temp_comment.setCommentedOn(resultSet.getTimestamp("commented_on").toLocalDateTime());
+						
+						LocalDateTime fromTemp = temp_comment.getCommentedOn();
+						LocalDateTime to = LocalDateTime.now();
+						
+					     	long years = fromTemp.until(to, ChronoUnit.YEARS);
+					        fromTemp = fromTemp.plusYears(years);
+
+					        long months = fromTemp.until(to, ChronoUnit.MONTHS);
+					        fromTemp = fromTemp.plusMonths(months);
+					        
+					        long days = fromTemp.until(to, ChronoUnit.DAYS);
+					        fromTemp = fromTemp.plusDays(days);
+
+					        long hours = fromTemp.until(to, ChronoUnit.HOURS);
+					        fromTemp = fromTemp.plusHours(hours);
+
+					        long minutes = fromTemp.until(to, ChronoUnit.MINUTES);
+					        fromTemp = fromTemp.plusMinutes(minutes);
+
+					        long seconds = fromTemp.until(to, ChronoUnit.SECONDS);
+					        
+					        temp_comment.setYearsTillNow(years);
+					        temp_comment.setMonthsTillNow(months);
+					        temp_comment.setHoursTillNow(hours);
+					        temp_comment.setMinutesTillNow(minutes);
+					        temp_comment.setSecondsTillNow(seconds);
+				
+				
+				}
 				
 					post_comments.add(temp_comment);
 				}
@@ -136,14 +173,14 @@ public class CommentRepository {
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(1, comment.getContent());
 			preparedStatement.setTimestamp(2, Timestamp.valueOf(comment.getCommentedOn()));
-			preparedStatement.setInt(3,4);
+			preparedStatement.setInt(3,comment.getUser().getId());
 			preparedStatement.setInt(4,post_id);
 			
 			preparedStatement2=connection.prepareStatement(sql_comment_count_update);
 			
 			preparedStatement2.setInt(1,++comments_count);
 			preparedStatement2.setInt(2,post_id);
-			
+			System.err.println(comment.getCommentedOn());
 			
 			preparedStatement.executeUpdate();
 			preparedStatement2.executeUpdate();
