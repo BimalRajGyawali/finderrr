@@ -28,7 +28,7 @@ pageEncoding="ISO-8859-1"%>
 </head>
 
 <body>
-
+    <jsp:include page="header.jsp" />
     <div class="custom-container">
         <div class="main">
             <div class="custom-row">
@@ -107,6 +107,12 @@ pageEncoding="ISO-8859-1"%>
                                 <div class="post-body">
                                     <div class="post-content">
                                         ${post.content}
+                                        <p class="mt-5"> Tags : &nbsp;&nbsp;&nbsp;
+                                            <c:forEach var="hashtag" items="${post.hashTags}">
+                                             <a href="" class="badge badge-success" style="background:navy;"><c:out value="${hashtag.title}" /></a>
+                                             &nbsp;
+                                            </c:forEach>
+                                        </p>
                                     </div>
                                     <div class="line"></div>
                                     <div>
