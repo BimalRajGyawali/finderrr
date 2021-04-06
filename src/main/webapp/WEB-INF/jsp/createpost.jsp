@@ -60,29 +60,32 @@
                                 </c:when>
 
                             </c:choose>
+                            <div id="empty-post-error">
 
+                            </div>
+                            <div id="empty-hashtag-error">
 
+                            </div>
 
                             <div id="create-post-area">
                                 <form id="post-form" action="/create-post" method="POST" onsubmit="submitForm(event);">
                                     <input id="editor" />
                                     <input hidden name="post-content" type="text" id="post-content">
                                     <p class="mt-5">
-                                    <input type="text" name="hashtags" autocomplete="off" class="hashtag-input"
+                                        <input type="text" name="hashtags" autocomplete="off" class="hashtag-input"
                                             placeholder="Type hashtag and press Enter" id="hashtags">
                                     </p>
                                     <div id="hashtags-container">
-
                                     </div>
-                                    <input type="submit" class="btn btn-primary mt-3" value="Submit Post">
+                                    <input type="submit" class="btn btn-primary mt-5" value="Post">
 
                                 </form>
 
-                                
 
-                                
+
+
                             </div>
-                          
+
 
                         </div>
                         <div class="col col3">
@@ -152,8 +155,27 @@
                             hashtagInput.value = hashtags;
                             event.target.submit();
                         } else {
-                            alert("hashtags empty");
+                            let hashtagError = document.querySelector("#empty-post-error");
+                            hashtagError.style.display = 'block';
+                            hashtagError.innerHTML = `  <div   class="alert alert-danger alert-dismissible">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>Failed!</strong> Please provide at least one hashtag.
+                            </div>`;
+
+
                         }
+                    } else {
+
+
+                        let postError = document.querySelector("#empty-hashtag-error");
+                        postError.style.display = 'block';
+                        postError.innerHTML = `
+                           <div class="alert alert-danger alert-dismissible">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>Failed!</strong> Post is Empty.
+                            </div>`;
+
+
                     }
                 }
 

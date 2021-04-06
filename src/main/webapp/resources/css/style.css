@@ -396,3 +396,7 @@ margin-left:40px;
 .hashtag-input:focus{
    outline: none;
 }
+
+#empty-post-error, #empty-hashtag-error{
+    display: none;
+}

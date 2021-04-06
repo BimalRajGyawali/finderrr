@@ -48,14 +48,14 @@
 
 
                             <div id="create-post-area">
-                               <p>Posts tagged under hashtag &nbsp;
-                                <a href="" class="badge badge-success" style="background:navy;"><c:out value="${requestedHashTag}" /></a>
+                               <p>Posts tagged under  &nbsp;
+                                <a href="/posts/hashtag/${requestedHashTag}" ><c:out value="#${requestedHashTag}" /></a>
                                </p>
                                <div class="line"></div>
                                <p><c:choose >
                                 <c:when test="${hasPosts}"></c:when>
                                 <c:otherwise>
-                                    No Posts with hashtag  <a href="" class="badge badge-success" style="background:navy;"><c:out value="${requestedHashTag}" /></a>
+                                    No Posts tagged under <a href=""><c:out value="#${requestedHashTag}" /></a>
 
                                 </c:otherwise>
                                </c:choose></p>
@@ -111,9 +111,9 @@
                                             <div class="post-body">
                                                 <div class="post-content">
                                                     ${post.content}
-                                                 <p class="mt-5"> Tags : &nbsp;&nbsp;&nbsp;
+                                                 <p class="mt-5"> 
                                                     <c:forEach var="hashtag" items="${post.hashTags}">
-                                                     <a href="/posts/hashtag/${hashtag.title}" class="badge badge-success" style="background:navy;"><c:out value="${hashtag.title}" /></a>
+                                                     <a href="/posts/hashtag/${hashtag.title}" ><c:out value="#${hashtag.title}" /></a>
                                                      &nbsp;
                                                     </c:forEach>
                                                 </p>

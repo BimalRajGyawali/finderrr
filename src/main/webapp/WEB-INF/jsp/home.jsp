@@ -153,11 +153,11 @@
                                             <div class="post-body">
                                                 <div class="post-content">
                                                     ${post.content}
-                                                    <p class="mt-5"> Tags : &nbsp;&nbsp;&nbsp;
+                                                    <p class="mt-5"> 
                                                         <c:forEach var="hashtag" items="${post.hashTags}">
-                                                            <a href="/posts/hashtag/${hashtag.title}"
-                                                                class="badge badge-success" style="background:navy;">
-                                                                <c:out value="${hashtag.title}" />
+                                                            <a href="/posts/hashtag/${hashtag.title}">
+                                                            
+                                                                <c:out value="#${hashtag.title}" />
                                                             </a>
                                                             &nbsp;
                                                         </c:forEach>
