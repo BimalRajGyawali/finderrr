@@ -10,6 +10,7 @@ public class Post {
 	private List<Comment> comments;
 	private int commentsCount;
 	private List<User> usersRequestingToJoin;
+	private List<HashTag> hashTags;
 	private int joinRequestsCount;
 	private LocalDateTime postedDateTime;
 	
@@ -21,7 +22,7 @@ public class Post {
 	private long secondsTillNow;
 	
 	
-	private List<HashTag> hashTags;
+	
 	
 	
 	public int getId() {

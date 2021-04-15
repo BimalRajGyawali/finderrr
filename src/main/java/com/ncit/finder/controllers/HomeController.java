@@ -1,11 +1,13 @@
 package com.ncit.finder.controllers;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.ncit.finder.db.DBResponse;
+import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.JoinRequest;
 import com.ncit.finder.models.Post;
 import com.ncit.finder.models.User;
@@ -27,22 +29,53 @@ public class HomeController {
 		PostRepository repository = new PostRepository();
 		LocalDateTime beforeDateTime = LocalDateTime.now();
 		if(before != null && !before.isEmpty()){
-			beforeDateTime = LocalDateTime.parse(before);
+			beforeDateTime = LocalDateTime.parse(before);	
 		}
-		List<Post> posts = repository.getPosts(5, beforeDateTime);
+		List<Post> posts = repository.getDetailedPosts(5, beforeDateTime);
 		model.addAttribute("posts", posts);
 		if(posts.size() > 0 ){
 			model.addAttribute("oldestDate", posts.get(posts.size() - 1).getPostedDateTime());
+			System.out.println("Oldest Date "+posts.get(posts.size() - 1).getPostedDateTime());
 			model.addAttribute("hasPosts", true);
 		}
 		return "home";
 	}
 
+	@GetMapping("/posts/hashtag/{hashtag}")
+	public String getPostsFromHashTag(@PathVariable String hashtag, @RequestParam(required = false)String before, Model model){
+		PostRepository repository = new PostRepository();
+		LocalDateTime beforeDateTime = LocalDateTime.now();
+		if(before != null && !before.isEmpty()){
+			beforeDateTime = LocalDateTime.parse(before);	
+		}
+		List<Post> posts = repository.getPostsFromHashTag(hashtag, 5, beforeDateTime);
+		model.addAttribute("posts", posts);
+		if(posts.size() > 0 ){
+			model.addAttribute("oldestDate", posts.get(posts.size() - 1).getPostedDateTime());
+			model.addAttribute("hasPosts", true);
+		}
+		model.addAttribute("requestedHashTag", hashtag);
+		return "posts";
+	}
 	
+
+	@GetMapping("/create-post")
+	public String getCreatePostPage(){
+		return "createpost";
+	}
+
 	@PostMapping("/create-post")
 	public String createPost(HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		String postContent = request.getParameter("post-content");
-		
+		String hashTagsString = request.getParameter("hashtags");
+		List<HashTag> hashTags = new ArrayList<>();
+		 
+		for(String hashTag : hashTagsString.split(",")){
+			HashTag h = new HashTag();
+			h.setTitle(hashTag);
+			hashTags.add(h);
+		}
+
 		User user = new User();
 		user.setId(1);
 		user.setFirstName("Bimal");
@@ -53,7 +86,7 @@ public class HomeController {
 		post.setContent(postContent);
 		post.setPostedDateTime(LocalDateTime.now());
 		post.setUser(user);
-		
+		post.setHashTags(hashTags);
 		PostRepository repository = new PostRepository();
 		boolean status = repository.createPost(post);
 		

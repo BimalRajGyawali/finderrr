@@ -30,6 +30,7 @@
             </head>
 
             <body>
+                <jsp:include page="header.jsp" />
                 <div class="custom-container">
                     <div class="main">
                         <div class="custom-row">
@@ -120,6 +121,12 @@
                                                 <div class="post-body">
                                                     <div class="post-content">
                                                         ${post.content}
+                                                        <p class="mt-5">
+                                                            <c:forEach var="hashtag" items="${post.hashTags}">
+                                                             <a href="/posts/hashtag/${hashtag.title}" ><c:out value="#${hashtag.title}" /></a>
+                                                             &nbsp;
+                                                            </c:forEach>
+                                                        </p>
                                                     </div>
                                                     <div class="line"></div>
                                                     <div>
