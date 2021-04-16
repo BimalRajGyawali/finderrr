@@ -17,12 +17,13 @@
 .tag{
     display: inline;
     margin-right: 15px;
-    padding: 5px;
+    padding: 3px 10px 3px 10px;
     word-wrap: break-word;
     color:  white;
-    background: #4169E1;
+    background: limegreen;
     pointer-events: none;
     /* border:1px solid ; */
+  
     border-radius: 40px;
 
 }

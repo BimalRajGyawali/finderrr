@@ -10,6 +10,7 @@ import com.ncit.finder.db.DBResponse;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.JoinRequest;
 import com.ncit.finder.models.Post;
+import com.ncit.finder.models.Status;
 import com.ncit.finder.models.User;
 import com.ncit.finder.repository.PostRepository;
 
@@ -27,6 +28,7 @@ public class HomeController {
 	@GetMapping("/")
 	public String index(@RequestParam(required=false) String before, Model model) {
 		PostRepository repository = new PostRepository();
+
 		LocalDateTime beforeDateTime = LocalDateTime.now();
 		if(before != null && !before.isEmpty()){
 			beforeDateTime = LocalDateTime.parse(before);	
@@ -35,7 +37,6 @@ public class HomeController {
 		model.addAttribute("posts", posts);
 		if(posts.size() > 0 ){
 			model.addAttribute("oldestDate", posts.get(posts.size() - 1).getPostedDateTime());
-			System.out.println("Oldest Date "+posts.get(posts.size() - 1).getPostedDateTime());
 			model.addAttribute("hasPosts", true);
 		}
 		return "home";
@@ -69,7 +70,8 @@ public class HomeController {
 		String postContent = request.getParameter("post-content");
 		String hashTagsString = request.getParameter("hashtags");
 		List<HashTag> hashTags = new ArrayList<>();
-		 
+		String postStatus = request.getParameter("post-status");
+		Status pStatus = Status.valueOf(postStatus);		 
 		for(String hashTag : hashTagsString.split(",")){
 			HashTag h = new HashTag();
 			h.setTitle(hashTag);
@@ -87,6 +89,7 @@ public class HomeController {
 		post.setPostedDateTime(LocalDateTime.now());
 		post.setUser(user);
 		post.setHashTags(hashTags);
+		post.setStatus(pStatus);
 		PostRepository repository = new PostRepository();
 		boolean status = repository.createPost(post);
 		
@@ -131,4 +134,64 @@ public class HomeController {
 		return "redirect:/"+post.getId()+"/join-requests";
 	}
 	
+	@GetMapping("/editpost/{postId}")
+	public String getEditPostPage(@PathVariable int postId, Model model){
+		PostRepository repository = new PostRepository();
+		Post post = repository.getPostById(postId);
+		model.addAttribute("post", post);
+		boolean ongoingStatus = true;
+		boolean completedStatus = false;
+
+		if(post != null){
+			if(post.getStatus() == Status.ongoing){
+				ongoingStatus = true;
+			}else if(post.getStatus() == Status.completed){
+				completedStatus = true;
+				ongoingStatus = false;
+			}
+		}
+		model.addAttribute("ongoingStatus", ongoingStatus);
+		model.addAttribute("completedStatus", completedStatus);
+		return "editpost";
+	}
+
+	@PostMapping("/edit-post")
+	public String editPost(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+		int id = Integer.parseInt(request.getParameter("post-id"));
+		String postContent = request.getParameter("post-content");
+		String hashTagsString = request.getParameter("hashtags");
+		List<HashTag> hashTags = new ArrayList<>();
+		String postStatus = request.getParameter("post-status");
+		Status pStatus = Status.valueOf(postStatus);		 
+		for(String hashTag : hashTagsString.split(",")){
+			HashTag h = new HashTag();
+			h.setTitle(hashTag);
+			hashTags.add(h);
+		}
+
+		
+		Post post = new Post();
+		post.setId(id);
+		post.setContent(postContent);
+		post.setHashTags(hashTags);
+		post.setStatus(pStatus);
+		PostRepository repository = new PostRepository();
+		boolean status = repository.updatePost(post);
+		
+		
+		redirectAttributes.addFlashAttribute("updateSuccess", status);
+		redirectAttributes.addFlashAttribute("updateFailure", !status);
+		
+		return "redirect:/";
+	}
+
+	@PostMapping("/delete-post")
+	public String deletePost(HttpServletRequest request, RedirectAttributes redirectAttributes){
+		int postId = Integer.parseInt(request.getParameter("post-id"));
+		PostRepository repository = new PostRepository();
+		boolean status = repository.deletePost(postId);
+		redirectAttributes.addFlashAttribute("deleteSuccess", status);
+		redirectAttributes.addFlashAttribute("deleteFailure", !status);
+		return "redirect:/";
+	}
 }

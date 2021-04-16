@@ -61,6 +61,39 @@
 
                             </c:choose>
 
+                            <c:choose>
+                                <c:when test="${updateSuccess}">
+                                    <div class="alert alert-success alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <strong>Success!</strong> Post updated successfully.
+                                    </div>
+                                </c:when>
+
+                                <c:when test="${updateFailure}">
+                                    <div class="alert alert-danger alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <strong>Failed!</strong> Error in updating post.
+                                    </div>
+                                </c:when>
+
+                            </c:choose>
+                            <c:choose>
+                                <c:when test="${deleteSuccess}">
+                                    <div class="alert alert-success alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <strong>Success!</strong> Post Deleted successfully.
+                                    </div>
+                                </c:when>
+
+                                <c:when test="${deleteFailure}">
+                                    <div class="alert alert-danger alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <strong>Failed!</strong> Error in deleting post.
+                                    </div>
+                                </c:when>
+
+                            </c:choose>
+
 
 
                             <div id="create-post-area">
@@ -139,15 +172,16 @@
                                                                     <c:out value="${post.secondsTillNow} sec ago" />
                                                                 </c:otherwise>
                                                             </c:choose>
-
+                                                            <span class="post-status ${post.status}">. ${post.status}</span>
                                                         </p>
 
                                                     </div>
                                                 </div>
                                                 <div class="post-head-right">
+                                                    <!-- <div class="dot"></div>
                                                     <div class="dot"></div>
-                                                    <div class="dot"></div>
-                                                    <div class="dot"></div>
+                                                    <div class="dot"></div> -->
+                                                    <a href="/editpost/${post.id}">Edit Post</a>
                                                 </div>
                                             </div>
                                             <div class="post-body">
