@@ -25,6 +25,7 @@ CREATE TABLE posts(
     comments_count INT,
     join_requests_count INT,
     bio VARCHAR(100),
+    status VARCHAR(30),
     FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
@@ -70,3 +71,5 @@ CREATE TABLE join_requests(
     FOREIGN KEY(user_id) REFERENCES users(id)
 
 );
+
+INSERT INTO users(firstname, middlename, lastname) VALUES("Bimal", "Raj", "Gyawali");

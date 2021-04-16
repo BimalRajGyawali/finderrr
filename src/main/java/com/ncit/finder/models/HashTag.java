@@ -17,7 +17,7 @@ public class HashTag {
 	}
 	@Override
 	public String toString() {
-		return "HashTag [id=" + id + ", title=" + title + "]";
+		return "{\"id\":" + id + ", \"title\":\"" + title + "\"}";
 	}
 	
 	

@@ -88,20 +88,16 @@ pageEncoding="ISO-8859-1"%>
    													 <c:out value="${post.secondsTillNow} sec ago"/>
   												</c:otherwise>
                                          	</c:choose>    
-                                            
-                                            
-                                            
-                                           
-                                            
-                                            
+                                             <span class="">. ${post.status}</span>
                                             </p>
                                             
                                         </div>
                                     </div>
                                     <div class="post-head-right">
+                                        <!-- <div class="dot"></div>
                                         <div class="dot"></div>
-                                        <div class="dot"></div>
-                                        <div class="dot"></div>
+                                        <div class="dot"></div> -->
+                                        <a href="/editpost/${post.id}">Edit Post</a>
                                     </div>
                                 </div>
                                 <div class="post-body">

@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.Post;
+import com.ncit.finder.models.Status;
 import com.ncit.finder.models.User;
 import com.ncit.finder.utils.LocalDateTimeParser;
 
@@ -40,6 +41,10 @@ public class PostMapper {
                     Post post = new Post();
                     post.setUser(user);
                     post.setId(postId);
+                  
+                    post.setStatus(Status.valueOf(resultSet.getString("status")));
+                    
+                    
                     post.setContent(resultSet.getString("content"));
                     if (resultSet.getTimestamp("posted_on") != null) {
                         post.setPostedDateTime(resultSet.getTimestamp("posted_on").toLocalDateTime());

@@ -48,14 +48,14 @@
                                 <c:when test="${success}">
                                     <div class="alert alert-success alert-dismissible">
                                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Success!</strong> Post created successfully.
+                                        <strong>Success!</strong> Post updated successfully.
                                     </div>
                                 </c:when>
 
                                 <c:when test="${failure}">
                                     <div class="alert alert-danger alert-dismissible">
                                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Failed!</strong> Error in creating post.
+                                        <strong>Failed!</strong> Error in updating post.
                                     </div>
                                 </c:when>
 
@@ -68,31 +68,52 @@
                             </div>
 
                             <div id="create-post-area">
-                                <form id="post-form" action="/create-post" method="POST" onsubmit="submitForm(event);">
-                                    <input id="editor" />
-                                    <input hidden name="post-content" type="text" id="post-content">
-                                    <p class="mt-5">
-                                        <span>Select Post Status : &nbsp;&nbsp;</span> 
-                                        <select name="post-status" id="post-status" class="hashtag-input">
-                                            <option value="ongoing" selected>Ongoing</option>
-                                            <option value="completed">Completed</option>
-                                        </select>
-                                    </p>
-                                    <p class="mt-5">
-                                      <span>  Select Hashtags&nbsp;&nbsp; : &nbsp;&nbsp;</span>
-                                        <input type="text" name="hashtags" autocomplete="off" class="hashtag-input"
-                                            placeholder="Type hashtag and press Enter" id="hashtags">
-                                    </p>
-                                   
-                                    <div id="hashtags-container">
-                                    </div>
-                                    <input type="submit" class="btn btn-primary mt-5" value="Post">
+                                <c:choose>
+                                    <c:when test="${post == null}">
+                                        <c:out value="NO POSTS AVAILABLE" />
 
-                                </form>
-
-
-
-
+                                    </c:when>
+                                    <c:otherwise>
+                                        <form id="post-form" action="/edit-post" method="POST" onsubmit="submitForm(event);" style="display: inline;">
+                                            <input id="editor" />
+                                            <input type="text" hidden name="post-id" value="${post.id}">
+                                            <input hidden name="post-content" type="text" id="post-content">
+                                            <p class="mt-5">
+                                                <span>Select Post Status : &nbsp;&nbsp;</span>
+                                                <select name="post-status" id="post-status" class="hashtag-input">
+                                                    <c:choose>
+                                                        <c:when test="${ongoingStatus}">
+                                                            <option value="ongoing" selected>Ongoing</option>
+                                                            <option value="completed">Completed</option>
+                                                         </c:when>
+                                                         <c:when test="${completedStatus}">
+                                                            <option value="ongoing">Ongoing</option>
+                                                            <option value="completed" selected>Completed</option>
+                                                         </c:when>
+                                                         </c:choose>
+                                                </select>
+                                            </p>
+                                            <p class="mt-5">
+                                                <span> Select Hashtags&nbsp;&nbsp; : &nbsp;&nbsp;</span>
+                                                <input type="text" name="hashtags" autocomplete="off" class="hashtag-input"
+                                                    placeholder="Type hashtag and press Enter" id="hashtags">
+                                            </p>
+        
+                                            <div id="hashtags-container">
+                                                
+                                            </div>
+                                        
+                                            <input type="submit" class="update-btn" value="Update">
+        
+                                        </form>
+                                        <form action="/delete-post" method="POST" style="display: inline;">
+                                            <input type="text" hidden name="post-id" value="${post.id}">
+                                            <input type="submit" name="" id="" value="Delete this post" class="delete-btn">
+                                        </form>
+        
+                                    </c:otherwise>
+                                    </c:choose>
+                               
                             </div>
 
 
@@ -135,7 +156,7 @@
             </div>
 
             </div>
-            <script src="resources/js/hashtag.js"></script>
+            <script src="../../resources/js/hashtag.js"></script>
             <script>
                 let ed;
                 ClassicEditor
@@ -145,6 +166,16 @@
                         console.error(error);
                     })
 
+                window.addEventListener("load", ()=>{
+                   let hashtags = '${post.hashTags}';
+                   hashtags = JSON.parse(hashtags);
+                   for(let i=0; i<hashtags.length; i++){
+                       addHashTag(hashtags[i].title)
+                   }
+
+                   ed.setData("${post.content}");
+
+                });
 
                 function submitForm(event) {
                     event.preventDefault();
