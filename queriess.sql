@@ -72,4 +72,13 @@ CREATE TABLE join_requests(
 
 );
 
+CREATE TABLE user_details
+(
+id INT PRIMARY KEY  AUTO_INCREMENT,
+email VARCHAR(100),
+pass VARCHAR(100),
+user_id INT UNIQUE ,
+CONSTRAINT user_id_fk FOREIGN KEY(user_id) REFERENCES users(id)
+);
+
 INSERT INTO users(firstname, middlename, lastname) VALUES("Bimal", "Raj", "Gyawali");
