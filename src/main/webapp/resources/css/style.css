@@ -87,16 +87,16 @@ body{
     overflow: auto;
 }
 
-.post-head-left{
+.post-head-left {
     float: left;
-    padding-top: 20px;
+    padding-top: 10px;
     overflow: auto;
 }
 .post-head-right{
     overflow: auto;
     padding-right: 6px;
     padding-left: 6px;
-    padding-top: 20px;
+    padding-top: 10px;
     padding-bottom: 15px;
     float: right;
     cursor: pointer;
@@ -105,12 +105,14 @@ body{
 
 
 .post-head-left .profile-pic{
+   
     width: 50px;
     height: 50px;
     border-radius: 50%;
     display: block;
     float: left;
     margin-right: 14px;
+   
 }
 
 .post-head-left .post-meta{
@@ -364,3 +366,65 @@ margin-left:40px;
 .link{
     color : black;
 }
+.post-input{
+    margin-top: 3px;
+    border-radius: 40px;
+    cursor: pointer;
+    text-align: center;
+    display: block;
+    margin: 10 auto;
+    font-weight: bold;
+    word-spacing: 0.1em;
+    padding: 10px 30px 10px 30px;
+    color: #808080;
+    border: 1px solid #c0c0c0;
+    text-decoration: none;
+    
+}
+.post-input:hover{
+    text-decoration: none;
+    color: #808080;
+    background: #f2f2f2;
+}
+.hashtag-input{
+    border: 1px solid #c0c0c0;
+    border-radius: 40px;
+    width: 300px;
+    padding: 10px 20px 10px 20px;
+    margin-bottom: 10px;
+    background: white;
+}
+.hashtag-input:focus{
+   outline: none;
+}
+
+#empty-post-error, #empty-hashtag-error{
+    display: none;
+}
+.update-btn{
+    border: 0;
+    border-radius: 40px;
+    background: #4169E1;
+    color : white;
+    padding:5px 20px 5px 20px;
+    margin-top: 50px;
+}
+.delete-btn{
+    margin-top: 50px;
+    margin-left: 10px;
+    padding:5px 20px 5px 20px;
+    color : white;
+    background: #DC143C;
+    border: 0;
+    border-radius: 40px;
+    
+ }
+
+/* .completed{
+    background: blue;
+    color: white;
+    border-radius: 40px;
+   
+    padding-left: 5px;
+    padding-right: 5px;
+} */

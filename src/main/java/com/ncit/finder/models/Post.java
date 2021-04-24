@@ -3,6 +3,8 @@ package com.ncit.finder.models;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+
 public class Post {
 	private int id;
 	private String content;
@@ -10,8 +12,10 @@ public class Post {
 	private List<Comment> comments;
 	private int commentsCount;
 	private List<User> usersRequestingToJoin;
+	private List<HashTag> hashTags;
 	private int joinRequestsCount;
 	private LocalDateTime postedDateTime;
+	private Status status;
 	
 	private long yearsTillNow;
 	private long monthsTillNow;
@@ -21,7 +25,6 @@ public class Post {
 	private long secondsTillNow;
 	
 	
-	private List<HashTag> hashTags;
 	
 	
 	public int getId() {
@@ -114,12 +117,21 @@ public class Post {
 	public void setPostedDateTime(LocalDateTime postedDateTime) {
 		this.postedDateTime = postedDateTime;
 	}
+	
+	public Status getStatus() {
+		return status;
+	}
+	public void setStatus(Status status) {
+		this.status = status;
+	}
 	@Override
 	public String toString() {
-		return "Post [id=" + id + ", content=" + content + ", user=" + user + ", comments=" + comments
-				+ ", commentsCount=" + commentsCount + ", usersRequestingToJoin=" + usersRequestingToJoin
-				+ ", joinRequestsCount=" + joinRequestsCount + ", postedDateTime=" + postedDateTime + ", hashTags="
-				+ hashTags + "]";
+		return "Post [comments=" + comments + ", commentsCount=" + commentsCount + ", content=" + content
+				+ ", daysTillNow=" + daysTillNow + ", hashTags=" + hashTags + ", hoursTillNow=" + hoursTillNow + ", id="
+				+ id + ", joinRequestsCount=" + joinRequestsCount + ", minutesTillNow=" + minutesTillNow
+				+ ", monthsTillNow=" + monthsTillNow + ", postedDateTime=" + postedDateTime + ", secondsTillNow="
+				+ secondsTillNow + ", status=" + status + ", user=" + user + ", usersRequestingToJoin="
+				+ usersRequestingToJoin + ", yearsTillNow=" + yearsTillNow + "]";
 	}
 	
 	

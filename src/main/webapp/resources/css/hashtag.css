@@ -1,0 +1,29 @@
+#hashtags-container{
+    /* display: flex; */
+}
+
+.tag::after{
+    content: 'x';
+    font-weight: bold;
+    height: 10px;
+    width: 10px;
+    margin-left: 6px;
+    padding: 5px;
+    cursor: pointer;
+    pointer-events: all;
+   
+}
+
+.tag{
+    display: inline;
+    margin-right: 15px;
+    padding: 3px 10px 3px 10px;
+    word-wrap: break-word;
+    color:  white;
+    background: limegreen;
+    pointer-events: none;
+    /* border:1px solid ; */
+  
+    border-radius: 40px;
+
+}

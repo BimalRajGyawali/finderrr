@@ -30,6 +30,7 @@
             </head>
 
             <body>
+                <jsp:include page="header.jsp" />
                 <div class="custom-container">
                     <div class="main">
                         <div class="custom-row">
@@ -106,20 +107,27 @@
                                                                         <c:out value="${post.secondsTillNow} sec ago" />
                                                                     </c:otherwise>
                                                                 </c:choose>
-
+                                                                <span class="">. ${post.status}</span>
                                                             </p>
 
                                                         </div>
                                                     </div>
                                                     <div class="post-head-right">
+                                                        <!-- <div class="dot"></div>
                                                         <div class="dot"></div>
-                                                        <div class="dot"></div>
-                                                        <div class="dot"></div>
+                                                        <div class="dot"></div> -->
+                                                        <a href="/editpost/${post.id}">Edit Post</a>
                                                     </div>
                                                 </div>
                                                 <div class="post-body">
                                                     <div class="post-content">
                                                         ${post.content}
+                                                        <p class="mt-5">
+                                                            <c:forEach var="hashtag" items="${post.hashTags}">
+                                                             <a href="/posts/hashtag/${hashtag.title}" ><c:out value="#${hashtag.title}" /></a>
+                                                             &nbsp;
+                                                            </c:forEach>
+                                                        </p>
                                                     </div>
                                                     <div class="line"></div>
                                                     <div>

@@ -44,96 +44,21 @@
                             </div>
                         </div>
                         <div class="col col2">
-                            <c:choose>
-                                <c:when test="${success}">
-                                    <div class="alert alert-success alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Success!</strong> Post created successfully.
-                                    </div>
-                                </c:when>
-
-                                <c:when test="${failure}">
-                                    <div class="alert alert-danger alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Failed!</strong> Error in creating post.
-                                    </div>
-                                </c:when>
-
-                            </c:choose>
-
-                            <c:choose>
-                                <c:when test="${updateSuccess}">
-                                    <div class="alert alert-success alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Success!</strong> Post updated successfully.
-                                    </div>
-                                </c:when>
-
-                                <c:when test="${updateFailure}">
-                                    <div class="alert alert-danger alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Failed!</strong> Error in updating post.
-                                    </div>
-                                </c:when>
-
-                            </c:choose>
-                            <c:choose>
-                                <c:when test="${deleteSuccess}">
-                                    <div class="alert alert-success alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Success!</strong> Post Deleted successfully.
-                                    </div>
-                                </c:when>
-
-                                <c:when test="${deleteFailure}">
-                                    <div class="alert alert-danger alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Failed!</strong> Error in deleting post.
-                                    </div>
-                                </c:when>
-
-                            </c:choose>
-
+                           
 
 
                             <div id="create-post-area">
-                                <!-- <form id="post-form" action="/create-post" method="POST" onsubmit="submitForm(event);">
-                                    <input id="editor" />
-                                    <input hidden name="post-content" type="text" id="post-content">
-                                    <p class="mt-5">
-                                        <span>Hashtags</span> <input type="text" name="hashtags" autocomplete="off"
-                                            id="hashtags">
-                                    </p>
-                                    <div id="hashtags-container">
+                               <p>Posts tagged under  &nbsp;
+                                <a href="/posts/hashtag/${requestedHashTag}" ><c:out value="#${requestedHashTag}" /></a>
+                               </p>
+                               <div class="line"></div>
+                               <p><c:choose >
+                                <c:when test="${hasPosts}"></c:when>
+                                <c:otherwise>
+                                    No Posts tagged under <a href=""><c:out value="#${requestedHashTag}" /></a>
 
-                                    </div>
-                                    <input type="submit" class="btn btn-primary mt-3">
-
-                                </form> -->
-
-                                <div class="post-card-container">
-                                    <div class="post-head">
-                                        <div class="post-head-left">
-                                            <img class="profile-pic" src="/resources/images/pic.jpeg"
-                                                alt="Card image cap">
-                                            <div class="post-meta ">
-                                                <a href="/create-post" class="post-input">Want to find someone ? Create a Post </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="line"></div>
-
-                                <c:choose>
-                                    <c:when test="${hasPosts}">
-
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:out value="NO POSTS AVAILABLE" />
-                                    </c:otherwise>
-
-                                </c:choose>
+                                </c:otherwise>
+                               </c:choose></p>
                                 <c:forEach var="post" items="${posts}">
 
 
@@ -172,7 +97,7 @@
                                                                     <c:out value="${post.secondsTillNow} sec ago" />
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                            <span class="post-status ${post.status}">. ${post.status}</span>
+                                                            <span class="">. ${post.status}</span>
                                                         </p>
 
                                                     </div>
@@ -187,15 +112,12 @@
                                             <div class="post-body">
                                                 <div class="post-content">
                                                     ${post.content}
-                                                    <p class="mt-5"> 
-                                                        <c:forEach var="hashtag" items="${post.hashTags}">
-                                                            <a href="/posts/hashtag/${hashtag.title}">
-                                                            
-                                                                <c:out value="#${hashtag.title}" />
-                                                            </a>
-                                                            &nbsp;
-                                                        </c:forEach>
-                                                    </p>
+                                                 <p class="mt-5"> 
+                                                    <c:forEach var="hashtag" items="${post.hashTags}">
+                                                     <a href="/posts/hashtag/${hashtag.title}" ><c:out value="#${hashtag.title}" /></a>
+                                                     &nbsp;
+                                                    </c:forEach>
+                                                </p>
                                                 </div>
                                                 <div class="line"></div>
                                                 <div>
@@ -253,13 +175,64 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+                                                <!-- <div class="comment-posting">
+                                                    <img class="comment-profile-pic" src="resources/images/pic.jpeg"
+                                                        alt="Card image cap">
+                                                    <div class="comment-post-details">
+                                                        <span class="comment-box2" role="textbox" id="comment"
+                                                            contentEditable=true data-ph="Write A Comment..."
+                                                            onkeydown="commentPost(event,'commentContainer${post.id}')"></span>
+                                                    </div>
+
+                                                </div>
+                                                <div class="line"></div>
+                                                <div id="commentContainer${post.id}"> -->
+
+                                                <!-- <div class="comment">
+
+                                            <img class="comment-profile-pic" src="../static/images/pic.jpeg"
+                                                alt="Card image cap">
+                                            <div class="comment-details">
+                                                <p class="account-name">Sampanna Pokhara</p>
+                                                <p class="comment-data">Yeah To the left of that decimal, I need seven
+                                                    figures to play the joint
+                                                    Turn up your decibels, peep how I decimate a joint
+                                                    Check out my projects like them workers that Section 8 appoints
+                                                    And you'll see how I flipped, like exclamation
+                                                    pointssdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                                                    My brothers shoot first as if they never played the point, more two
+                                                    guards
+                                                    Enough straps to fill four U-Hauls</p>
+                                            </div>
+                                            <p class="reply-button"><span class="reply-button-clickable">Reply</span>
+                                            </p>
+                                            <div class="reply">
+                                                <p>Ram Sharan</p>
+                                                <p>no u are wrong i dont think it works that way my man.</p>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                                <!-- </div> -->
+
+
                                             </div>
                                     </section>
                                 </c:forEach>
 
                             </div>
                             <c:if test="${hasPosts }">
-                                <a class="btn btn-primary mt-5 mb-5" href="/?before=${oldestDate}">Show older posts</a>
+                                <a class="btn btn-primary mt-5 mb-5" href="/posts/hashtag/${requestedHashTag}?before=${oldestDate}">Show older posts</a>
                             </c:if>
 
                         </div>
@@ -302,46 +275,9 @@
 
             </div>
             <script src="resources/js/solo_post.js"></script>
-            <!-- <script src="resources/js/hashtag.js"></script> -->
-            <script>
-                // let ed;
-                // ClassicEditor
-                //     .create(document.querySelector('#editor'))
-                //     .then(editor => ed = editor)
-                //     .catch(error => {
-                //         console.error(error);
-                //     })
-
-
-                // function submitForm(event) {
-                //     event.preventDefault();
-                //     let postContent = ed.getData();
-                //     let hashtags = "";
-                //     if (postContent != "") {
-                //         document.getElementById("post-content").value = postContent;
-                //         let container = document.querySelector("#hashtags-container");
-                //         for (let i = 1; i < container.childNodes.length; i++) {
-                //             hashtags += container.childNodes[i].innerText;
-                //             if (i != container.childNodes.length - 1) {
-                //                 hashtags += ",";
-                //             }
-                //         }
-                //         if (hashtags != "") {
-                //             let hashtagInput = document.querySelector("#hashtags");
-                //             hashtagInput.value = hashtags;
-                //             event.target.submit();
-                //         } else {
-                //             alert("hashtags empty");
-                //         }
-                //     }
-                // }
-
-
-
-
-
-            </script>
-
+            <script src="resources/js/hashtag.js"></script>
+            
+               
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
