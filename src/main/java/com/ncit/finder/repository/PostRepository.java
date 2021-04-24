@@ -359,16 +359,23 @@ public class PostRepository {
 	}
 
 
+	
 	public boolean deletePost(int postId){
 		String commentSql = "DELETE FROM comments WHERE post_id = ?;";
+		String joinRequestSql = "DELETE FROM join_requests WHERE post_id = ?;";
 		String postHashTagSql = "DELETE FROM posts_hashtags WHERE post_id = ?;";
 		String postSql = "DELETE FROM posts WHERE id = ?;";
+		
 
 		Connection connection = DB.makeConnection();
 		PreparedStatement preparedStatement;
 
 		try {
 			preparedStatement = connection.prepareStatement(commentSql);
+			preparedStatement.setInt(1, postId);
+			preparedStatement.executeUpdate();
+
+			preparedStatement = connection.prepareStatement(joinRequestSql);
 			preparedStatement.setInt(1, postId);
 			preparedStatement.executeUpdate();
 
