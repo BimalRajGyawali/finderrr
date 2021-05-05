@@ -13,6 +13,8 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -20,7 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ncit.finder.functionality.MailSender;
 
 import com.ncit.finder.functionality.RandomCodeGenerator;
-
+import com.ncit.finder.functionality.StorageService;
 import com.ncit.finder.models.User;
 import com.ncit.finder.models.UserDetail;
 
@@ -38,13 +40,14 @@ public class RegistrationController {
 	@PostMapping("/verification1")
 	public String sendVerification(HttpServletRequest request, RedirectAttributes redirectAttributes,Model model) {
 		
-		String code=RandomCodeGenerator.generate();
-		System.out.print("Verification Code ="+code);
+
+
 		String fName = request.getParameter("fname");
 		String mName = request.getParameter("mname");
 		String lName = request.getParameter("lname");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
+		String password2 = request.getParameter("password2");
 		boolean errorSignal=false;
 		String regex = "^(.+)@(.+)$";
 		Pattern pattern = Pattern.compile(regex);
@@ -60,7 +63,6 @@ public class RegistrationController {
 			redirectAttributes.addFlashAttribute("lnameError",true);
 			errorSignal=true;
 		}if(password.length()<=7) {
-			System.out.println(password.length());
 			redirectAttributes.addFlashAttribute("passwordError",true);
 			errorSignal=true;
 		}if(!matcher.matches()) {
@@ -68,6 +70,9 @@ public class RegistrationController {
 			errorSignal=true;
 		}if(!repository.testEmail(email)) {
 			redirectAttributes.addFlashAttribute("emailExistsError",true);
+			errorSignal=true;
+		}if(!password.equals(password2)){
+			redirectAttributes.addFlashAttribute("passwordMismatchError",true);
 			errorSignal=true;
 		}
 		
@@ -83,6 +88,7 @@ public class RegistrationController {
 		    return "redirect:/register";
 			
 		}
+		String code=RandomCodeGenerator.generate();
 			
 		User user=new User();
 		user.setFirstName(fName);
@@ -153,5 +159,15 @@ public class RegistrationController {
 		return "redirect:/re-verification";
 		
 	}
+	
+	@GetMapping("/create-profile")
+	public String createProfile(HttpServletRequest request) {
+				
+		return "createprofile";
+		
+	}
+	
+	
+	
 
 }

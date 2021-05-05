@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,11 +8,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup</title>
+    <title>Register</title>
 	<link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
     <style>
         @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
-		
+
         *:focus {
             outline: none;
         }
@@ -29,25 +28,16 @@
         }
 
         #login-box {
-            position: relative;
+           
             margin: 5% auto;
             width: 600px;
-            height: 400px;
             background: #FFF;
             border-radius: 2px;
+            padding: 40px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
         }
 
-        .left {
-            position: absolute;
-            top: 0;
-            left: 0;
-            box-sizing: border-box;
-            padding: 40px;
-            width: 300px;
-            height: 400px;
-        }
-
+       
         h1 {
             margin: 0 0 20px 0;
             font-weight: 300;
@@ -105,29 +95,28 @@
             transition: 0.1s ease;
         }
 
-
-    </style>
+     
+        </style>
 
 </head>
 
 <body>
-    <form action="/loginsubmit" method="post">
-    <div id="login-box">
-        <div class="left">
-            <h1>Login</h1>
-            <c:if test="${error}"><p class="error">Credentials Incorrect.</p></c:if>
-            <input type="text" id="email" name="email" placeholder="E-mail"/>
-            <input type="password" id="pass" name="password" placeholder="Password"/>
+    <form method="POST" enctype="multipart/form-data" action="/update-profile">
+        <div id="login-box">
             
+                <h1>Profile</h1>
+               
+               <input type="file" name="file" />
+	
+			
+				
+					
+				<textarea id="bio" name="bio" rows="4" cols="50"></textarea>
 
-            <button type="submit" value="Login">Login</button>
-
+				<button type="submit" value="profile">Upload</button>
+         
         </div>
-
-
-
-    </div>
-</form>
+    </form>
 </body>
 
 </html>
