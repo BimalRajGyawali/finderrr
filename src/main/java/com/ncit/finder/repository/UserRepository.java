@@ -108,4 +108,50 @@ public class UserRepository {
 	}
 	
 	
+	
+	public boolean insertImageWithBio(String name,String email,String bio) {
+		Connection connection =  DB.makeConnection();
+		PreparedStatement preparedStatement;
+		String sql="UPDATE user_details SET profile_pic = ? WHERE email=?"; 
+		
+		boolean bioChanged=bio.isEmpty();
+		
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1,name);
+			preparedStatement.setString(2,email);
+			preparedStatement.executeUpdate();
+			return true;
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}finally {
+			DB.closeConnection(connection);
+		}
+		return false;
+	}
+	
+	
+//	public boolean testProfilePicName(String name) {
+//		Connection connection =  DB.makeConnection();
+//		PreparedStatement preparedStatement;
+//		String sqlTest="SELECT * FROM user_details WHERE profile_pic=?"; 
+//		try {
+//			preparedStatement = connection.prepareStatement(sqlTest);
+//			preparedStatement.setString(1,name);
+//			ResultSet resultSet = preparedStatement.executeQuery();
+//			if(!resultSet.isBeforeFirst()) {
+//				return true;//here true meaning profilepic with same name doenst exist in the database
+//			}
+//		}catch(SQLException e){
+//			e.printStackTrace();
+//		}finally {
+//			DB.closeConnection(connection);
+//		}
+//		
+//		
+//		return false;
+//	}
+	
+	
 }
