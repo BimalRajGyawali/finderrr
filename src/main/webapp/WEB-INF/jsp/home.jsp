@@ -277,18 +277,18 @@
                                         <c:when test="${hasRecommendations}">
                                             <c:forEach var="recommendedHashTag" items="${recommendedHashTags}">
                                             <div class="hashtag">
-                                                <p><span>#${recommendedHashTag.title}</span></p>
+                                                <p><a href="/posts/hashtag/${recommendedHashTag.title}">#${recommendedHashTag.title}</a></p>
                                                 <button class="follow-btn" id="${recommendedHashTag.title}" onclick="follow(event)">Follow</button>
                                             </div>
                                         </c:forEach>
-                                            <div class="recommendations">
-                                                <a href="">View all recommendations</a>
-                                            </div>
                                         </c:when>
                                         <c:otherwise>
-                                            Recommendations will appear here.
+                                            <p>Recommendations will appear here.</p>
                                         </c:otherwise>
                                     </c:choose>
+                                    <div class="recommendations">
+                                        <a href="/recommended-hashtags">Manage hashtags</a>
+                                    </div>
                                 
                                 </div>
                                 
@@ -317,6 +317,7 @@
                                 .then(data => {
                                     if (data === true) {
                                         event.target.innerText = "Unfollow";
+                                        event.target.style.border = "1px solid green";
                                     } else {
                                         displayError(followError);
                                     }
@@ -329,6 +330,7 @@
                                 .then(data => {
                                     if (data === true) {
                                         event.target.innerText = "Follow";
+                                        event.target.style.border = "1px solid blue";
                                     } else {
                                         displayError(followError);
                                     }
@@ -342,13 +344,6 @@
 
                 }
 
-                function displayError(container) {
-                    container.style.display = "block";
-                    container.innerHTML = `<div class="alert alert-danger alert-dismissible">
-                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                    <strong>Failed!</strong> Something went wrong.
-                                </div>`;
-                }
 
             </script>
 

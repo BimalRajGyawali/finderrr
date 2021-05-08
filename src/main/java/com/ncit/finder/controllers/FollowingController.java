@@ -48,9 +48,24 @@ public class FollowingController {
 
     @GetMapping("/recommended-hashtags")
     public String getRecommendateHashTags(Model model){
+        int userId = 1;
         FollowingRepository repository = new FollowingRepository();
-        List<HashTag> recommendedHashTags = repository.recommendedHashTags(1, -1);
-        model.addAttribute("recommededHashtags", recommendedHashTags);
-        return "recommendedhashtag.jsp";
+        List<HashTag> recommendedHashTags = repository.recommendedHashTags(userId, -1);
+        List<HashTag> followedHashTags = repository.followedHashTags(userId);
+        if(recommendedHashTags.size() > 0){
+			model.addAttribute("recommendedHashTags", recommendedHashTags);
+			model.addAttribute("hasRecommendations", true);
+		}else{
+			model.addAttribute("hasRecommendations", false);
+		}
+
+        if(followedHashTags.size() > 0){
+            model.addAttribute("followedHashTags", followedHashTags);
+			model.addAttribute("hasFollowings", true);
+		}else{
+			model.addAttribute("hasFollowings", false);
+        }
+        return "recommendedHashTags";
     }
+
 }

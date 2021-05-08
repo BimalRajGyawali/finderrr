@@ -44,21 +44,42 @@
                             </div>
                         </div>
                         <div class="col col2">
-                           
+                            <div id="follow-error" style="display: none;">
+
+                            </div>
 
 
                             <div id="create-post-area">
-                               <p>Posts tagged under  &nbsp;
-                                <a href="/posts/hashtag/${requestedHashTag}" ><c:out value="#${requestedHashTag}" /></a>
-                               </p>
-                               <div class="line"></div>
-                               <p><c:choose >
-                                <c:when test="${hasPosts}"></c:when>
-                                <c:otherwise>
-                                    No Posts tagged under <a href=""><c:out value="#${requestedHashTag}" /></a>
+                                <p>Posts tagged under &nbsp;
+                                    <a href="/posts/hashtag/${requestedHashTag}">
+                                        <c:out value="#${requestedHashTag}" />
+                                    </a>
+                                    <c:if test="${isHashTagPresent}">
+                                        <c:choose>
+                                            <c:when test="${hasFollowed}">
+                                                <button class="small-follow-btn followed" id="${requestedHashTag}"
+                                                    onclick="follow(event)">Unfollow</button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button class="small-follow-btn " id="${requestedHashTag}"
+                                                    onclick="follow(event)">Follow</button>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:if>
 
-                                </c:otherwise>
-                               </c:choose></p>
+                                </p>
+                                <div class="line"></div>
+                                <p>
+                                    <c:choose>
+                                        <c:when test="${hasPosts}"></c:when>
+                                        <c:otherwise>
+                                            No Posts tagged under <a href="">
+                                                <c:out value="#${requestedHashTag}" />
+                                            </a>
+
+                                        </c:otherwise>
+                                    </c:choose>
+                                </p>
                                 <c:forEach var="post" items="${posts}">
 
 
@@ -112,12 +133,14 @@
                                             <div class="post-body">
                                                 <div class="post-content">
                                                     ${post.content}
-                                                 <p class="mt-5"> 
-                                                    <c:forEach var="hashtag" items="${post.hashTags}">
-                                                     <a href="/posts/hashtag/${hashtag.title}" ><c:out value="#${hashtag.title}" /></a>
-                                                     &nbsp;
-                                                    </c:forEach>
-                                                </p>
+                                                    <p class="mt-5">
+                                                        <c:forEach var="hashtag" items="${post.hashTags}">
+                                                            <a href="/posts/hashtag/${hashtag.title}">
+                                                                <c:out value="#${hashtag.title}" />
+                                                            </a>
+                                                            &nbsp;
+                                                        </c:forEach>
+                                                    </p>
                                                 </div>
                                                 <div class="line"></div>
                                                 <div>
@@ -232,7 +255,8 @@
 
                             </div>
                             <c:if test="${hasPosts }">
-                                <a class="btn btn-primary mt-5 mb-5" href="/posts/hashtag/${requestedHashTag}?before=${oldestDate}">Show older posts</a>
+                                <a class="btn btn-primary mt-5 mb-5"
+                                    href="/posts/hashtag/${requestedHashTag}?before=${oldestDate}">Show older posts</a>
                             </c:if>
 
                         </div>
@@ -242,30 +266,28 @@
                                     Recommended Hashtags
                                 </div>
                                 <div class="followings">
-                                    <div class="hashtag">
-                                        <p><a href="">#Entertainment</a></p>
-                                        <button class="follow-btn">Follow</button>
+                                    <c:choose>
+                                        <c:when test="${hasRecommendations}">
+                                            <c:forEach var="recommendedHashTag" items="${recommendedHashTags}">
+                                                <div class="hashtag">
+                                                    <p><a
+                                                            href="/posts/hashtag/${recommendedHashTag.title}">#${recommendedHashTag.title}</a>
+                                                    </p>
+                                                    <button class="follow-btn" id="${recommendedHashTag.title}"
+                                                        onclick="follow(event)">Follow</button>
+                                                </div>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <p>Recommendations will appear here.</p>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <div class="recommendations">
+                                        <a href="/recommended-hashtags">Manage hashtags</a>
                                     </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Technology</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Entertainment</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Technology</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Technology</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
+
                                 </div>
-                                <div class="recommendations">
-                                    <a href="">View all recommendations</a>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -274,10 +296,56 @@
             </div>
 
             </div>
-            <script src="resources/js/solo_post.js"></script>
-            <script src="resources/js/hashtag.js"></script>
-            
-               
+            <script src="../../resources/js/solo_post.js"></script>
+            <script src="../../resources/js/hashtag.js"></script>
+            <script src="../../resources/js/ajax.js"></script>
+
+            <script>
+                function follow(event) {
+                    event.preventDefault();
+                    let hashtag = event.target.id;
+                    let followError = document.getElementById("follow-error");
+                    if (!hashtag) {
+                        displayError(followError);
+
+                    } else {
+                        if (event.target.innerText == "Follow") {
+                            postAjax('/follow', { "hashtag": hashtag })
+                                .then(data => {
+                                    if (data === true) {
+                                        event.target.innerText = "Unfollow";
+                                        event.target.style.border = "1px solid green";
+                                    } else {
+                                        displayError(followError);
+                                    }
+                                })
+                                .catch(err => displayError(followError));
+
+
+                        } else {
+                            postAjax('/unfollow', { "hashtag": hashtag })
+                                .then(data => {
+                                    if (data === true) {
+                                        event.target.innerText = "Follow";
+                                        event.target.style.border = "1px solid blue";
+                                    } else {
+                                        displayError(followError);
+                                    }
+                                })
+                                .catch(err => displayError(followError));
+                        }
+
+                    }
+
+
+
+                }
+
+
+            </script>
+
+
+
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 

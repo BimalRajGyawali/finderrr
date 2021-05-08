@@ -91,4 +91,70 @@ public class FollowingRepository {
 
         return hashTags;
     }
+    public List<HashTag> followedHashTags(int userId) {
+        
+        Connection connection = DB.makeConnection();
+        PreparedStatement preparedStatement;
+        List<HashTag> hashTags = new ArrayList<>();
+        String sql = "SELECT hashtag FROM followings WHERE user_id = ? ;";
+              
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, userId);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                String title = rs.getString("hashtag");
+                HashTag hashTag = new HashTag();
+                hashTag.setTitle(title);
+                hashTags.add(hashTag);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DB.closeConnection(connection);
+        }
+
+        return hashTags;
+    }
+
+    public boolean hasFollowed(int userId, String hashTag){
+        Connection connection = DB.makeConnection();
+        PreparedStatement preparedStatement;
+        String sql = "SELECT * FROM followings WHERE user_id = ? AND hashtag = ?;";
+              
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setString(2, hashTag);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            DB.closeConnection(connection);
+        }
+        return false;
+    }
+    public boolean isHashTagPresent(String title){
+        Connection connection = DB.makeConnection();
+        PreparedStatement preparedStatement;
+        String sql = "SELECT * FROM hashtags WHERE title = ?;";
+              
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, title);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            DB.closeConnection(connection);
+        }
+        return false;
+    }
 }

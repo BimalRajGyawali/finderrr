@@ -14,4 +14,13 @@ async function postAjax(url = '', data = {}) {
     return response.json(); // parses JSON response into native JavaScript objects
   }
   
+
+
+  function displayError(container) {
+    container.style.display = "block";
+    container.innerHTML = `<div class="alert alert-danger alert-dismissible">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Failed!</strong> Something went wrong.
+                </div>`;
+}
   
