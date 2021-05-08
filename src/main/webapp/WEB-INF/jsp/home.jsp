@@ -93,7 +93,9 @@
                                 </c:when>
 
                             </c:choose>
+                            <div id="follow-error" style="display: none;">
 
+                            </div>
 
 
                             <div id="create-post-area">
@@ -117,7 +119,8 @@
                                             <img class="profile-pic" src="/resources/images/pic.jpeg"
                                                 alt="Card image cap">
                                             <div class="post-meta ">
-                                                <a href="/create-post" class="post-input">Want to find someone ? Create a Post </a>
+                                                <a href="/create-post" class="post-input">Want to find someone ? Create
+                                                    a Post </a>
                                             </div>
                                         </div>
                                     </div>
@@ -172,7 +175,8 @@
                                                                     <c:out value="${post.secondsTillNow} sec ago" />
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                            <span class="post-status ${post.status}">. ${post.status}</span>
+                                                            <span class="post-status ${post.status}">.
+                                                                ${post.status}</span>
                                                         </p>
 
                                                     </div>
@@ -187,10 +191,10 @@
                                             <div class="post-body">
                                                 <div class="post-content">
                                                     ${post.content}
-                                                    <p class="mt-5"> 
+                                                    <p class="mt-5">
                                                         <c:forEach var="hashtag" items="${post.hashTags}">
                                                             <a href="/posts/hashtag/${hashtag.title}">
-                                                            
+
                                                                 <c:out value="#${hashtag.title}" />
                                                             </a>
                                                             &nbsp;
@@ -269,30 +273,25 @@
                                     Recommended Hashtags
                                 </div>
                                 <div class="followings">
-                                    <div class="hashtag">
-                                        <p><a href="">#Entertainment</a></p>
-                                        <button class="follow-btn">Follow</button>
+                                    <c:choose>
+                                        <c:when test="${hasRecommendations}">
+                                            <c:forEach var="recommendedHashTag" items="${recommendedHashTags}">
+                                            <div class="hashtag">
+                                                <p><a href="/posts/hashtag/${recommendedHashTag.title}">#${recommendedHashTag.title}</a></p>
+                                                <button class="follow-btn" id="${recommendedHashTag.title}" onclick="follow(event)">Follow</button>
+                                            </div>
+                                        </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <p>Recommendations will appear here.</p>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <div class="recommendations">
+                                        <a href="/recommended-hashtags">Manage hashtags</a>
                                     </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Technology</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Entertainment</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Technology</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Technology</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
+                                
                                 </div>
-                                <div class="recommendations">
-                                    <a href="">View all recommendations</a>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -302,42 +301,48 @@
 
             </div>
             <script src="resources/js/solo_post.js"></script>
-            <!-- <script src="resources/js/hashtag.js"></script> -->
+            <script src="resources/js/ajax.js"></script>
+
             <script>
-                // let ed;
-                // ClassicEditor
-                //     .create(document.querySelector('#editor'))
-                //     .then(editor => ed = editor)
-                //     .catch(error => {
-                //         console.error(error);
-                //     })
+                function follow(event) {
+                    event.preventDefault();
+                    let hashtag = event.target.id;
+                    let followError = document.getElementById("follow-error");
+                    if (!hashtag) {
+                        displayError(followError);
+
+                    } else {
+                        if (event.target.innerText == "Follow") {
+                            postAjax('/follow', { "hashtag": hashtag })
+                                .then(data => {
+                                    if (data === true) {
+                                        event.target.innerText = "Unfollow";
+                                        event.target.style.border = "1px solid green";
+                                    } else {
+                                        displayError(followError);
+                                    }
+                                })
+                                .catch(err => displayError(followError));
 
 
-                // function submitForm(event) {
-                //     event.preventDefault();
-                //     let postContent = ed.getData();
-                //     let hashtags = "";
-                //     if (postContent != "") {
-                //         document.getElementById("post-content").value = postContent;
-                //         let container = document.querySelector("#hashtags-container");
-                //         for (let i = 1; i < container.childNodes.length; i++) {
-                //             hashtags += container.childNodes[i].innerText;
-                //             if (i != container.childNodes.length - 1) {
-                //                 hashtags += ",";
-                //             }
-                //         }
-                //         if (hashtags != "") {
-                //             let hashtagInput = document.querySelector("#hashtags");
-                //             hashtagInput.value = hashtags;
-                //             event.target.submit();
-                //         } else {
-                //             alert("hashtags empty");
-                //         }
-                //     }
-                // }
+                        }else{
+                            postAjax('/unfollow', { "hashtag": hashtag })
+                                .then(data => {
+                                    if (data === true) {
+                                        event.target.innerText = "Follow";
+                                        event.target.style.border = "1px solid blue";
+                                    } else {
+                                        displayError(followError);
+                                    }
+                                })
+                                .catch(err => displayError(followError));
+                        }
+
+                    }
 
 
 
+                }
 
 
             </script>
