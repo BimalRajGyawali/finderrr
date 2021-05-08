@@ -93,7 +93,9 @@
                                 </c:when>
 
                             </c:choose>
+                            <div id="follow-error" style="display: none;">
 
+                            </div>
 
 
                             <div id="create-post-area">
@@ -117,7 +119,8 @@
                                             <img class="profile-pic" src="/resources/images/pic.jpeg"
                                                 alt="Card image cap">
                                             <div class="post-meta ">
-                                                <a href="/create-post" class="post-input">Want to find someone ? Create a Post </a>
+                                                <a href="/create-post" class="post-input">Want to find someone ? Create
+                                                    a Post </a>
                                             </div>
                                         </div>
                                     </div>
@@ -172,7 +175,8 @@
                                                                     <c:out value="${post.secondsTillNow} sec ago" />
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                            <span class="post-status ${post.status}">. ${post.status}</span>
+                                                            <span class="post-status ${post.status}">.
+                                                                ${post.status}</span>
                                                         </p>
 
                                                     </div>
@@ -187,10 +191,10 @@
                                             <div class="post-body">
                                                 <div class="post-content">
                                                     ${post.content}
-                                                    <p class="mt-5"> 
+                                                    <p class="mt-5">
                                                         <c:forEach var="hashtag" items="${post.hashTags}">
                                                             <a href="/posts/hashtag/${hashtag.title}">
-                                                            
+
                                                                 <c:out value="#${hashtag.title}" />
                                                             </a>
                                                             &nbsp;
@@ -270,8 +274,8 @@
                                 </div>
                                 <div class="followings">
                                     <div class="hashtag">
-                                        <p><a href="">#Entertainment</a></p>
-                                        <button class="follow-btn">Follow</button>
+                                        <p><span>#Java</span></p>
+                                        <button class="follow-btn" id="java" onclick="follow(event)">Follow</button>
                                     </div>
                                     <div class="hashtag">
                                         <p><a href="">#Technology</a></p>
@@ -302,43 +306,54 @@
 
             </div>
             <script src="resources/js/solo_post.js"></script>
-            <!-- <script src="resources/js/hashtag.js"></script> -->
+            <script src="resources/js/ajax.js"></script>
+
             <script>
-                // let ed;
-                // ClassicEditor
-                //     .create(document.querySelector('#editor'))
-                //     .then(editor => ed = editor)
-                //     .catch(error => {
-                //         console.error(error);
-                //     })
+                function follow(event) {
+                    event.preventDefault();
+                    let hashtag = event.target.id;
+                    let followError = document.getElementById("follow-error");
+                    if (!hashtag) {
+                        displayError(followError);
+
+                    } else {
+                        if (event.target.innerText == "Follow") {
+                            postAjax('/follow', { "hashtag": hashtag })
+                                .then(data => {
+                                    if (data === true) {
+                                        event.target.innerText = "Unfollow";
+                                    } else {
+                                        displayError(followError);
+                                    }
+                                })
+                                .catch(err => displayError(followError));
 
 
-                // function submitForm(event) {
-                //     event.preventDefault();
-                //     let postContent = ed.getData();
-                //     let hashtags = "";
-                //     if (postContent != "") {
-                //         document.getElementById("post-content").value = postContent;
-                //         let container = document.querySelector("#hashtags-container");
-                //         for (let i = 1; i < container.childNodes.length; i++) {
-                //             hashtags += container.childNodes[i].innerText;
-                //             if (i != container.childNodes.length - 1) {
-                //                 hashtags += ",";
-                //             }
-                //         }
-                //         if (hashtags != "") {
-                //             let hashtagInput = document.querySelector("#hashtags");
-                //             hashtagInput.value = hashtags;
-                //             event.target.submit();
-                //         } else {
-                //             alert("hashtags empty");
-                //         }
-                //     }
-                // }
+                        }else{
+                            postAjax('/unfollow', { "hashtag": hashtag })
+                                .then(data => {
+                                    if (data === true) {
+                                        event.target.innerText = "Follow";
+                                    } else {
+                                        displayError(followError);
+                                    }
+                                })
+                                .catch(err => displayError(followError));
+                        }
+
+                    }
 
 
 
+                }
 
+                function displayError(container) {
+                    container.style.display = "block";
+                    container.innerHTML = `<div class="alert alert-danger alert-dismissible">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                    <strong>Failed!</strong> Something went wrong.
+                                </div>`;
+                }
 
             </script>
 
