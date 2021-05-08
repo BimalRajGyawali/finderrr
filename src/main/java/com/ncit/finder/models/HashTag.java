@@ -9,10 +9,11 @@ public class HashTag {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	/** Do not change this format. This is in JSON Format */
 	@Override
 	public String toString() {
-		return "HashTag [title=" + title + "]";
+		return "{\"title\":\"" + title + "\"}";
 	}
-
+	
 	
 }

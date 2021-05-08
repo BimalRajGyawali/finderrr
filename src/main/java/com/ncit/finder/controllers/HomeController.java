@@ -35,7 +35,7 @@ public class HomeController {
 		if(before != null && !before.isEmpty()){
 			beforeDateTime = LocalDateTime.parse(before);	
 		}
-		List<Post> posts = repository.getDetailedPosts(5, beforeDateTime);
+		List<Post> posts = repository.getRecommendedPosts(userId, 5, beforeDateTime);
 		model.addAttribute("posts", posts);
 		List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
 		if(recommendedHashTags.size() > 0){
