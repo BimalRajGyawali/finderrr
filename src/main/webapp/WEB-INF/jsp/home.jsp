@@ -273,30 +273,25 @@
                                     Recommended Hashtags
                                 </div>
                                 <div class="followings">
-                                    <div class="hashtag">
-                                        <p><span>#Java</span></p>
-                                        <button class="follow-btn" id="java" onclick="follow(event)">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Technology</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Entertainment</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Technology</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Technology</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
+                                    <c:choose>
+                                        <c:when test="${hasRecommendations}">
+                                            <c:forEach var="recommendedHashTag" items="${recommendedHashTags}">
+                                            <div class="hashtag">
+                                                <p><span>#${recommendedHashTag.title}</span></p>
+                                                <button class="follow-btn" id="${recommendedHashTag.title}" onclick="follow(event)">Follow</button>
+                                            </div>
+                                        </c:forEach>
+                                            <div class="recommendations">
+                                                <a href="">View all recommendations</a>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            Recommendations will appear here.
+                                        </c:otherwise>
+                                    </c:choose>
+                                
                                 </div>
-                                <div class="recommendations">
-                                    <a href="">View all recommendations</a>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>

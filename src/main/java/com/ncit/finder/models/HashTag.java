@@ -1,14 +1,8 @@
 package com.ncit.finder.models;
 
 public class HashTag {
-	private int id;
 	private String title;
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
+	
 	public String getTitle() {
 		return title;
 	}
@@ -17,8 +11,8 @@ public class HashTag {
 	}
 	@Override
 	public String toString() {
-		return "{\"id\":" + id + ", \"title\":\"" + title + "\"}";
+		return "HashTag [title=" + title + "]";
 	}
-	
+
 	
 }

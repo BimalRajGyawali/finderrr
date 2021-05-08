@@ -12,6 +12,7 @@ import com.ncit.finder.models.JoinRequest;
 import com.ncit.finder.models.Post;
 import com.ncit.finder.models.Status;
 import com.ncit.finder.models.User;
+import com.ncit.finder.repository.FollowingRepository;
 import com.ncit.finder.repository.PostRepository;
 
 import org.springframework.stereotype.Controller;
@@ -27,14 +28,22 @@ public class HomeController {
 
 	@GetMapping("/")
 	public String index(@RequestParam(required=false) String before, Model model) {
+		int userId = 1;
 		PostRepository repository = new PostRepository();
-
+		FollowingRepository followingRepository = new FollowingRepository();
 		LocalDateTime beforeDateTime = LocalDateTime.now();
 		if(before != null && !before.isEmpty()){
 			beforeDateTime = LocalDateTime.parse(before);	
 		}
 		List<Post> posts = repository.getDetailedPosts(5, beforeDateTime);
+		List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 5);
 		model.addAttribute("posts", posts);
+		if(recommendedHashTags.size() > 0){
+			model.addAttribute("recommendedHashTags", recommendedHashTags);
+			model.addAttribute("hasRecommendations", true);
+		}else{
+			model.addAttribute("hasRecommendations", false);
+		}
 		if(posts.size() > 0 ){
 			model.addAttribute("oldestDate", posts.get(posts.size() - 1).getPostedDateTime());
 			model.addAttribute("hasPosts", true);
