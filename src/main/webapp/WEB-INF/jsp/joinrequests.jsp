@@ -35,11 +35,20 @@
                     <div class="main">
                         <div class="custom-row">
                             <div class="col col1">
-                                <div class="custom-card-container">
-                                    <img class="custom-card-img" src="/resources/images/pic.jpeg" alt="Card image cap">
+                                	 <c:choose>
+   										 <c:when test="${not empty sessionScope.email}">
+         									<div class="custom-card-container">
+    									 </c:when>  
+    							   
+   										 <c:otherwise>
+        									<div class="custom-card-container" style="visibility:hidden">
+    									 </c:otherwise>
+									</c:choose>
+                            
+                                    <a href="/create-profile"> <img class="custom-card-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Card image cap"></a>
                                     <div class="custom-card-body">
-                                        <p class="user-name"> Bimal Raj Gyawali</p>
-                                        <p class="desc">Student at Nepal College of Information Technology</p>
+                                       <p class="user-name"> ${sessionScope.firstname} ${sessionScope.middlename} ${sessionScope.lastname}</p>
+                                   	   <p class="desc">${sessionScope.bio}</p>
                                     </div>
                                 </div>
                             </div>
@@ -132,7 +141,16 @@
                                                     <div class="line"></div>
                                                     <div>
 
-                                                        <form action="/${post.id}/join-requests" method="POST">
+                                                        
+                                                          <c:choose>
+   															 <c:when test="${not empty sessionScope.email}">
+        														<form  action="/${post.id}/join-requests" method="POST">
+    														 </c:when>    
+    										
+    														 <c:otherwise>
+ 										       					 <form  action="/login/post/${post.id}" method="GET">
+    														 </c:otherwise>
+														  </c:choose>
                                                             <!-- Join Request -->
 
 

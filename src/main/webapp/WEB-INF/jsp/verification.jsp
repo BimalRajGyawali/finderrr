@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Verify Email</title>
 	<link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
     <style>
         @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
@@ -114,17 +114,18 @@
                 <input type="text" id="verification_code" name="vcode"  placeholder="Enter Verification Code" />
 		
 
-  <input type="text" id="fname" name="fname" class="hidden-field" value="${userdetail.user.firstName}"><br>
+  <input type="hidden" id="fname" name="fname" value="${userdetail.user.firstName}">
   
 
-  <input type="text" id="mname" name="mname" class="hidden-field" value="${userdetail.user.middleName}"><br>
+  <input type="hidden" id="mname" name="mname" value="${userdetail.user.middleName}">
   
-  <input type="text" id="lname" name="lname" class="hidden-field" value="${userdetail.user.lastName}"><br><br>
+  <input type="hidden" id="lname" name="lname"  value="${userdetail.user.lastName}">
   
-  <input type="text" id="email" name="email" class="hidden-field" value="${userdetail.email}"><br><br>
+  <input type="hidden" id="email" name="email" value="${userdetail.email}">
   
-  <input type="text" id="pass" name="password"  class="hidden-field" value="${userdetail.pass}"><br><br>
+  <input type="hidden" id="pass" name="password"   value="${userdetail.pass}">
   
+  <input type="hidden" id="post_id" name="post_id" value="${post_id}">
 
 
               <button type="submit" value="verify">Verify</button>

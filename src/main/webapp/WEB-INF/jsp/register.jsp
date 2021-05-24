@@ -125,7 +125,7 @@
                 
                 <input type="password" id="pass2" name="password2" value="${password2}" placeholder="Enter the Password Again." />
                 
-
+				<input type="hidden" id="post_id" name="post_id" value="${post_id}">
 
                 <button type="submit" value="Register">Create your Account</button>
 

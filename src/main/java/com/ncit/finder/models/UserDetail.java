@@ -8,6 +8,7 @@ public class UserDetail {
 	private String email;
 	private String pass;
 	private User user;
+	private String profilePic;
 	public int getId() {
 		return id;
 	}
@@ -32,17 +33,17 @@ public class UserDetail {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	public String getProfilePic() {
+		return profilePic;
+	}
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
+	}
 	@Override
 	public String toString() {
-		return "UserDetail [id=" + id + ", email=" + email + ", pass=" + pass + ", user=" + user + "]";
+		return "UserDetail [id=" + id + ", email=" + email + ", pass=" + pass + ", user=" + user + ", profilePic="
+				+ profilePic + "]";
 	}
-
-
-
-	
-	
-
-	
 	
 
 }
