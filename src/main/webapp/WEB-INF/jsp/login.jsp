@@ -111,9 +111,11 @@
 </head>
 
 <body>
-    <form action="/loginsubmit" method="post">
+   
     <div id="login-box">
+    	
         <div class="left">
+         <form action="/loginsubmit/post/${post_id}" method="post">
             <h1>Login</h1>
             <c:if test="${error}"><p class="error">Credentials Incorrect.</p></c:if>
             <input type="text" id="email" name="email" placeholder="E-mail"/>
@@ -121,13 +123,22 @@
             
 
             <button type="submit" value="Login">Login</button>
-
+		</form>
+		<p style="margin-left:45%;"> OR </p>
+		<form action="/register/post/${post_id}" method="get">
+   			<button type="submit" value="signup">Create new account.</button>
+    	</form>
         </div>
+			
+		
+		
 
-
-
+		
     </div>
-</form>
+
+
+	 
+
 </body>
 
 </html>

@@ -38,7 +38,7 @@ public class CommentController {
 		// System.out.println(post_content+post_id+comments_count);
 
 		User user = new User();
-		user.setId(1);
+		user.setId((int)request.getSession().getAttribute("id"));
 		
 		Comment comment = new Comment();
 		comment.setUser(user);

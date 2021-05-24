@@ -31,17 +31,28 @@
 
         <body>
             <jsp:include page="header.jsp" />
+            
             <div class="custom-container">
                 <div class="main">
                     <div class="custom-row">
                         <div class="col col1">
-                            <div class="custom-card-container">
-                                <img class="custom-card-img" src="/resources/images/pic.jpeg" alt="Card image cap">
+                       		<c:choose>
+   								 <c:when test="${not empty sessionScope.email}">
+         							<div class="custom-card-container">
+    							 </c:when>  
+    							   
+   								 <c:otherwise>
+        							<div class="custom-card-container" style="visibility:hidden">
+    							 </c:otherwise>
+							</c:choose>
+                            	<a href="/view-profile"> <img class="custom-card-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Card image cap"></a>
+                                
                                 <div class="custom-card-body">
-                                    <p class="user-name"> Bimal Raj Gyawali</p>
-                                    <p class="desc">Student at Nepal College of Information Technology</p>
+                                    <p class="user-name"> ${sessionScope.firstname} ${sessionScope.middlename} ${sessionScope.lastname}</p>
+                                    <p class="desc">${sessionScope.bio}</p>
                                 </div>
                             </div>
+
                         </div>
                         <div class="col col2">
                             <c:choose>
@@ -114,10 +125,18 @@
                                 <div class="post-card-container">
                                     <div class="post-head">
                                         <div class="post-head-left">
-                                            <img class="profile-pic" src="/resources/images/pic.jpeg"
-                                                alt="Card image cap">
+                                           <c:choose>
+   												 <c:when test="${not empty sessionScope.email}">
+        											 <img class="profile-pic" src="/resources/uploads/${sessionScope.profile_pic}"
+                                               		 alt="Card image cap">
+   												 </c:when>    
+   											 <c:otherwise>
+       												 <img class="profile-pic" src="/resources/images/pic.jpeg"
+                                                	 alt="Card image cap">
+   											 </c:otherwise>
+											</c:choose>
                                             <div class="post-meta ">
-                                                <a href="/create-post" class="post-input">Want to find someone ? Create a Post </a>
+                                                <a href="${not empty sessionScope.email ? "/create-post" : "/login/post/create"}" class="post-input">Want to find someone ? Create a Post </a>
                                             </div>
                                         </div>
                                     </div>
@@ -181,7 +200,7 @@
                                                     <!-- <div class="dot"></div>
                                                     <div class="dot"></div>
                                                     <div class="dot"></div> -->
-                                                    <a href="/editpost/${post.id}">Edit Post</a>
+                                                    <c:if test="${sessionScope.id==post.user.id}"><a href="/editpost/${post.id}">Edit Post</a></c:if>
                                                 </div>
                                             </div>
                                             <div class="post-body">
@@ -199,9 +218,15 @@
                                                 </div>
                                                 <div class="line"></div>
                                                 <div>
-
-                                                    <form action="/${post.id}/join-requests" method="POST">
-                                                        <!-- Join Request -->
+												<c:choose>
+   													 <c:when test="${not empty sessionScope.email}">
+        												<form  action="/${post.id}/join-requests" method="POST">
+    												 </c:when>    
+    										
+    												 <c:otherwise>
+ 										      			  <form  action="/login/post/${post.id}" method="GET">
+    												 </c:otherwise>
+												</c:choose>
 
 
                                                         <input class="interested-button styled-btn" type="submit"
@@ -229,12 +254,16 @@
 
 
                                                 <div class="comment-posting">
-                                                    <img class="comment-profile-pic" src="/resources/images/pic.jpeg"
-                                                        alt="Card image cap">
+                                                    <c:if test="${not empty sessionScope.email}"><img class="comment-profile-pic" src="/resources/uploads/${sessionScope.profile_pic}"
+                                                        alt="Card image cap"></c:if>
                                                     <div class="comment-post-details">
-                                                        <span class="comment-box2" role="textbox" id="comment"
+                                                       
+													<c:if test="${not empty sessionScope.email}"><span class="comment-box2" role="textbox" id="comment"
                                                             contentEditable=true data-ph="Write A Comment..."
-                                                            onkeydown="commentPost(event, '${post.id}')"></span>
+                                                            onkeydown="commentPost(event, '${post.id}')"></span></c:if>
+
+													
+                                                        
                                                         <div class="invisible-form">
                                                             <form action="/write-comment" method="post">
                                                                 <input type="text" name="post_id" value="${post.id}">
