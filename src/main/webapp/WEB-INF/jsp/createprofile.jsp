@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Profile</title>
 	<link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
     <style>
         @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
@@ -106,11 +106,13 @@
             
                 <h1>Profile</h1>
                
+               <c:if test="${emptyFieldsError}"><p class="error">You need to either attach an Image or change your bio.</p></c:if>
+               
                <input type="file" name="file" />
 	
-			
 				
-					
+				
+				<p>Bio:</p>
 				<textarea id="bio" name="bio" rows="4" cols="50"></textarea>
 
 				<button type="submit" value="profile">Upload</button>

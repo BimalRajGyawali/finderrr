@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -31,17 +31,24 @@ import com.ncit.finder.repository.UserRepository;
 @Controller
 public class RegistrationController {
 	
-	@GetMapping("/register")
-	public String createUser() {
+	@GetMapping("/register/post/{post_id}")
+	public String createUser(@PathVariable String post_id,Model model) {
+		model.addAttribute("post_id",post_id);
 		return "register";
 
+	}
+	
+	@GetMapping({"/register","/register/post"})
+	public String createUser() {
+		return "redirect:/register/post/none";
 	}
 	
 	@PostMapping("/verification1")
 	public String sendVerification(HttpServletRequest request, RedirectAttributes redirectAttributes,Model model) {
 		
 
-
+		String post_id = request.getParameter("post_id");
+		System.out.println(post_id);
 		String fName = request.getParameter("fname");
 		String mName = request.getParameter("mname");
 		String lName = request.getParameter("lname");
@@ -85,7 +92,8 @@ public class RegistrationController {
 			redirectAttributes.addFlashAttribute("lName", lName);
 			redirectAttributes.addFlashAttribute("email", email);
 			redirectAttributes.addFlashAttribute("password", password);
-		    return "redirect:/register";
+			redirectAttributes.addFlashAttribute("post_id", post_id);
+		    return "redirect:/register/post/"+post_id;
 			
 		}
 		String code=RandomCodeGenerator.generate();
@@ -101,6 +109,7 @@ public class RegistrationController {
 		userdetail.setUser(user);
 		
 		model.addAttribute("userdetail",userdetail);
+		model.addAttribute("post_id",post_id);
 		
 		MailSender.send(code,email);
 		request.getSession().setAttribute("code", code);
@@ -123,7 +132,7 @@ public class RegistrationController {
 		String lName = request.getParameter("lname");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
-		
+		String post_id = request.getParameter("post_id");
 		
 		
 		if(fName.length()==0||lName.length()==0||email.length()==0||password.length()==0) {
@@ -150,7 +159,7 @@ public class RegistrationController {
 		if(codeRecieved.equals(codeSent)) {
 			userdetail.setPass(passwordHashed);
 			repository.createUser(userdetail);
-			return "redirect:/login";
+			return "redirect:/login/post/"+post_id;
 		}
 		redirectAttributes.addFlashAttribute("codeError",true);
 		redirectAttributes.addFlashAttribute("userdetail",userdetail);
@@ -162,7 +171,10 @@ public class RegistrationController {
 	
 	@GetMapping("/create-profile")
 	public String createProfile(HttpServletRequest request) {
-				
+		if((String) request.getSession().getAttribute("email")==null) {
+			return "redirect:/login";
+		
+		}
 		return "createprofile";
 		
 	}

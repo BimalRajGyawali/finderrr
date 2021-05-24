@@ -27,7 +27,7 @@ public class StorageServiceImpl implements StorageService {
 		InputStream f;
 		try {
 			f = file.getInputStream();
-			OutputStream outputStream=new FileOutputStream(new java.io.File("src/main/uploads/"+newName));
+			OutputStream outputStream=new FileOutputStream(new java.io.File("src/main/webapp/resources/uploads/"+newName));
 			
 			while((c=f.read())!=-1) {
 				outputStream.write(c);

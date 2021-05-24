@@ -84,7 +84,10 @@ public class HomeController {
 	
 
 	@GetMapping("/create-post")
-	public String getCreatePostPage(){
+	public String getCreatePostPage(HttpServletRequest request){
+		if(request.getSession().getAttribute("id")==null) {
+			return "redirect:/login/post/create";
+		}
 		return "createpost";
 	}
 
@@ -102,10 +105,10 @@ public class HomeController {
 		}
 
 		User user = new User();
-		user.setId(1);
-		user.setFirstName("Bimal");
-		user.setMiddleName("Raj");
-		user.setLastName("Gyawali");
+		user.setId((int)request.getSession().getAttribute("id"));
+		user.setFirstName((String) request.getSession().getAttribute("firstname"));
+		user.setMiddleName((String) request.getSession().getAttribute("middlename"));
+		user.setLastName("lastname");
 		
 		Post post = new Post();
 		post.setContent(postContent);
@@ -136,12 +139,12 @@ public class HomeController {
 
 
 	@PostMapping("/{postId}/join-requests")
-	public String addJoinRequest(@PathVariable int postId, RedirectAttributes redirectAttributes){
+	public String addJoinRequest(@PathVariable int postId, RedirectAttributes redirectAttributes,HttpServletRequest request){
 		Post post = new Post();
 		post.setId(postId);
 
 		User user = new User();
-		user.setId(1);
+		user.setId((int) request.getSession().getAttribute("id"));
 
 		JoinRequest joinRequest = new JoinRequest();
 		joinRequest.setRequestedOn(LocalDateTime.now());
@@ -217,4 +220,11 @@ public class HomeController {
 		redirectAttributes.addFlashAttribute("deleteFailure", !status);
 		return "redirect:/";
 	}
+	
+	
+	
+	
+
+	
+	
 }

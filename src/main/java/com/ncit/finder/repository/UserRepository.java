@@ -56,12 +56,14 @@ public class UserRepository {
 		
 		return false;
 	}
-	public User getUser(String email,String pass) {
+	public UserDetail getUserDetail(String email,String pass) {
 		
 		Connection connection =  DB.makeConnection();
 		PreparedStatement preparedStatement;
-		String sql="SELECT u.id,u.firstname,u.middlename,u.lastname FROM users u INNER JOIN user_details ud ON u.id = ud.user_id where email=? and pass=?";
+		String sql="SELECT u.id,u.firstname,u.middlename,u.lastname,u.bio,ud.profile_pic FROM users u INNER JOIN user_details ud ON u.id = ud.user_id where email=? and pass=?";
 		User user=new User();
+		UserDetail userDetail=new UserDetail();
+		userDetail.setUser(user);
 		 try {
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(1,email);
@@ -74,7 +76,15 @@ public class UserRepository {
 				user.setFirstName(resultSet.getString("firstname"));
 				user.setMiddleName(resultSet.getString("middlename"));
 				user.setLastName(resultSet.getString("lastname"));
-				return user;
+				user.setBio(resultSet.getString("bio"));
+				//not everyone could have a profile pic so this may return null
+				String profilePicName=resultSet.getString("profile_pic");
+				if(profilePicName==null) {
+					userDetail.setProfilePic("pic.jpeg");
+				}else {
+					userDetail.setProfilePic(profilePicName);
+				}
+				return userDetail;
 			}
 			
 		}catch(SQLException e) {
@@ -82,7 +92,7 @@ public class UserRepository {
 		}finally {
 			DB.closeConnection(connection);
 		}
-		 return user;
+		 return userDetail;
 		
 	}
 	
@@ -109,17 +119,37 @@ public class UserRepository {
 	
 	
 	
-	public boolean insertImageWithBio(String name,String email,String bio) {
+	public boolean insertImage(String name,String email) {
 		Connection connection =  DB.makeConnection();
 		PreparedStatement preparedStatement;
 		String sql="UPDATE user_details SET profile_pic = ? WHERE email=?"; 
 		
-		boolean bioChanged=bio.isEmpty();
 		
 		try {
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(1,name);
 			preparedStatement.setString(2,email);
+			preparedStatement.executeUpdate();
+			return true;
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}finally {
+			DB.closeConnection(connection);
+		}
+		return false;
+	}
+	
+	public boolean insertBio(String bio,int id) {
+		Connection connection =  DB.makeConnection();
+		PreparedStatement preparedStatement;
+		String sql="UPDATE users SET bio=? WHERE id=?"; 
+		System.out.println(id);
+		
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1,bio);
+			preparedStatement.setInt(2,id);
 			preparedStatement.executeUpdate();
 			return true;
 			

@@ -33,11 +33,19 @@ pageEncoding="ISO-8859-1"%>
         <div class="main">
             <div class="custom-row">
                 <div class="col col1">
-                    <div class="custom-card-container">
-                        <img class="custom-card-img" src="/resources/images/pic.jpeg" alt="Card image cap">
+                    	<c:choose>
+   								 <c:when test="${not empty sessionScope.email}">
+         							<div class="custom-card-container">
+    							 </c:when>  
+    							   
+   								 <c:otherwise>
+        							<div class="custom-card-container" style="visibility:hidden">
+    							 </c:otherwise>
+							</c:choose>
+                        <a href="/create-profile"> <img class="custom-card-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Card image cap"></a>
                         <div class="custom-card-body">
-                            <p class="user-name"> Bimal Raj Gyawali</p>
-                            <p class="desc">Student at Nepal College of Information Technology</p>
+                           <p class="user-name"> ${sessionScope.firstname} ${sessionScope.middlename} ${sessionScope.lastname}</p>
+                           <p class="desc">${sessionScope.bio}</p>
                         </div>
                     </div>
                 </div>
@@ -97,7 +105,7 @@ pageEncoding="ISO-8859-1"%>
                                         <!-- <div class="dot"></div>
                                         <div class="dot"></div>
                                         <div class="dot"></div> -->
-                                        <a href="/editpost/${post.id}">Edit Post</a>
+                                        <c:if test="${sessionScope.id==post.user.id}"><a href="/editpost/${post.id}">Edit Post</a></c:if>
                                     </div>
                                 </div>
                                 <div class="post-body">
@@ -112,22 +120,47 @@ pageEncoding="ISO-8859-1"%>
                                     </div>
                                     <div class="line"></div>
                                     <div>
-                                        <form  action="/${post.id}/join-requests" method="POST">
+                                        <c:choose>
+   											 <c:when test="${not empty sessionScope.email}">
+        										<form  action="/${post.id}/join-requests" method="POST">
+    										 </c:when>    
+    										
+    										 <c:otherwise>
+ 										        <form  action="/login/post/${post.id}" method="GET">
+    										 </c:otherwise>
+										</c:choose>
                                             <!-- Join Request -->
                                                 <input class="interested-button styled-btn" type="submit"
                                                 value="Send a Join Request">
-                                        </form>
+                                        		</form>
                                        <a class="comment-button" href="/post/${post.id}">Comments (${post.commentsCount})</a>
                                         <a class="share-button" href="/${post.id}/join-requests">Join Requests (${post.joinRequestsCount})</a>
                                     </div>
                                     <div class="line"></div>
                                     <div class="comment-posting">
-                                        <img class="comment-profile-pic" src="/resources/images/pic.jpeg"
+                                    <c:if test="${not empty sessionScope.email}">
+                                   		 <img class="comment-profile-pic" src="/resources/uploads/${sessionScope.profile_pic}"
                                             alt="Card image cap">
+                                    </c:if>
+                                       
                                         <div class="comment-post-details">
-                                            <span class="comment-box2" role="textbox" id="comment" contentEditable=true
-                                                data-ph="Write A Comment..."
-                                                onkeydown="commentPost(event, '${post.id}')"></span>
+                                           <c:choose>
+   															 <c:when test="${not empty sessionScope.email}">
+       														
+       															  <span class="comment-box2" role="textbox" id="comment"
+                                                            	   contentEditable=true data-ph="Write A Comment..."
+                                                                   onkeydown="commentPost(event, '${post.id}')"></span>
+   															
+   															 </c:when>    
+    														
+    														<c:otherwise>
+        													<a href="/login/post/${post.id}">
+        													<span class="comment-box2" role="textbox" id="comment"
+                                                            contentEditable=false
+                                                            onkeydown="commentPost(event, '${post.id}')"><span style="margin-left:85px;">Login to Comment</span></span></a>
+    														
+    														</c:otherwise>
+														</c:choose>
                                                 <div class="invisible-form">
                                                 	<form action="/write-comment" method="post">
                                                 		<input type="text" name="post_id" value="${post.id}">
