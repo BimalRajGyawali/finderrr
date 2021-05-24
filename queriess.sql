@@ -82,6 +82,4 @@ user_id INT UNIQUE ,
 CONSTRAINT user_id_fk FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
-INSERT INTO users(firstname, middlename, lastname) VALUES("Bimal", "Raj", "Gyawali");
 
-INSERT INTO user_details(email,pass,user_id) VALUES("bimalraj269@gmail.com", "_M�;Z�e��'޸�ϙ",1)
