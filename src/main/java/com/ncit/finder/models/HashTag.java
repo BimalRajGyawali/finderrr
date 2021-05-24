@@ -1,23 +1,18 @@
 package com.ncit.finder.models;
 
 public class HashTag {
-	private int id;
 	private String title;
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
+	
 	public String getTitle() {
 		return title;
 	}
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	/** Do not change this format. This is in JSON Format */
 	@Override
 	public String toString() {
-		return "{\"id\":" + id + ", \"title\":\"" + title + "\"}";
+		return "{\"title\":\"" + title + "\"}";
 	}
 	
 	

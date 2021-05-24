@@ -47,6 +47,7 @@ public class PostRepository {
 		return post;
 	}
 
+	// For non logged in users
 	public List<Post> getDetailedPosts(int n, LocalDateTime dateTime) {
 
 		Timestamp before = Timestamp.valueOf(dateTime);
@@ -74,6 +75,50 @@ public class PostRepository {
 		return posts;
 	}
 
+	public List<Post> getRecommendedPosts(int userId, int n, LocalDateTime dateTime) {
+
+		Timestamp before = Timestamp.valueOf(dateTime);
+		Connection connection = DB.makeConnection();
+		PreparedStatement preparedStatement;
+		List<Post> followedPosts = new ArrayList<>();
+		List<Post> nonFollowedPosts = new ArrayList<>();
+
+		String followedPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
+				+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
+				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio\n" + "FROM posts p\n"
+				+ "INNER JOIN users u WHERE p.user_id = u.id AND p.posted_on < ' " + before + "'\n"
+				+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n"
+				+ "WHERE sp.p_id IN\n"
+				+"(SELECT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag);";
+
+		String nonFollowedPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
+		+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
+		+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio\n" + "FROM posts p\n"
+		+ "INNER JOIN users u WHERE p.user_id = u.id AND p.posted_on < ' " + before + "'\n"
+		+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n"
+		+ "WHERE sp.p_id NOT IN\n"
+		+"(SELECT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag);";
+
+		try {
+			preparedStatement = connection.prepareStatement(followedPostsSql);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			followedPosts = PostMapper.mapResultSetIntoPosts(resultSet);
+
+			preparedStatement = connection.prepareStatement(nonFollowedPostsSql);
+			resultSet = preparedStatement.executeQuery();
+			nonFollowedPosts = PostMapper.mapResultSetIntoPosts(resultSet);
+
+
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DB.closeConnection(connection);
+		}
+		followedPosts.addAll(nonFollowedPosts);
+		return followedPosts;
+	}
+	
 	public List<Post> getPostsFromHashTag(String hashTag, int n, LocalDateTime dateTime) {
 
 		Timestamp before = Timestamp.valueOf(dateTime);
@@ -97,7 +142,7 @@ public class PostRepository {
 			posts = PostMapper.mapResultSetIntoPosts(resultSet);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			;
+			
 		}
 		return posts;
 	}

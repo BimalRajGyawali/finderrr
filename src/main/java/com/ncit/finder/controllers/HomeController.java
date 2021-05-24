@@ -12,6 +12,7 @@ import com.ncit.finder.models.JoinRequest;
 import com.ncit.finder.models.Post;
 import com.ncit.finder.models.Status;
 import com.ncit.finder.models.User;
+import com.ncit.finder.repository.FollowingRepository;
 import com.ncit.finder.repository.PostRepository;
 
 import org.springframework.stereotype.Controller;
@@ -27,14 +28,22 @@ public class HomeController {
 
 	@GetMapping("/")
 	public String index(@RequestParam(required=false) String before, Model model) {
+		int userId = 1;
 		PostRepository repository = new PostRepository();
-
+		FollowingRepository followingRepository = new FollowingRepository();
 		LocalDateTime beforeDateTime = LocalDateTime.now();
 		if(before != null && !before.isEmpty()){
 			beforeDateTime = LocalDateTime.parse(before);	
 		}
-		List<Post> posts = repository.getDetailedPosts(5, beforeDateTime);
+		List<Post> posts = repository.getRecommendedPosts(userId, 5, beforeDateTime);
 		model.addAttribute("posts", posts);
+		List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
+		if(recommendedHashTags.size() > 0){
+			model.addAttribute("recommendedHashTags", recommendedHashTags);
+			model.addAttribute("hasRecommendations", true);
+		}else{
+			model.addAttribute("hasRecommendations", false);
+		}
 		if(posts.size() > 0 ){
 			model.addAttribute("oldestDate", posts.get(posts.size() - 1).getPostedDateTime());
 			model.addAttribute("hasPosts", true);
@@ -44,18 +53,32 @@ public class HomeController {
 
 	@GetMapping("/posts/hashtag/{hashtag}")
 	public String getPostsFromHashTag(@PathVariable String hashtag, @RequestParam(required = false)String before, Model model){
+		int userId = 1;
 		PostRepository repository = new PostRepository();
+		FollowingRepository followingRepository = new FollowingRepository();
 		LocalDateTime beforeDateTime = LocalDateTime.now();
 		if(before != null && !before.isEmpty()){
 			beforeDateTime = LocalDateTime.parse(before);	
 		}
 		List<Post> posts = repository.getPostsFromHashTag(hashtag, 5, beforeDateTime);
+		boolean hasFollowed = followingRepository.hasFollowed(userId, hashtag);
 		model.addAttribute("posts", posts);
+		List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
+		if(recommendedHashTags.size() > 0){
+			model.addAttribute("recommendedHashTags", recommendedHashTags);
+			model.addAttribute("hasRecommendations", true);
+		}else{
+			model.addAttribute("hasRecommendations", false);
+		}
 		if(posts.size() > 0 ){
 			model.addAttribute("oldestDate", posts.get(posts.size() - 1).getPostedDateTime());
 			model.addAttribute("hasPosts", true);
 		}
+		boolean isHashTagPresent = followingRepository.isHashTagPresent(hashtag);
 		model.addAttribute("requestedHashTag", hashtag);
+		model.addAttribute("isHashTagPresent", isHashTagPresent);
+		System.out.println(hashtag+" present "+isHashTagPresent);
+		model.addAttribute("hasFollowed", hasFollowed);
 		return "posts";
 	}
 	
