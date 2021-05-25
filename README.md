@@ -17,3 +17,6 @@ completed.
 
 The technology stack used to built Finder is : HTML, CSS, Bootstrap,
 JavaScript, <strong>Java</strong>, <strong>Spring Boot</strong>, MySQL.
+
+# Demo
+<img src="demo.png">
