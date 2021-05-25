@@ -98,37 +98,12 @@
 
                         </div>
                         <div class="col col3">
-                            <div class="custom-card-container">
-                                <div class="text-head">
-                                    Recommended Hashtags
-                                </div>
-                                <div class="followings">
-                                    <div class="hashtag">
-                                        <p><a href="">#Entertainment</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Technology</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Entertainment</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Technology</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                    <div class="hashtag">
-                                        <p><a href="">#Technology</a></p>
-                                        <button class="follow-btn">Follow</button>
-                                    </div>
-                                </div>
-                                <div class="recommendations">
-                                    <a href="">View all recommendations</a>
-                                </div>
-                            </div>
-                        </div>
+                        
+                            <c:if test="${not empty sessionScope.email}">
+                                <jsp:include page="../fragments/right-bar.jsp" />
+                            </c:if>
+                        
+                    </div>
                     </div>
 
                 </div>
