@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.ncit.finder.models.Following;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.repository.FollowingRepository;
@@ -20,11 +22,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class FollowingController {
     
     @PostMapping("/follow")
-    public ResponseEntity<Boolean> follow(@RequestBody Map<String, String> hashtagMap){
+    public ResponseEntity<Boolean> follow(@RequestBody Map<String, String> hashtagMap, HttpServletRequest request){
+        if (request.getSession().getAttribute("id") == null) {
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }
+        int userId = (int)request.getSession().getAttribute("id");
+
+    
         System.out.println(hashtagMap.get("hashtag"));
         String hashtag = hashtagMap.get("hashtag");
         FollowingRepository repository = new FollowingRepository();
-        Following following = new Following(1, hashtag, LocalDateTime.now());
+        Following following = new Following(userId, hashtag, LocalDateTime.now());
         boolean booleanResponse = repository.follow(following);
         HttpStatus httpStatus = HttpStatus.CREATED;
         if(!booleanResponse){
@@ -34,10 +42,15 @@ public class FollowingController {
     }
 
     @PostMapping("/unfollow")
-    public ResponseEntity<Boolean> unfollow(@RequestBody Map<String, String> hashtagMap){
+    public ResponseEntity<Boolean> unfollow(@RequestBody Map<String, String> hashtagMap, HttpServletRequest request){
+        if (request.getSession().getAttribute("id") == null) {
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }
+        int userId = (int)request.getSession().getAttribute("id");
+
         String hashtag = hashtagMap.get("hashtag");
         FollowingRepository repository = new FollowingRepository();
-        Following following = new Following(1, hashtag);
+        Following following = new Following(userId, hashtag);
         boolean booleanResponse = repository.unfollow(following);
         HttpStatus httpStatus = HttpStatus.OK;
         if(!booleanResponse){
@@ -47,8 +60,12 @@ public class FollowingController {
     }
 
     @GetMapping("/recommended-hashtags")
-    public String getRecommendateHashTags(Model model){
-        int userId = 1;
+    public String getRecommendateHashTags(Model model, HttpServletRequest request){
+        if (request.getSession().getAttribute("id") == null) {
+            return "redirect:/guest";
+        }
+        int userId = (int)request.getSession().getAttribute("id");
+
         FollowingRepository repository = new FollowingRepository();
         List<HashTag> recommendedHashTags = repository.recommendedHashTags(userId, -1);
         List<HashTag> followedHashTags = repository.followedHashTags(userId);
