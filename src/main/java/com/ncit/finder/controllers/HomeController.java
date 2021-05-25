@@ -112,10 +112,21 @@ public class HomeController {
 	}
 
 	@GetMapping("/create-post")
-	public String getCreatePostPage(HttpServletRequest request) {
+	public String getCreatePostPage(HttpServletRequest request, Model model) {
 		if (request.getSession().getAttribute("id") == null) {
 			return "redirect:/login/post/create";
 		}
+		FollowingRepository followingRepository = new FollowingRepository();
+
+		int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+		List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
+		if (recommendedHashTags.size() > 0) {
+			model.addAttribute("recommendedHashTags", recommendedHashTags);
+			model.addAttribute("hasRecommendations", true);
+		} else {
+			model.addAttribute("hasRecommendations", false);
+		}
+
 		return "createpost";
 	}
 
@@ -204,10 +215,10 @@ public class HomeController {
 		System.err.println(post);
 		if (request.getSession().getAttribute("id") != null) {
 			int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
-			if(userId != post.getUser().getId()){
+			if (userId != post.getUser().getId()) {
 				return "redirect:/";
 			}
-		}else{
+		} else {
 			return "redirect:/";
 		}
 		model.addAttribute("post", post);
