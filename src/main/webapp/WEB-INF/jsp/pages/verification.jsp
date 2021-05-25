@@ -114,16 +114,16 @@
                 <input type="text" id="verification_code" name="vcode"  placeholder="Enter Verification Code" />
 		
 
-  <input type="hidden" id="fname" name="fname" value="${userdetail.user.firstName}">
+  <input type="hidden" id="fname" name="fname" value="${user.firstName}">
   
 
-  <input type="hidden" id="mname" name="mname" value="${userdetail.user.middleName}">
+  <input type="hidden" id="mname" name="mname" value="${user.middleName}">
   
-  <input type="hidden" id="lname" name="lname"  value="${userdetail.user.lastName}">
+  <input type="hidden" id="lname" name="lname"  value="${user.lastName}">
   
-  <input type="hidden" id="email" name="email" value="${userdetail.email}">
+  <input type="hidden" id="email" name="email" value="${user.email}">
   
-  <input type="hidden" id="pass" name="password"   value="${userdetail.pass}">
+  <input type="hidden" id="pass" name="password"   value="${user.pass}">
   
   <input type="hidden" id="post_id" name="post_id" value="${post_id}">
 

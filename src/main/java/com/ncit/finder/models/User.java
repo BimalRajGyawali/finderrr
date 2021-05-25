@@ -11,6 +11,9 @@ public class User {
 	private String lastName;
 	private LocalDateTime joinedOn;
 	private List<HashTag> hashtagsFollowed;
+	private String email;
+	private String pass;
+	private String profilePic;
 	
 	
 	
@@ -56,14 +59,35 @@ public class User {
 	public void setBio(String bio) {
 		this.bio = bio;
 	}
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", firstName=" + firstName + ", middleName=" + middleName + ", lastName=" + lastName
-				+ ", joinedOn=" + joinedOn + "]";
-	}
+	
+	
 
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getPass() {
+		return pass;
+	}
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
+	public String getProfilePic() {
+		return profilePic;
+	}
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
+	}
 	public boolean isValid(){
 		return this.getId() > 0 && this.firstName.length() > 0 && this.lastName.length() > 0;
+	}
+	@Override
+	public String toString() {
+		return "User [bio=" + bio + ", email=" + email + ", firstName=" + firstName + ", hashtagsFollowed="
+				+ hashtagsFollowed + ", id=" + id + ", joinedOn=" + joinedOn + ", lastName=" + lastName
+				+ ", middleName=" + middleName + ", pass=" + pass + ", profilePic=" + profilePic + "]";
 	}
 	
 	

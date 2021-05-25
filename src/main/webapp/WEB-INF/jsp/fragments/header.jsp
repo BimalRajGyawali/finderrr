@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
     <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-
+<!-- 
 <nav class="navbar navbar-light bg-light justify-content-between">
     <a  href="/" class="navbar-brand"> <strong>Finder</strong> </a>
     <form class="form-inline" method="POST" action="#" onsubmit="handleSubmit(event);" >
@@ -31,18 +31,29 @@
    	
     
     
-  </nav>
+  </nav> -->
+  <link rel="stylesheet" href="../../resources/css/header.css">
 
-  <script>
-      function handleSubmit(event){
-         
-        event.preventDefault();
-        let hashtagInput = document.querySelector("#hashtagInput");
-      
-        if(hashtagInput.value == ""){
-            hashtagInput.placeholder = "Please type hashtag ";
-            return false;
-        }
-        window.location = "/posts/hashtag/"+hashtagInput.value;
-      }
-  </script>
+  <div class="nav clearfix">
+    <div class="left-nav">
+      <a href="/"><strong>Finder</strong></a>
+        <form class="search-box" method="POST" action="#" onsubmit="handleSubmit(event);" >
+          <input id="hashtagInput" type="text" placeholder="Search Hashtags"><button class="custom-button">Search</button>
+          
+        </form>      
+    
+    </div>
+  
+    <ul class="right-nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/">Followings</a></li>
+        <li><a href="/">Notifications</a></li>
+        <li><a href="/">Profile</a></li>
+        <li ><a  class="custom-button" href="/logout/post/${post.id}">Logout</a></li>
+    </ul>
+
+   
+  
+</div>
+
+<script src="../../resources/js/search.js"></script>

@@ -37,6 +37,12 @@ public class PostMapper {
                     if (resultSet.getTimestamp("joined_on") != null) {
                         user.setJoinedOn(resultSet.getTimestamp("joined_on").toLocalDateTime());
                     }
+                
+				
+				user.setEmail(resultSet.getString("email"));
+				user.setPass(resultSet.getString("pass"));
+				user.setProfilePic(resultSet.getString("profile_pic"));	
+		
 
                     Post post = new Post();
                     post.setUser(user);

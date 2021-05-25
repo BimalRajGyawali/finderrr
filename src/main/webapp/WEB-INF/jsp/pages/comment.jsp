@@ -28,27 +28,32 @@ pageEncoding="ISO-8859-1"%>
 </head>
 
 <body>
-    <jsp:include page="header.jsp" />
+    <c:choose>
+        <c:when test="${not empty sessionScope.email}">
+            <jsp:include page="../fragments/header.jsp" />
+        </c:when>
+
+        <c:otherwise>
+            <jsp:include page="../fragments/guest-header.jsp" />
+        </c:otherwise>
+    </c:choose>
     <div class="custom-container">
         <div class="main">
             <div class="custom-row">
                 <div class="col col1">
-                    	<c:choose>
-   								 <c:when test="${not empty sessionScope.email}">
-         							<div class="custom-card-container">
-    							 </c:when>  
-    							   
-   								 <c:otherwise>
-        							<div class="custom-card-container" style="visibility:hidden">
-    							 </c:otherwise>
-							</c:choose>
-                        <a href="/create-profile"> <img class="custom-card-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Card image cap"></a>
-                        <div class="custom-card-body">
-                           <p class="user-name"> ${sessionScope.firstname} ${sessionScope.middlename} ${sessionScope.lastname}</p>
-                           <p class="desc">${sessionScope.bio}</p>
-                        </div>
+                    <c:choose>
+                                <c:when test="${not empty sessionScope.email}">
+                                    <jsp:include page="../fragments/left-bar.jsp" />
+                                </c:when>
+                
+                                <c:otherwise>
+                                    
+                                        <div class="custom-card-container" style="visibility: hidden;">
+                                         </div>
+                                </c:otherwise>
+                            </c:choose>
                     </div>
-                </div>
+                
 
 
                 <div class="col col2">
@@ -227,6 +232,13 @@ pageEncoding="ISO-8859-1"%>
    				
                 
                     </div>
+                    <div class="col col3">
+                        
+                        <c:if test="${not empty sessionScope.email}">
+                            <jsp:include page="../fragments/right-bar.jsp" />
+                        </c:if>
+                    
+                </div>
                 </div>
             </div>
 
