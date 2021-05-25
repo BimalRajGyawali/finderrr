@@ -1,13 +1,16 @@
 package com.ncit.finder.controllers;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.ncit.finder.models.Comment;
+import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.Post;
 import com.ncit.finder.models.User;
 import com.ncit.finder.repository.CommentRepository;
+import com.ncit.finder.repository.FollowingRepository;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,13 +22,25 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class CommentController {
 	@GetMapping("/post/{post_id}")
-	public String postWithComment(Model model, @PathVariable("post_id") String post_id) {
+	public String postWithComment(Model model, @PathVariable("post_id") String post_id, HttpServletRequest request) {
+		FollowingRepository followingRepository = new FollowingRepository();
 		CommentRepository repository = new CommentRepository();
 		Post post = new Post();
 		post = repository.getPost(Integer.parseInt(post_id));
 		System.out.println(post);
 		model.addAttribute("post", post);
 		model.addAttribute("currentDateTime", LocalDateTime.now());
+
+		if (request.getSession().getAttribute("id") != null) {
+			int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+			List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
+			if (recommendedHashTags.size() > 0) {
+				model.addAttribute("recommendedHashTags", recommendedHashTags);
+				model.addAttribute("hasRecommendations", true);
+			} else {
+				model.addAttribute("hasRecommendations", false);
+			}
+		}
 		return "comment";
 
 	}
@@ -38,11 +53,11 @@ public class CommentController {
 		// System.out.println(post_content+post_id+comments_count);
 
 		User user = new User();
-		user.setId((int)request.getSession().getAttribute("id"));
-		
+		user.setId((int) request.getSession().getAttribute("id"));
+
 		Comment comment = new Comment();
 		comment.setUser(user);
-		
+
 		comment.setContent(post_content);
 		comment.setCommentedOn(LocalDateTime.now());
 

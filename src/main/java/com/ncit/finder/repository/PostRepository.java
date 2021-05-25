@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +20,43 @@ import com.ncit.finder.utils.LocalDateTimeParser;
 
 public class PostRepository {
 
+	public User getAuthor(int postId){
+		String sql = "SELECT *\n"+
+		"FROM posts p\n"+
+		"INNER JOIN\n"+
+		"users u \n"+
+		"ON p.user_id = u.id\n"+
+		"where p.id = ?;";
+
+		Connection connection = DB.makeConnection();
+		PreparedStatement preparedStatement;
+		User user = new User();
+		try{
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, postId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			if(resultSet.next()){
+				user.setId(resultSet.getInt("user_id"));
+				user.setFirstName(resultSet.getString("firstname"));
+				user.setMiddleName(resultSet.getString("middlename"));
+				user.setLastName(resultSet.getString("lastname"));
+				user.setBio(resultSet.getString("bio"));
+				if(resultSet.getTimestamp("joined_on") != null){
+					user.setJoinedOn(resultSet.getTimestamp("joined_on").toLocalDateTime());
+				}
+				user.setEmail(resultSet.getString("email"));
+				user.setPass(resultSet.getString("pass"));
+				user.setProfilePic(resultSet.getString("profile_pic"));	
+			}
+		}catch(SQLException e){
+
+		}finally{
+			DB.closeConnection(connection);
+		}
+		return user;
+
+	}
+
 	public Post getPostById(int postId) {
 		Connection connection = DB.makeConnection();
 		PreparedStatement preparedStatement;
@@ -28,7 +64,7 @@ public class PostRepository {
 
 		String sql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
 				+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count,p.status, "
-				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio\n" + "FROM posts p \n"
+				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p \n"
 				+ "INNER JOIN users u ON p.user_id = u.id WHERE p.id = ?) sp \n" + "ON ph.post_id = sp.p_id\n";
 
 		try {
@@ -57,7 +93,7 @@ public class PostRepository {
 
 		String sql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
 				+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
-				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio\n" + "FROM posts p\n"
+				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio,u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
 				+ "INNER JOIN users u WHERE p.user_id = u.id AND p.posted_on < ' " + before + "'\n"
 				+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n";
 
@@ -85,7 +121,7 @@ public class PostRepository {
 
 		String followedPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
 				+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
-				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio\n" + "FROM posts p\n"
+				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
 				+ "INNER JOIN users u WHERE p.user_id = u.id AND p.posted_on < ' " + before + "'\n"
 				+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n"
 				+ "WHERE sp.p_id IN\n"
@@ -93,7 +129,7 @@ public class PostRepository {
 
 		String nonFollowedPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
 		+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
-		+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio\n" + "FROM posts p\n"
+		+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
 		+ "INNER JOIN users u WHERE p.user_id = u.id AND p.posted_on < ' " + before + "'\n"
 		+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n"
 		+ "WHERE sp.p_id NOT IN\n"
@@ -128,7 +164,7 @@ public class PostRepository {
 
 		String sql = "SELECT * FROM\n"
 				+ "( SELECT p.id p_id, p.content, p.posted_on, p.comments_count, p.join_requests_count,p.status,"
-				+ "u.id user_id, u.firstname, u.middlename, u.lastname, u.bio, u.joined_on\n"
+				+ "u.id user_id, u.firstname, u.middlename, u.lastname, u.bio, u.joined_on, u.email, u.pass, u.profile_pic\n"
 				+ "FROM posts p INNER JOIN users u ON p.user_id = u.id\n"
 				+ "WHERE p.id IN (SELECT ph.post_id FROM posts_hashtags ph WHERE ph.hashtag LIKE ? )\n"
 				+ "AND p.posted_on < ?\n" + "ORDER BY p.posted_on DESC LIMIT " + n + ") sp \n"
@@ -194,16 +230,13 @@ public class PostRepository {
 				preparedStatement.executeUpdate();
 
 			}
-			return true;
+		}catch(SQLException e){
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
+		}finally{
 			DB.closeConnection(connection);
 		}
-
-		return false;
-	}
+			return true;
+		}
 
 	public boolean updatePost(Post post) {
 		String deletePostHashTagSql = "DELETE FROM posts_hashtags WHERE post_id = ?";
@@ -310,11 +343,11 @@ public class PostRepository {
 
 	public Post getPostWithJoinRequests(int postId) {
 		String sql = "SELECT sp.post_id, sp.post_content, sp.post_posted_on, sp.post_comments_count, sp.post_join_requests_count,"
-				+ "sp.post_user_id, sp.post_user_firstname , sp.post_user_middlename, sp.post_user_lastname, sp.post_user_joined_on, sp.post_user_bio"
-				+ ", u.id join_requests_user_id, u.firstname join_requests_user_firstname, u.middlename join_requests_user_middlename, u.lastname join_requests_user_lastname, u.joined_on join_requests_user_joined_on, u.bio join_requests_user_bio\n"
+				+ "sp.post_user_id, sp.post_user_firstname , sp.post_user_middlename, sp.post_user_lastname, sp.post_user_joined_on, sp.post_user_bio, sp.post_user_email, sp.post_user_pass, sp.post_user_pp"
+				+ ", u.id join_requests_user_id, u.firstname join_requests_user_firstname, u.middlename join_requests_user_middlename, u.lastname join_requests_user_lastname, u.joined_on join_requests_user_joined_on, u.bio join_requests_user_bio, u.email join_requests_user_email, u.pass join_requests_user_pass, u.profile_pic join_requests_user_pp\n"
 				+ "FROM join_requests j\n" + "INNER JOIN users u on j.user_id = u.id\n" + "RIGHT JOIN\n" + "(SELECT\n"
 				+ "p.id post_id, p.content post_content,p.status, p.posted_on post_posted_on, p.comments_count post_comments_count, p.join_requests_count post_join_requests_count,"
-				+ "u.id post_user_id, u.firstname post_user_firstname , u.middlename post_user_middlename, u.lastname post_user_lastname, u.joined_on post_user_joined_on, u.bio post_user_bio\n"
+				+ "u.id post_user_id, u.firstname post_user_firstname , u.middlename post_user_middlename, u.lastname post_user_lastname, u.joined_on post_user_joined_on, u.bio post_user_bio, u.email post_user_email, u.pass post_user_pass, u.profile_pic post_user_pp\n"
 				+ "FROM posts p INNER JOIN users u on p.user_id = u.id WHERE p.id = ?) sp ON j.post_id = sp.post_id;";
 
 		Connection connection = DB.makeConnection();
@@ -339,6 +372,9 @@ public class PostRepository {
 							.setJoinedOn(resultSet.getTimestamp("join_requests_user_joined_on").toLocalDateTime());
 				}
 				userMakingJoinRequest.setBio(resultSet.getString("join_requests_user_bio"));
+				userMakingJoinRequest.setEmail(resultSet.getString("join_requests_user_email"));
+				userMakingJoinRequest.setPass(resultSet.getString("join_requests_user_pass"));
+				userMakingJoinRequest.setProfilePic(resultSet.getString("join_requests_user_pp"));
 				if (userMakingJoinRequest.isValid()) {
 					usersMakingJoinRequests.add(userMakingJoinRequest);
 				}
@@ -378,8 +414,12 @@ public class PostRepository {
 					user.setJoinedOn(resultSet.getTimestamp("post_user_joined_on").toLocalDateTime());
 				}
 				user.setBio(resultSet.getString("post_user_bio"));
+				user.setEmail(resultSet.getString("post_user_email"));
+				user.setPass(resultSet.getString("post_user_pass"));
+				user.setProfilePic(resultSet.getString("post_user_pp"));
 
 				post.setUser(user);
+				
 			}
 			post.setUsersRequestingToJoin(usersMakingJoinRequests);
 

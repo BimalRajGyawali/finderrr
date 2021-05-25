@@ -29,12 +29,11 @@ public class FileUploadController {
 	
 	@PostMapping("/update-profile")
 	public String handleFileUpload(HttpServletRequest request,@RequestParam("file") MultipartFile file,
-			@RequestParam("bio") String bio,RedirectAttributes redirectAttributes) {
-			String userId="3";
+			@RequestParam("bio") String bio,RedirectAttributes redirectAttributes, HttpServletRequest re) {
 		 	UserRepository repository=new UserRepository();
 		 	String fileName=file.getOriginalFilename();
 		 	boolean emptyFieldsError=true;
-		 	
+		 	int userId = (int)request.getSession().getAttribute("id");
 		 	
 		 	String currentDate = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 		 	System.out.println("fileName="+fileName);

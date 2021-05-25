@@ -30,18 +30,12 @@
             </head>
 
             <body>
-                <jsp:include page="header.jsp" />
+                <jsp:include page="../fragments/header.jsp" />
                 <div class="custom-container">
                     <div class="main">
                         <div class="custom-row">
                             <div class="col col1">
-                                <div class="custom-card-container">
-                                    <img class="custom-card-img" src="/resources/images/pic.jpeg" alt="Card image cap">
-                                    <div class="custom-card-body">
-                                        <p class="user-name"> Bimal Raj Gyawali</p>
-                                        <p class="desc">Student at Nepal College of Information Technology</p>
-                                    </div>
-                                </div>
+                                <jsp:include page="../fragments/left-bar.jsp" />
                             </div>
                             <div class="col col4">
                                 <div id="follow-error" style="display: none;">

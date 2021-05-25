@@ -30,133 +30,71 @@
         </head>
 
         <body>
-            <jsp:include page="header.jsp" />
-            
+            <c:choose>
+                <c:when test="${not empty sessionScope.email}">
+                    <jsp:include page="../fragments/header.jsp" />
+                </c:when>
+
+                <c:otherwise>
+                    <jsp:include page="../fragments/guest-header.jsp" />
+                </c:otherwise>
+            </c:choose>
             <div class="custom-container">
                 <div class="main">
                     <div class="custom-row">
                         <div class="col col1">
-                       		<c:choose>
-   								 <c:when test="${not empty sessionScope.email}">
-         							<div class="custom-card-container">
-    							 </c:when>  
-    							   
-   								 <c:otherwise>
-        							<div class="custom-card-container" style="visibility:hidden">
-    							 </c:otherwise>
-							</c:choose>
-                            	<a href="/view-profile"> <img class="custom-card-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Card image cap"></a>
-                                
-                                <div class="custom-card-body">
-                                    <p class="user-name"> ${sessionScope.firstname} ${sessionScope.middlename} ${sessionScope.lastname}</p>
-                                    <p class="desc">${sessionScope.bio}</p>
-                                </div>
-                            </div>
-
+                            <c:choose>
+                                <c:when test="${not empty sessionScope.email}">
+                                    <jsp:include page="../fragments/left-bar.jsp" />
+                                </c:when>
+                
+                                <c:otherwise>
+                                    
+                                        <div class="custom-card-container" style="visibility: hidden;">
+                                         </div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                         <div class="col col2">
-                            <c:choose>
-                                <c:when test="${success}">
-                                    <div class="alert alert-success alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Success!</strong> Post created successfully.
-                                    </div>
-                                </c:when>
-
-                                <c:when test="${failure}">
-                                    <div class="alert alert-danger alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Failed!</strong> Error in creating post.
-                                    </div>
-                                </c:when>
-
-                            </c:choose>
-
-                            <c:choose>
-                                <c:when test="${updateSuccess}">
-                                    <div class="alert alert-success alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Success!</strong> Post updated successfully.
-                                    </div>
-                                </c:when>
-
-                                <c:when test="${updateFailure}">
-                                    <div class="alert alert-danger alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Failed!</strong> Error in updating post.
-                                    </div>
-                                </c:when>
-
-                            </c:choose>
-                            <c:choose>
-                                <c:when test="${deleteSuccess}">
-                                    <div class="alert alert-success alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Success!</strong> Post Deleted successfully.
-                                    </div>
-                                </c:when>
-
-                                <c:when test="${deleteFailure}">
-                                    <div class="alert alert-danger alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Failed!</strong> Error in deleting post.
-                                    </div>
-                                </c:when>
-
-                            </c:choose>
                             <div id="follow-error" style="display: none;">
 
                             </div>
 
 
                             <div id="create-post-area">
-                                <!-- <form id="post-form" action="/create-post" method="POST" onsubmit="submitForm(event);">
-                                    <input id="editor" />
-                                    <input hidden name="post-content" type="text" id="post-content">
-                                    <p class="mt-5">
-                                        <span>Hashtags</span> <input type="text" name="hashtags" autocomplete="off"
-                                            id="hashtags">
-                                    </p>
-                                    <div id="hashtags-container">
+                                <p>Posts tagged under &nbsp;
+                                    <a href="/posts/hashtag/${requestedHashTag}">
+                                        <c:out value="#${requestedHashTag}" />
+                                    </a>
+                                   <c:if test="${not empty sessionScope.email}">
+                                    <c:if test="${isHashTagPresent}">
+                                        <c:choose>
+                                            <c:when test="${hasFollowed}">
+                                                <button class="small-follow-btn followed" id="${requestedHashTag}"
+                                                    onclick="follow(event)">Unfollow</button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button class="small-follow-btn " id="${requestedHashTag}"
+                                                    onclick="follow(event)">Follow</button>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:if>
 
-                                    </div>
-                                    <input type="submit" class="btn btn-primary mt-3">
+                                   </c:if>
 
-                                </form> -->
-
-                                <div class="post-card-container">
-                                    <div class="post-head">
-                                        <div class="post-head-left">
-                                           <c:choose>
-   												 <c:when test="${not empty sessionScope.email}">
-        											 <img class="profile-pic" src="/resources/uploads/${sessionScope.profile_pic}"
-                                               		 alt="Card image cap">
-   												 </c:when>    
-   											 <c:otherwise>
-       												 <img class="profile-pic" src="/resources/images/pic.jpeg"
-                                                	 alt="Card image cap">
-   											 </c:otherwise>
-											</c:choose>
-                                            <div class="post-meta ">
-                                                <a href="${not empty sessionScope.email ? "/create-post" : "/login/post/create"}" class="post-input">Want to find someone ? Create a Post </a>
-                                                <a href="/create-post" class="post-input">Want to find someone ? Create
-                                                    a Post </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                                </p>
                                 <div class="line"></div>
+                                <p>
+                                    <c:choose>
+                                        <c:when test="${hasPosts}"></c:when>
+                                        <c:otherwise>
+                                            No Posts tagged under <a href="">
+                                                <c:out value="#${requestedHashTag}" />
+                                            </a>
 
-                                <c:choose>
-                                    <c:when test="${hasPosts}">
-
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:out value="NO POSTS AVAILABLE" />
-                                    </c:otherwise>
-
-                                </c:choose>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </p>
                                 <c:forEach var="post" items="${posts}">
 
 
@@ -164,7 +102,7 @@
                                         <div class="post-card-container">
                                             <div class="post-head">
                                                 <div class="post-head-left">
-                                                    <img class="profile-pic" src="/resources/images/pic.jpeg"
+                                                    <img class="profile-pic" src="../../../resources/uploads/${post.user.profilePic}"
                                                         alt="Card image cap">
                                                     <div class="post-meta">
                                                         <p class="user-name post-user-name">
@@ -195,8 +133,7 @@
                                                                     <c:out value="${post.secondsTillNow} sec ago" />
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                            <span class="post-status ${post.status}">.
-                                                                ${post.status}</span>
+                                                            <span class="">. ${post.status}</span>
                                                         </p>
 
                                                     </div>
@@ -214,7 +151,6 @@
                                                     <p class="mt-5">
                                                         <c:forEach var="hashtag" items="${post.hashTags}">
                                                             <a href="/posts/hashtag/${hashtag.title}">
-
                                                                 <c:out value="#${hashtag.title}" />
                                                             </a>
                                                             &nbsp;
@@ -223,15 +159,9 @@
                                                 </div>
                                                 <div class="line"></div>
                                                 <div>
-												<c:choose>
-   													 <c:when test="${not empty sessionScope.email}">
-        												<form  action="/${post.id}/join-requests" method="POST">
-    												 </c:when>    
-    										
-    												 <c:otherwise>
- 										      			  <form  action="/login/post/${post.id}" method="GET">
-    												 </c:otherwise>
-												</c:choose>
+
+                                                    <form action="/${post.id}/join-requests" method="POST">
+                                                        <!-- Join Request -->
 
 
                                                         <input class="interested-button styled-btn" type="submit"
@@ -259,16 +189,12 @@
 
 
                                                 <div class="comment-posting">
-                                                    <c:if test="${not empty sessionScope.email}"><img class="comment-profile-pic" src="/resources/uploads/${sessionScope.profile_pic}"
-                                                        alt="Card image cap"></c:if>
+                                                    <img class="comment-profile-pic" src="/resources/images/pic.jpeg"
+                                                        alt="Card image cap">
                                                     <div class="comment-post-details">
-                                                       
-													<c:if test="${not empty sessionScope.email}"><span class="comment-box2" role="textbox" id="comment"
+                                                        <span class="comment-box2" role="textbox" id="comment"
                                                             contentEditable=true data-ph="Write A Comment..."
-                                                            onkeydown="commentPost(event, '${post.id}')"></span></c:if>
-
-													
-                                                        
+                                                            onkeydown="commentPost(event, '${post.id}')"></span>
                                                         <div class="invisible-form">
                                                             <form action="/write-comment" method="post">
                                                                 <input type="text" name="post_id" value="${post.id}">
@@ -287,51 +213,84 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+                                                <!-- <div class="comment-posting">
+                                                    <img class="comment-profile-pic" src="resources/images/pic.jpeg"
+                                                        alt="Card image cap">
+                                                    <div class="comment-post-details">
+                                                        <span class="comment-box2" role="textbox" id="comment"
+                                                            contentEditable=true data-ph="Write A Comment..."
+                                                            onkeydown="commentPost(event,'commentContainer${post.id}')"></span>
+                                                    </div>
+
+                                                </div>
+                                                <div class="line"></div>
+                                                <div id="commentContainer${post.id}"> -->
+
+                                                <!-- <div class="comment">
+
+                                            <img class="comment-profile-pic" src="../static/images/pic.jpeg"
+                                                alt="Card image cap">
+                                            <div class="comment-details">
+                                                <p class="account-name">Sampanna Pokhara</p>
+                                                <p class="comment-data">Yeah To the left of that decimal, I need seven
+                                                    figures to play the joint
+                                                    Turn up your decibels, peep how I decimate a joint
+                                                    Check out my projects like them workers that Section 8 appoints
+                                                    And you'll see how I flipped, like exclamation
+                                                    pointssdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                                                    My brothers shoot first as if they never played the point, more two
+                                                    guards
+                                                    Enough straps to fill four U-Hauls</p>
+                                            </div>
+                                            <p class="reply-button"><span class="reply-button-clickable">Reply</span>
+                                            </p>
+                                            <div class="reply">
+                                                <p>Ram Sharan</p>
+                                                <p>no u are wrong i dont think it works that way my man.</p>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                                <!-- </div> -->
+
+
                                             </div>
                                     </section>
                                 </c:forEach>
 
                             </div>
                             <c:if test="${hasPosts }">
-                                <a class="btn btn-primary mt-5 mb-5" href="/?before=${oldestDate}">Show older posts</a>
+                                <a class="btn btn-primary mt-5 mb-5"
+                                    href="/posts/hashtag/${requestedHashTag}?before=${oldestDate}">Show older posts</a>
                             </c:if>
 
                         </div>
                         <div class="col col3">
-                            <div class="custom-card-container">
-                                <div class="text-head">
-                                    Recommended Hashtags
-                                </div>
-                                <div class="followings">
-                                    <c:choose>
-                                        <c:when test="${hasRecommendations}">
-                                            <c:forEach var="recommendedHashTag" items="${recommendedHashTags}">
-                                            <div class="hashtag">
-                                                <p><a href="/posts/hashtag/${recommendedHashTag.title}">#${recommendedHashTag.title}</a></p>
-                                                <button class="follow-btn" id="${recommendedHashTag.title}" onclick="follow(event)">Follow</button>
-                                            </div>
-                                        </c:forEach>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <p>Recommendations will appear here.</p>
-                                        </c:otherwise>
-                                    </c:choose>
-                                    <div class="recommendations">
-                                        <a href="/recommended-hashtags">Manage hashtags</a>
-                                    </div>
-                                
-                                </div>
-                                
-                            </div>
-                        </div>
+                        
+                            <c:if test="${not empty sessionScope.email}">
+                                <jsp:include page="../fragments/right-bar.jsp" />
+                            </c:if>
+                        
+                    </div>
                     </div>
 
                 </div>
             </div>
 
             </div>
-            <script src="resources/js/solo_post.js"></script>
-            <script src="resources/js/ajax.js"></script>
+            <script src="../../resources/js/solo_post.js"></script>
+            <script src="../../resources/js/hashtag.js"></script>
+            <script src="../../resources/js/ajax.js"></script>
 
             <script>
                 function follow(event) {
@@ -355,7 +314,7 @@
                                 .catch(err => displayError(followError));
 
 
-                        }else{
+                        } else {
                             postAjax('/unfollow', { "hashtag": hashtag })
                                 .then(data => {
                                     if (data === true) {
@@ -376,6 +335,8 @@
 
 
             </script>
+
+
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>

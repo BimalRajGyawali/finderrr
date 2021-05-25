@@ -30,7 +30,7 @@
         </head>
 
         <body>
-            <jsp:include page="header.jsp" />
+            <jsp:include page="../fragments/header.jsp" />
             <div class="custom-container">
                 <div class="main">
                     <div class="custom-row">
