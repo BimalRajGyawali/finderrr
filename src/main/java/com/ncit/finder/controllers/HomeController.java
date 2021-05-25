@@ -201,6 +201,7 @@ public class HomeController {
 	public String getEditPostPage(@PathVariable int postId, Model model, HttpServletRequest request) {
 		PostRepository repository = new PostRepository();
 		Post post = repository.getPostById(postId);
+		System.err.println(post);
 		if (request.getSession().getAttribute("id") != null) {
 			int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
 			if(userId != post.getUser().getId()){

@@ -98,7 +98,7 @@ public class UserRepository {
 	public boolean insertImage(String name,String email) {
 		Connection connection =  DB.makeConnection();
 		PreparedStatement preparedStatement;
-		String sql="UPDATE user_details SET profile_pic = ? WHERE email=?"; 
+		String sql="UPDATE users SET profile_pic = ? WHERE email=?"; 
 		
 		
 		try {

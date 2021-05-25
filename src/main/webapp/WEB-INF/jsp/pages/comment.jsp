@@ -79,7 +79,7 @@ pageEncoding="ISO-8859-1"%>
                             <div class="post-card-container">
                                 <div class="post-head">
                                     <div class="post-head-left">
-                                        <img class="profile-pic" src="/resources/images/pic.jpeg" alt="Card image cap">
+                                        <img class="profile-pic" src="../../../resources/uploads/${post.user.profilePic}" alt="Card image cap">
                                         <div class="post-meta">
                                             <p class="user-name post-user-name"><c:out value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  "/></p>
                                             <p class="desc post-desc"><c:out value="${post.user.bio}"/></p>
@@ -184,7 +184,7 @@ pageEncoding="ISO-8859-1"%>
                                      
                                         <div class="comment">
 
-                                            <img class="comment-profile-pic" src="/resources/images/pic.jpeg"
+                                            <img class="comment-profile-pic" src="../../../resources/uploads/${comment.user.profilePic}"
                                                 alt="Card image cap">
                                             <div class="comment-details">
                                                 <p class="account-name">${comment.user.firstName} ${comment.user.middleName} ${comment.user.lastName}</p>

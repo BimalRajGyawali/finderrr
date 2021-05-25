@@ -24,9 +24,8 @@ public class PostRepository {
 		String sql = "SELECT *\n"+
 		"FROM posts p\n"+
 		"INNER JOIN\n"+
-		"(SELECT u.id user_id, u.firstname, u.middlename,u.lastname, u.bio, u.joined_on,  ud.profile_pic, ud.email, ud.pass\n"+
-		"FROM users u INNER JOIN user_details ud on u.id = ud.user_id) spu\n"+
-		"ON p.user_id = spu.user_id\n"+
+		"users u \n"+
+		"ON p.user_id = u.id\n"+
 		"where p.id = ?;";
 
 		Connection connection = DB.makeConnection();
@@ -66,7 +65,7 @@ public class PostRepository {
 		String sql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
 				+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count,p.status, "
 				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p \n"
-				+ "INNER JOIN (SELECT * FROM users u INNER JOIN user_details ud ON u.id = ud.user_id) spu ON p.user_id = spu.id WHERE p.id = ?) sp \n" + "ON ph.post_id = sp.p_id\n";
+				+ "INNER JOIN users u ON p.user_id = u.id WHERE p.id = ?) sp \n" + "ON ph.post_id = sp.p_id\n";
 
 		try {
 			preparedStatement = connection.prepareStatement(sql);
@@ -165,7 +164,7 @@ public class PostRepository {
 
 		String sql = "SELECT * FROM\n"
 				+ "( SELECT p.id p_id, p.content, p.posted_on, p.comments_count, p.join_requests_count,p.status,"
-				+ "u.id user_id, u.firstname, u.middlename, u.lastname, u.bio, u.joined_on\n"
+				+ "u.id user_id, u.firstname, u.middlename, u.lastname, u.bio, u.joined_on, u.email, u.pass, u.profile_pic\n"
 				+ "FROM posts p INNER JOIN users u ON p.user_id = u.id\n"
 				+ "WHERE p.id IN (SELECT ph.post_id FROM posts_hashtags ph WHERE ph.hashtag LIKE ? )\n"
 				+ "AND p.posted_on < ?\n" + "ORDER BY p.posted_on DESC LIMIT " + n + ") sp \n"
@@ -344,7 +343,7 @@ public class PostRepository {
 
 	public Post getPostWithJoinRequests(int postId) {
 		String sql = "SELECT sp.post_id, sp.post_content, sp.post_posted_on, sp.post_comments_count, sp.post_join_requests_count,"
-				+ "sp.post_user_id, sp.post_user_firstname , sp.post_user_middlename, sp.post_user_lastname, sp.post_user_joined_on, sp.post_user_bio"
+				+ "sp.post_user_id, sp.post_user_firstname , sp.post_user_middlename, sp.post_user_lastname, sp.post_user_joined_on, sp.post_user_bio, sp.post_user_email, sp.post_user_pass, sp.post_user_pp"
 				+ ", u.id join_requests_user_id, u.firstname join_requests_user_firstname, u.middlename join_requests_user_middlename, u.lastname join_requests_user_lastname, u.joined_on join_requests_user_joined_on, u.bio join_requests_user_bio, u.email join_requests_user_email, u.pass join_requests_user_pass, u.profile_pic join_requests_user_pp\n"
 				+ "FROM join_requests j\n" + "INNER JOIN users u on j.user_id = u.id\n" + "RIGHT JOIN\n" + "(SELECT\n"
 				+ "p.id post_id, p.content post_content,p.status, p.posted_on post_posted_on, p.comments_count post_comments_count, p.join_requests_count post_join_requests_count,"

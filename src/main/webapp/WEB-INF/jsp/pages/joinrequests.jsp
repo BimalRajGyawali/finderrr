@@ -88,7 +88,7 @@
                                             <div class="post-card-container">
                                                 <div class="post-head">
                                                     <div class="post-head-left">
-                                                        <img class="profile-pic" src="/resources/images/pic.jpeg"
+                                                        <img class="profile-pic" src="../../../resources/uploads/${post.user.profilePic}"
                                                             alt="Card image cap">
                                                         <div class="post-meta">
                                                             <p class="user-name post-user-name">
@@ -176,7 +176,7 @@
                                                                 <a href="" class="link post-head-left"
                                                                     style="display: block;">
                                                                     <img class="profile-pic"
-                                                                        src="${user.profile}"
+                                                                        src="../../../resources/uploads/${user.profilePic}"
                                                                         alt="Card image cap">
                                                                     <div class="post-meta">
                                                                         <p class="user-name post-user-name mt-4">
