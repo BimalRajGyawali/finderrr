@@ -46,9 +46,9 @@
   
     <ul class="right-nav">
         <li><a href="/">Home</a></li>
-        <li><a href="/">Followings</a></li>
+        <li><a href="/recommended-hashtags">Followings</a></li>
         <li><a href="/">Notifications</a></li>
-        <li><a href="/">Profile</a></li>
+        <li><a href="/create-profile">Profile</a></li>
         <li ><a  class="custom-button" href="/logout/post/${post.id}">Logout</a></li>
     </ul>
 

@@ -5,7 +5,7 @@
     <div class="custom-card-body">
     
     
-        <a href="/view-profile"> <img class="custom-card-img"
+        <a href="/create-profile"> <img class="custom-card-img"
             src="/resources/uploads/${sessionScope.profile_pic}" alt="Card image cap"></a>
     
 <p class="user-name"> ${sessionScope.firstname} ${sessionScope.middlename}  ${sessionScope.lastname}</p>
