@@ -29,7 +29,6 @@ public class FollowingController {
         int userId = (int)request.getSession().getAttribute("id");
 
     
-        System.out.println(hashtagMap.get("hashtag"));
         String hashtag = hashtagMap.get("hashtag");
         FollowingRepository repository = new FollowingRepository();
         Following following = new Following(userId, hashtag, LocalDateTime.now());

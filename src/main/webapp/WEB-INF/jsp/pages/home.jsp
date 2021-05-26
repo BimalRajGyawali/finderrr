@@ -324,50 +324,7 @@
             <script src="resources/js/solo_post.js"></script>
             <script src="resources/js/ajax.js"></script>
 
-            <script>
-                function follow(event) {
-                    event.preventDefault();
-                    let hashtag = event.target.id;
-                    let followError = document.getElementById("follow-error");
-                    if (!hashtag) {
-                        displayError(followError);
-
-                    } else {
-                        if (event.target.innerText == "Follow") {
-                            postAjax('/follow', { "hashtag": hashtag })
-                                .then(data => {
-                                    if (data === true) {
-                                        event.target.innerText = "Unfollow";
-                                        event.target.style.border = "1px solid green";
-                                    } else {
-                                        displayError(followError);
-                                    }
-                                })
-                                .catch(err => displayError(followError));
-
-
-                        } else {
-                            postAjax('/unfollow', { "hashtag": hashtag })
-                                .then(data => {
-                                    if (data === true) {
-                                        event.target.innerText = "Follow";
-                                        event.target.style.border = "1px solid blue";
-                                    } else {
-                                        displayError(followError);
-                                    }
-                                })
-                                .catch(err => displayError(followError));
-                        }
-
-                    }
-
-
-
-                }
-
-
-            </script>
-
+            <script src="../../../resources/js/follow.js"></script>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
