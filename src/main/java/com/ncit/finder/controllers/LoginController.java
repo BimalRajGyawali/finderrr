@@ -11,12 +11,11 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class LoginController {
 	@PostMapping("/loginsubmit/post/{post_id}")
-	public String loginUser(HttpServletRequest request,RedirectAttributes redirectAttributes,@PathVariable("post_id") String post_id) {
+	public String loginUser(HttpServletRequest request,Model model,@PathVariable("post_id") String post_id) {
 		System.out.println("Post to redirect="+post_id);
 		String email = request.getParameter("email");
 		String password=request.getParameter("password");
@@ -25,10 +24,11 @@ public class LoginController {
 		UserRepository repository= new UserRepository(); 
 		User user = repository.getUserDetail(email, passwordHashed);
 		if(user.getId()==0) {
-			redirectAttributes.addFlashAttribute("email",email);
-			redirectAttributes.addFlashAttribute("password",password);
-			redirectAttributes.addFlashAttribute("error",true);
-			return "redirect:/login";
+			model.addAttribute("email",email);
+			model.addAttribute("password",password);
+			model.addAttribute("error",true);
+			System.out.println("Redirected with data "+email+password);
+			return "login";
 		
 		}
 		request.getSession().setAttribute("email",email);
