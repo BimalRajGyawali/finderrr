@@ -9,9 +9,19 @@ import java.sql.Timestamp;
 import com.ncit.finder.db.DB;
 import com.ncit.finder.models.User;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class UserRepository {
+	private DB db;
+
+	@Autowired
+	public UserRepository(DB db) {
+		this.db = db;
+	}
 	public boolean createUser(User user){
-		Connection connection =  DB.makeConnection();
+		Connection connection =  db.makeConnection();
 		String sql = "INSERT INTO users(firstname,middlename,lastname,joined_on, email, pass, profile_pic) VALUES (?,?,?,?,?,?,?)";
 		
 		PreparedStatement preparedStatement;
@@ -37,7 +47,7 @@ public class UserRepository {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally {
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 		
 		
@@ -45,7 +55,7 @@ public class UserRepository {
 	}
 	public User getUserDetail(String email,String pass) {
 		
-		Connection connection =  DB.makeConnection();
+		Connection connection =  db.makeConnection();
 		PreparedStatement preparedStatement;
 		String sql="SELECT u.id,u.firstname,u.middlename,u.lastname,u.bio,u.profile_pic FROM users u where email=? and pass=?";
 		User user=new User();
@@ -69,14 +79,14 @@ public class UserRepository {
 		}catch(SQLException e) {
 			e.printStackTrace();	
 		}finally {
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 		 return user;
 		
 	}
 	
 	public boolean testEmail(String email) {
-		Connection connection =  DB.makeConnection();
+		Connection connection =  db.makeConnection();
 		PreparedStatement preparedStatement;
 		String sqlTest="select * from users where email=?"; 
 		try {
@@ -89,14 +99,14 @@ public class UserRepository {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally {
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 		
 		
 		return false;
 	}
 	public boolean insertImage(String name,String email) {
-		Connection connection =  DB.makeConnection();
+		Connection connection =  db.makeConnection();
 		PreparedStatement preparedStatement;
 		String sql="UPDATE users SET profile_pic = ? WHERE email=?"; 
 		
@@ -111,13 +121,13 @@ public class UserRepository {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally {
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 		return false;
 	}
 	
 	public boolean insertBio(String bio,int id) {
-		Connection connection =  DB.makeConnection();
+		Connection connection =  db.makeConnection();
 		PreparedStatement preparedStatement;
 		String sql="UPDATE users SET bio=? WHERE id=?"; 
 		System.out.println(id);
@@ -132,7 +142,7 @@ public class UserRepository {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally {
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 		return false;
 	}

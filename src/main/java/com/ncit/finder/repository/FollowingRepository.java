@@ -12,10 +12,21 @@ import com.ncit.finder.db.DB;
 import com.ncit.finder.models.Following;
 import com.ncit.finder.models.HashTag;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+
+@Component
 public class FollowingRepository {
+    private DB db;
+
+    @Autowired
+    public FollowingRepository(DB db) {
+        this.db = db;
+    }
 
     public boolean follow(Following following) {
-        Connection connection = DB.makeConnection();
+        Connection connection = db.makeConnection();
         String sql = "INSERT INTO followings(user_id, hashtag, followed_on)\n" + "VALUES(?, ?, ?);";
         PreparedStatement preparedStatement;
         try {
@@ -31,13 +42,13 @@ public class FollowingRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            DB.closeConnection(connection);
+            db.closeConnection(connection);
         }
         return false;
     }
 
     public boolean unfollow(Following following) {
-        Connection connection = DB.makeConnection();
+        Connection connection = db.makeConnection();
         String sql = "DELETE FROM followings WHERE user_id = ? AND hashtag = ?;\n";
 
         PreparedStatement preparedStatement;
@@ -51,14 +62,14 @@ public class FollowingRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            DB.closeConnection(connection);
+            db.closeConnection(connection);
         }
         return false;
     }
 
     public List<HashTag> recommendedHashTags(int userId, int n) {
         // Pass n = -1 to view all recommended hashtags
-        Connection connection = DB.makeConnection();
+        Connection connection = db.makeConnection();
         PreparedStatement preparedStatement;
         List<HashTag> hashTags = new ArrayList<>();
         String sql = "";
@@ -86,14 +97,14 @@ public class FollowingRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            DB.closeConnection(connection);
+            db.closeConnection(connection);
         }
 
         return hashTags;
     }
     public List<HashTag> followedHashTags(int userId) {
         
-        Connection connection = DB.makeConnection();
+        Connection connection = db.makeConnection();
         PreparedStatement preparedStatement;
         List<HashTag> hashTags = new ArrayList<>();
         String sql = "SELECT hashtag FROM followings WHERE user_id = ? ;";
@@ -112,14 +123,14 @@ public class FollowingRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            DB.closeConnection(connection);
+            db.closeConnection(connection);
         }
 
         return hashTags;
     }
 
     public boolean hasFollowed(int userId, String hashTag){
-        Connection connection = DB.makeConnection();
+        Connection connection = db.makeConnection();
         PreparedStatement preparedStatement;
         String sql = "SELECT * FROM followings WHERE user_id = ? AND hashtag = ?;";
               
@@ -134,12 +145,12 @@ public class FollowingRepository {
         }catch(SQLException e){
             e.printStackTrace();
         }finally{
-            DB.closeConnection(connection);
+            db.closeConnection(connection);
         }
         return false;
     }
     public boolean isHashTagPresent(String title){
-        Connection connection = DB.makeConnection();
+        Connection connection = db.makeConnection();
         PreparedStatement preparedStatement;
         String sql = "SELECT * FROM hashtags WHERE title = ?;";
               
@@ -153,7 +164,7 @@ public class FollowingRepository {
         }catch(SQLException e){
             e.printStackTrace();
         }finally{
-            DB.closeConnection(connection);
+            db.closeConnection(connection);
         }
         return false;
     }

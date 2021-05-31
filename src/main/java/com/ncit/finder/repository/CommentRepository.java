@@ -16,7 +16,17 @@ import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.Post;
 import com.ncit.finder.models.User;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class CommentRepository {
+	private DB db;
+
+	@Autowired
+	public CommentRepository(DB db) {
+		this.db = db;
+	}
 
 	public Post getPost(int temp_id) {
 		Post post = new Post();
@@ -24,7 +34,7 @@ public class CommentRepository {
 		int total_comments;
 		boolean flag = true;
 		User post_user = new User();
-		Connection connection = DB.makeConnection();
+		Connection connection = db.makeConnection();
 		PreparedStatement preparedStatement;
 		String sql = "SELECT sp.post_id, sp.post_content, sp.post_posted_on, sp.post_comments_count, sp.post_join_requests_count,\r\n"
 				+ "        sp.post_user_id, sp.post_user_firstname , sp.post_user_middlename, sp.post_user_lastname, sp.post_user_joined_on, sp.post_user_bio,sp.post_user_email, sp.post_user_pass, sp.post_user_pp, c.id comment_id,c.content comment_content, c.commented_on\r\n"
@@ -168,14 +178,14 @@ public class CommentRepository {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 
 		return post;
 	}
 
 	public boolean createComment(Comment comment, int post_id, int comments_count) {
-		Connection connection = DB.makeConnection();
+		Connection connection = db.makeConnection();
 
 		String sql = "INSERT INTO comments( content,commented_on,user_id,post_id) VALUES (?,?,?,?)";
 		String sql_comment_count_update = "UPDATE posts SET comments_count=? WHERE id=?";
@@ -202,7 +212,7 @@ public class CommentRepository {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 		return false;
 

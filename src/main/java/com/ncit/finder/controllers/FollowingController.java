@@ -10,6 +10,7 @@ import com.ncit.finder.models.Following;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.repository.FollowingRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,7 +21,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class FollowingController {
+
+    private FollowingRepository followingRepository;
     
+    @Autowired
+    public FollowingController(FollowingRepository followingRepository) {
+        this.followingRepository = followingRepository;
+    }
+
     @PostMapping("/follow")
     public ResponseEntity<Boolean> follow(@RequestBody Map<String, String> hashtagMap, HttpServletRequest request){
         if (request.getSession().getAttribute("id") == null) {
@@ -30,9 +38,8 @@ public class FollowingController {
 
     
         String hashtag = hashtagMap.get("hashtag");
-        FollowingRepository repository = new FollowingRepository();
         Following following = new Following(userId, hashtag, LocalDateTime.now());
-        boolean booleanResponse = repository.follow(following);
+        boolean booleanResponse = followingRepository.follow(following);
         HttpStatus httpStatus = HttpStatus.CREATED;
         if(!booleanResponse){
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -48,9 +55,8 @@ public class FollowingController {
         int userId = (int)request.getSession().getAttribute("id");
 
         String hashtag = hashtagMap.get("hashtag");
-        FollowingRepository repository = new FollowingRepository();
         Following following = new Following(userId, hashtag);
-        boolean booleanResponse = repository.unfollow(following);
+        boolean booleanResponse = followingRepository.unfollow(following);
         HttpStatus httpStatus = HttpStatus.OK;
         if(!booleanResponse){
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -65,9 +71,8 @@ public class FollowingController {
         }
         int userId = (int)request.getSession().getAttribute("id");
 
-        FollowingRepository repository = new FollowingRepository();
-        List<HashTag> recommendedHashTags = repository.recommendedHashTags(userId, -1);
-        List<HashTag> followedHashTags = repository.followedHashTags(userId);
+        List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, -1);
+        List<HashTag> followedHashTags = followingRepository.followedHashTags(userId);
         if(recommendedHashTags.size() > 0){
 			model.addAttribute("recommendedHashTags", recommendedHashTags);
 			model.addAttribute("hasRecommendations", true);

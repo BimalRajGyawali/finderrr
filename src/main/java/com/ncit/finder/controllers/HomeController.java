@@ -1,6 +1,5 @@
 package com.ncit.finder.controllers;
 
-import java.lang.ProcessBuilder.Redirect;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,7 @@ import com.ncit.finder.models.User;
 import com.ncit.finder.repository.FollowingRepository;
 import com.ncit.finder.repository.PostRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,15 +26,22 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class HomeController {
+	private PostRepository postRepository;
+	private FollowingRepository followingRepository;
+
+	@Autowired
+	public HomeController(PostRepository postRepository, FollowingRepository followingRepository) {
+		this.postRepository = postRepository;
+		this.followingRepository = followingRepository;
+	}
 
 	@GetMapping("/guest")
 	public String guestHome(@RequestParam(required = false) String before, Model model) {
-		PostRepository repository = new PostRepository();
 		LocalDateTime beforeDateTime = LocalDateTime.now();
 		if (before != null && !before.isEmpty()) {
 			beforeDateTime = LocalDateTime.parse(before);
 		}
-		List<Post> posts = repository.getDetailedPosts(30, beforeDateTime);
+		List<Post> posts = postRepository.getDetailedPosts(30, beforeDateTime);
 		model.addAttribute("posts", posts);
 
 		if (posts.size() > 0) {
@@ -52,13 +59,11 @@ public class HomeController {
 		} else {
 			return "redirect:/guest";
 		}
-		PostRepository repository = new PostRepository();
-		FollowingRepository followingRepository = new FollowingRepository();
 		LocalDateTime beforeDateTime = LocalDateTime.now();
 		if (before != null && !before.isEmpty()) {
 			beforeDateTime = LocalDateTime.parse(before);
 		}
-		List<Post> posts = repository.getRecommendedPosts(userId, 30, beforeDateTime);
+		List<Post> posts = postRepository.getRecommendedPosts(userId, 30, beforeDateTime);
 		model.addAttribute("posts", posts);
 		List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
 		if (recommendedHashTags.size() > 0) {
@@ -77,13 +82,11 @@ public class HomeController {
 	@GetMapping("/posts/hashtag/{hashtag}")
 	public String getPostsFromHashTag(@PathVariable String hashtag, @RequestParam(required = false) String before,
 			Model model, HttpServletRequest request) {
-		PostRepository repository = new PostRepository();
-		FollowingRepository followingRepository = new FollowingRepository();
 		LocalDateTime beforeDateTime = LocalDateTime.now();
 		if (before != null && !before.isEmpty()) {
 			beforeDateTime = LocalDateTime.parse(before);
 		}
-		List<Post> posts = repository.getPostsFromHashTag(hashtag, 10, beforeDateTime);
+		List<Post> posts = postRepository.getPostsFromHashTag(hashtag, 10, beforeDateTime);
 		model.addAttribute("posts", posts);
 
 		if (posts.size() > 0) {
@@ -116,7 +119,6 @@ public class HomeController {
 		if (request.getSession().getAttribute("id") == null) {
 			return "redirect:/login/post/create";
 		}
-		FollowingRepository followingRepository = new FollowingRepository();
 
 		int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
 		List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
@@ -155,8 +157,7 @@ public class HomeController {
 		post.setUser(user);
 		post.setHashTags(hashTags);
 		post.setStatus(pStatus);
-		PostRepository repository = new PostRepository();
-		boolean status = repository.createPost(post);
+		boolean status = postRepository.createPost(post);
 
 		redirectAttributes.addFlashAttribute("success", status);
 		redirectAttributes.addFlashAttribute("failure", !status);
@@ -166,9 +167,7 @@ public class HomeController {
 
 	@GetMapping("/{postId}/join-requests")
 	public String getPostWithJoinRequests(@PathVariable int postId, Model model, HttpServletRequest request) {
-		PostRepository repository = new PostRepository();
-		FollowingRepository followingRepository = new FollowingRepository();
-		Post post = repository.getPostWithJoinRequests(postId);
+		Post post = postRepository.getPostWithJoinRequests(postId);
 		model.addAttribute("post", post);
 		model.addAttribute("hasJoinRequests", post.getUsersRequestingToJoin().size() > 0);
 		System.out.println(post.getUsersRequestingToJoin().size());
@@ -200,8 +199,7 @@ public class HomeController {
 		joinRequest.setPost(post);
 		joinRequest.setUser(user);
 
-		PostRepository repository = new PostRepository();
-		DBResponse response = repository.addJoinRequest(joinRequest);
+		DBResponse response = postRepository.addJoinRequest(joinRequest);
 
 		redirectAttributes.addFlashAttribute("joinRequestResponse", response);
 
@@ -210,8 +208,7 @@ public class HomeController {
 
 	@GetMapping("/editpost/{postId}")
 	public String getEditPostPage(@PathVariable int postId, Model model, HttpServletRequest request) {
-		PostRepository repository = new PostRepository();
-		Post post = repository.getPostById(postId);
+		Post post = postRepository.getPostById(postId);
 		System.err.println(post);
 		if (request.getSession().getAttribute("id") != null) {
 			int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
@@ -257,8 +254,7 @@ public class HomeController {
 		post.setContent(postContent);
 		post.setHashTags(hashTags);
 		post.setStatus(pStatus);
-		PostRepository repository = new PostRepository();
-		boolean status = repository.updatePost(post);
+		boolean status = postRepository.updatePost(post);
 
 		redirectAttributes.addFlashAttribute("updateSuccess", status);
 		redirectAttributes.addFlashAttribute("updateFailure", !status);
@@ -269,8 +265,7 @@ public class HomeController {
 	@PostMapping("/delete-post")
 	public String deletePost(HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		int postId = Integer.parseInt(request.getParameter("post-id"));
-		PostRepository repository = new PostRepository();
-		boolean status = repository.deletePost(postId);
+		boolean status = postRepository.deletePost(postId);
 		redirectAttributes.addFlashAttribute("deleteSuccess", status);
 		redirectAttributes.addFlashAttribute("deleteFailure", !status);
 		return "redirect:/";

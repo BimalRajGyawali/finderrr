@@ -1,26 +1,30 @@
 package com.ncit.finder.db;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class DB {
+	@Autowired
+	private DataSource dataSource;
 	
-	private static final String URL = "jdbc:mysql://localhost:3306/finder";
-	private static final String USERNAME = "root";
-	private static final String PASSWORD = "";
-	
-	public static Connection makeConnection() {
+	public Connection makeConnection() {
 		Connection conn = null;
 		try {
-			conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+			conn = dataSource.getConnection();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return conn;
 	}
 	
-	public static void closeConnection(Connection conn) {
+	public void closeConnection(Connection conn) {
 		if(conn != null) {
 			try {
 				conn.close();

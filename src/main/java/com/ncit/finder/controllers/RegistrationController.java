@@ -11,6 +11,7 @@ import com.ncit.finder.functionality.RandomCodeGenerator;
 import com.ncit.finder.models.User;
 import com.ncit.finder.repository.UserRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
@@ -21,7 +22,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class RegistrationController {
-	
+
+	private UserRepository userRepository;
+
+	@Autowired
+	public RegistrationController(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+
 	@GetMapping("/register/post/{post_id}")
 	public String createUser(@PathVariable String post_id,Model model) {
 		model.addAttribute("post_id",post_id);
@@ -50,7 +58,6 @@ public class RegistrationController {
 		String regex = "^(.+)@(.+)$";
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = pattern.matcher(email);
-		UserRepository repository=new UserRepository();
 		
 		if(fName.length()==0) {
 			System.out.println("First name cant be empty");
@@ -66,7 +73,7 @@ public class RegistrationController {
 		}if(!matcher.matches()) {
 			redirectAttributes.addFlashAttribute("emailError",true);
 			errorSignal=true;
-		}if(!repository.testEmail(email)) {
+		}if(!userRepository.testEmail(email)) {
 			redirectAttributes.addFlashAttribute("emailExistsError",true);
 			errorSignal=true;
 		}if(!password.equals(password2)){
@@ -117,7 +124,6 @@ public class RegistrationController {
 	public String testVerification(HttpServletRequest request,RedirectAttributes redirectAttributes) {
 		String DEFAULT_PIC = "pic.jpeg";
 		System.err.println("entryyy");
-		UserRepository repository= new UserRepository();
 		String fName = request.getParameter("fname");
 		String mName = request.getParameter("mname");
 		String lName = request.getParameter("lname");
@@ -148,7 +154,7 @@ public class RegistrationController {
 		System.err.println(codeRecieved+"  "+codeRecieved);
 		if(codeRecieved.equals(codeSent)) {
 			user.setPass(passwordHashed);
-			repository.createUser(user);
+			userRepository.createUser(user);
 			return "redirect:/login/post/"+post_id;
 		}
 		redirectAttributes.addFlashAttribute("codeError",true);
