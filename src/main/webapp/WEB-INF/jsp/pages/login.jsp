@@ -122,10 +122,8 @@
                         <c:if test="${error}">
                             <p class="error">Credentials Incorrect.</p>
                         </c:if>
-                        <input type="text" id="email" name="email" placeholder="E-mail" />
-                        <input type="password" id="pass" name="password" placeholder="Password" />
-
-
+                        <input type="text" id="email" name="email" placeholder="E-mail" value="${email}"/>
+                        <input type="password" id="pass" name="password" placeholder="Password"  value="${password}"/>
                         <button type="submit" value="Login">Login</button>
                     </form>
                     <p style="margin-left:45%;"> OR </p>
