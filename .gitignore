@@ -5,8 +5,6 @@ target/
 !**/src/test/**/target/
 src/main/uploads
 src/main/resources/uploads
-src/main/java/com/ncit/finder/db/DBProperties.java
-data/
 ### STS ###
 .apt_generated
 .classpath
@@ -35,4 +33,3 @@ build/
 ### VS Code ###
 .vscode/
 .settings
-
