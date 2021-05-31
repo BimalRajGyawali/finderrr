@@ -12,6 +12,7 @@ import com.ncit.finder.models.User;
 import com.ncit.finder.repository.CommentRepository;
 import com.ncit.finder.repository.FollowingRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,12 +22,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class CommentController {
+	private CommentRepository commentRepository;
+	private FollowingRepository followingRepository;
+
+	@Autowired
+	public CommentController(CommentRepository commentRepository, FollowingRepository followingRepository) {
+		this.commentRepository = commentRepository;
+		this.followingRepository = followingRepository;
+	}
+
 	@GetMapping("/post/{post_id}")
 	public String postWithComment(Model model, @PathVariable("post_id") String post_id, HttpServletRequest request) {
-		FollowingRepository followingRepository = new FollowingRepository();
-		CommentRepository repository = new CommentRepository();
 		Post post = new Post();
-		post = repository.getPost(Integer.parseInt(post_id));
+		post = commentRepository.getPost(Integer.parseInt(post_id));
 		System.out.println(post);
 		model.addAttribute("post", post);
 		model.addAttribute("currentDateTime", LocalDateTime.now());
@@ -61,8 +69,7 @@ public class CommentController {
 		comment.setContent(post_content);
 		comment.setCommentedOn(LocalDateTime.now());
 
-		CommentRepository repository = new CommentRepository();
-		boolean status = repository.createComment(comment, post_id, comments_count);
+		boolean status = commentRepository.createComment(comment, post_id, comments_count);
 
 		// System.out.println(post_content+post_id+comment+status);
 

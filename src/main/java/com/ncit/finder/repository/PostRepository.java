@@ -18,7 +18,17 @@ import com.ncit.finder.models.Post;
 import com.ncit.finder.models.User;
 import com.ncit.finder.utils.LocalDateTimeParser;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class PostRepository {
+	private DB db;
+
+	@Autowired
+	public PostRepository(DB db) {
+		this.db = db;
+	}
 
 	public User getAuthor(int postId){
 		String sql = "SELECT *\n"+
@@ -28,7 +38,7 @@ public class PostRepository {
 		"ON p.user_id = u.id\n"+
 		"where p.id = ?;";
 
-		Connection connection = DB.makeConnection();
+		Connection connection = db.makeConnection();
 		PreparedStatement preparedStatement;
 		User user = new User();
 		try{
@@ -51,14 +61,14 @@ public class PostRepository {
 		}catch(SQLException e){
 
 		}finally{
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 		return user;
 
 	}
 
 	public Post getPostById(int postId) {
-		Connection connection = DB.makeConnection();
+		Connection connection = db.makeConnection();
 		PreparedStatement preparedStatement;
 		Post post = null;
 
@@ -77,7 +87,7 @@ public class PostRepository {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 
 		return post;
@@ -87,7 +97,7 @@ public class PostRepository {
 	public List<Post> getDetailedPosts(int n, LocalDateTime dateTime) {
 
 		Timestamp before = Timestamp.valueOf(dateTime);
-		Connection connection = DB.makeConnection();
+		Connection connection = db.makeConnection();
 		PreparedStatement preparedStatement;
 		List<Post> posts = new ArrayList<>();
 
@@ -105,7 +115,7 @@ public class PostRepository {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 
 		return posts;
@@ -114,7 +124,7 @@ public class PostRepository {
 	public List<Post> getRecommendedPosts(int userId, int n, LocalDateTime dateTime) {
 
 		Timestamp before = Timestamp.valueOf(dateTime);
-		Connection connection = DB.makeConnection();
+		Connection connection = db.makeConnection();
 		PreparedStatement preparedStatement;
 		List<Post> followedPosts = new ArrayList<>();
 		List<Post> nonFollowedPosts = new ArrayList<>();
@@ -149,7 +159,7 @@ public class PostRepository {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 		followedPosts.addAll(nonFollowedPosts);
 		return followedPosts;
@@ -158,7 +168,7 @@ public class PostRepository {
 	public List<Post> getPostsFromHashTag(String hashTag, int n, LocalDateTime dateTime) {
 
 		Timestamp before = Timestamp.valueOf(dateTime);
-		Connection connection = DB.makeConnection();
+		Connection connection = db.makeConnection();
 		PreparedStatement preparedStatement;
 		List<Post> posts = new ArrayList<>();
 
@@ -184,7 +194,7 @@ public class PostRepository {
 	}
 
 	public boolean createPost(Post post) {
-		Connection connection = DB.makeConnection();
+		Connection connection = db.makeConnection();
 		String postSql = "INSERT INTO posts(content, posted_on, user_id, status) VALUES(?, ?, ?, ?);";
 		String hashTagSql = "INSERT INTO hashtags(title) VALUES(?);";
 		String postHashTagSql = "INSERT INTO posts_hashtags(post_id, hashtag) VALUES(?, ?);";
@@ -233,7 +243,7 @@ public class PostRepository {
 		}catch(SQLException e){
 
 		}finally{
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 			return true;
 		}
@@ -244,7 +254,7 @@ public class PostRepository {
 		String hashTagSql = "INSERT INTO hashtags(title) VALUES(?);";
 		String postHashTagSql = "INSERT INTO posts_hashtags(post_id, hashtag) VALUES(?, ?);";
 
-		Connection connection = DB.makeConnection();
+		Connection connection = db.makeConnection();
 		PreparedStatement preparedStatement;
 
 		try {
@@ -292,7 +302,7 @@ public class PostRepository {
 	}
 
 	public DBResponse addJoinRequest(JoinRequest joinRequest) {
-		Connection connection = DB.makeConnection();
+		Connection connection = db.makeConnection();
 		PreparedStatement statement;
 
 		String sql = "SELECT join_requests_count\n" + "FROM posts WHERE id=?";
@@ -333,7 +343,7 @@ public class PostRepository {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 		response.setResponseMessage("Error in sending join request");
 		response.setSuccessStatus(false);
@@ -350,7 +360,7 @@ public class PostRepository {
 				+ "u.id post_user_id, u.firstname post_user_firstname , u.middlename post_user_middlename, u.lastname post_user_lastname, u.joined_on post_user_joined_on, u.bio post_user_bio, u.email post_user_email, u.pass post_user_pass, u.profile_pic post_user_pp\n"
 				+ "FROM posts p INNER JOIN users u on p.user_id = u.id WHERE p.id = ?) sp ON j.post_id = sp.post_id;";
 
-		Connection connection = DB.makeConnection();
+		Connection connection = db.makeConnection();
 		PreparedStatement statement;
 		Post post = new Post();
 
@@ -438,7 +448,7 @@ public class PostRepository {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 
 		return post;
@@ -453,7 +463,7 @@ public class PostRepository {
 		String postSql = "DELETE FROM posts WHERE id = ?;";
 		
 
-		Connection connection = DB.makeConnection();
+		Connection connection = db.makeConnection();
 		PreparedStatement preparedStatement;
 
 		try {
@@ -478,7 +488,7 @@ public class PostRepository {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
-			DB.closeConnection(connection);
+			db.closeConnection(connection);
 		}
 
 		return false;

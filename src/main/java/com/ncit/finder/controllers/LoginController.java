@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.ncit.finder.models.User;
 import com.ncit.finder.repository.UserRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
@@ -14,6 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class LoginController {
+
+	private UserRepository userRepository;
+
+	@Autowired
+	public LoginController(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+
 	@PostMapping("/loginsubmit/post/{post_id}")
 	public String loginUser(HttpServletRequest request,Model model,@PathVariable("post_id") String post_id) {
 		System.out.println("Post to redirect="+post_id);
@@ -21,8 +30,7 @@ public class LoginController {
 		String password=request.getParameter("password");
 		byte[] passwordByte = DigestUtils.md5Digest(password.getBytes());
 		String passwordHashed=new String(passwordByte);
-		UserRepository repository= new UserRepository(); 
-		User user = repository.getUserDetail(email, passwordHashed);
+		User user = userRepository.getUserDetail(email, passwordHashed);
 		if(user.getId()==0) {
 			model.addAttribute("email",email);
 			model.addAttribute("password",password);

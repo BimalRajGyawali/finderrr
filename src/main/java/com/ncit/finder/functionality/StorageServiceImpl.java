@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-import org.apache.tomcat.jni.File;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +16,6 @@ public class StorageServiceImpl implements StorageService {
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -33,7 +31,6 @@ public class StorageServiceImpl implements StorageService {
 				outputStream.write(c);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -41,26 +38,21 @@ public class StorageServiceImpl implements StorageService {
 
 	@Override
 	public Stream<Path> loadAll() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Path load(String filename) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Resource loadAsResource(String filename) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void deleteAll() {
-		// TODO Auto-generated method stub
-		
+	public void deleteAll() {		
 	}
 
 	
