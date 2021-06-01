@@ -22,7 +22,7 @@
             <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
 
-            <title>Document</title>
+            <title>Finder</title>
 
         </head>
 
@@ -263,10 +263,19 @@
 
 
                                                 <div class="comment-posting">
-                                                    <c:if test="${not empty sessionScope.email}"><img class="comment-profile-pic" src="/resources/uploads/${sessionScope.profile_pic}" alt="Card image cap"></c:if>
                                                     <div class="comment-post-details">
-
-                                                        <c:if test="${not empty sessionScope.email}"><span class="comment-box2" role="textbox" id="comment" contentEditable=true data-ph="Write A Comment..." onkeydown="commentPost(event, '${post.id}')"></span></c:if>
+                                                        <c:if test="${not empty sessionScope.email}">
+                                                            <c:choose>
+                                                                <c:when test="${sessionScope.profile_pic != null}">
+                                                                    <img class="comment-profile-pic" src="/resources/uploads/${sessionScope.profile_pic}" alt="Profile Picture">
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <img class="comment-profile-pic" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                            <span class="comment-box2" role="textbox" id="comment" contentEditable=true data-ph="Write A Comment..." onkeydown="commentPost(event, '${post.id}')">
+                                                        </span>
+                                                        </c:if>
 
 
 

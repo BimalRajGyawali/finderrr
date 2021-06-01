@@ -22,7 +22,7 @@
                 <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
                 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
 
-                <title>Document</title>
+                <title>Post - Join Requests</title>
 
             </head>
 
@@ -186,7 +186,7 @@
                                                                             <p class="desc" style="margin-top: -8px;">
                                                                                 <c:if test="${sessionScope.id == user.id}">
 
-                                                                                    <c:out value="gyawali.rajbimal35@gmail.com" />
+                                                                                    <c:out value="${user.email}" />
 
                                                                                 </c:if>
                                                                             </p>
