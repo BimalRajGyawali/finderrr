@@ -10,8 +10,8 @@ body {
 }
 
 .custom-container {
-    padding-left: 50px;
-    padding-right: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .main {
@@ -32,6 +32,7 @@ body {
     border-radius: 10px;
     padding-top: 20px;
     padding-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .custom-card-img {
@@ -59,29 +60,6 @@ body {
 
 .custom-row {
     overflow: auto;
-}
-
-.col {
-    float: left;
-    padding-left: 30px;
-    padding-right: 30px;
-}
-
-.col1 {
-    width: 20%;
-}
-
-.col2 {
-    width: 54%;
-}
-
-.col3 {
-    width: 26%;
-    position: relative;
-}
-
-.col4 {
-    width: 80%;
 }
 
 .posts-section {
@@ -118,19 +96,26 @@ body {
     margin-right: 20px;
 }
 
-.post-head-left .profile-pic {
+.post-head-left {
+    display: flex;
+}
+
+.post-head-left .profile-pic,
+.create-post-pp {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     display: block;
-    float: left;
     margin-right: 14px;
 }
 
-.post-head-left .post-meta {
-    width: auto;
-    float: left;
+.create-post-pp,
+.left-bar,
+.right-bar {
+    display: none;
 }
+
+.post-head-left .create-post-input {}
 
 .post-user-name {
     font-size: 0.9em;
@@ -206,7 +191,7 @@ body {
 }
 
 .hashtag p {
-    width: 60%;
+    /* width: 60%; */
     font-size: 0.8em;
     font-family: 'Roboto', sans-serif;
     float: left;
@@ -220,12 +205,12 @@ body {
 
 .follow-btn {
     display: block;
-    width: 30%;
     float: right;
     margin-right: 10px;
     font-size: 0.8em;
     border: 1px solid blue;
     border-radius: 40px;
+    padding: 2px 20px 2px 20px;
 }
 
 .follow-btn:focus {
@@ -270,7 +255,6 @@ body {
     border-radius: 15px;
     border: 1px solid #708090;
     display: inline-block;
-    width: 330px;
     max-height: 150px;
     overflow: auto;
 }
@@ -325,20 +309,31 @@ body {
 }
 
 .interested-button {
-    padding-left: 5px;
     /* padding-top:8px; */
     /* padding-bottom:8px; */
-    color: #708090;
+    /* color: #708090; */
     font-weight: 400;
     border-radius: 10px;
     cursor: pointer;
-    float: left;
     /* width: 125px; */
     display: inline-block;
+    border: 1px solid #4169E1;
+    border-radius: 40px;
+    padding: 2px 20px 2px 20px;
+    margin-bottom: 10px;
+    margin-right: 20px;
+    text-decoration: none;
+}
+
+.interested-button:focus,
+.interested-button:hover {
+    outline: none;
+    background: #4169E1 !important;
+    color: white;
+    text-decoration: none !important;
 }
 
 .comment-button {
-    padding-left: 40px;
     /* padding-top:8px; */
     /* padding-bottom:8px; */
     color: #708090;
@@ -347,13 +342,10 @@ body {
     font-weight: 400;
     /* width: 100px; */
     display: inline-block;
-    float: none;
-    margin-right: 3px;
-    margin-left: 3px;
 }
 
 .share-button {
-    padding-left: 40px;
+    padding-left: 20px;
     /* padding-top:8px; */
     /* padding-bottom:8px; */
     color: #708090;
@@ -472,4 +464,98 @@ body {
 
 .hashtag-input:focus {
     outline: none;
+}
+
+.jr-bar {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media only screen and (min-width: 700px) {
+    .col2 {
+        width: 80%;
+        margin: 0 auto;
+    }
+    .create-post-pp {
+        display: block;
+    }
+    .interested-button {
+        margin-bottom: 0;
+    }
+    .comment-button {
+        padding-top: 3px;
+        padding-left: 20px;
+    }
+    .share-button {
+        padding-top: 3px;
+        padding-left: 40px;
+    }
+    .comment-box2 {
+        width: 80%;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .col {
+        float: left;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .col2 {
+        width: 65%;
+        margin: 0 auto;
+    }
+    .col1 {
+        width: 25%;
+    }
+    .col4 {
+        width: 75%;
+    }
+    .left-bar {
+        display: block;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    .col {
+        float: left;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+    .col1 {
+        width: 20%;
+    }
+    .col2 {
+        width: 54%;
+    }
+    .col3 {
+        width: 26%;
+        position: relative;
+    }
+    .left-bar,
+    .right-bar {
+        display: block;
+    }
+}
+
+@media only screen and (min-width: 1800px) {
+    .custom-container {
+        width: 90%;
+        margin: 0 auto;
+    }
+    .col {
+        float: left;
+        padding-left: 100px;
+        padding-right: 100px;
+    }
+    .col1 {
+        width: 15%;
+    }
+    .col2 {
+        width: 55%;
+        margin: 0 auto;
+    }
+    .col3 {
+        width: 25%;
+    }
 }
