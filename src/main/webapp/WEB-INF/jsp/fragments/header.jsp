@@ -41,7 +41,7 @@
             <div class="left-nav">
                 <p><a href="/"><strong>Finder</strong></a></p>
                 <p>
-                    <input id="hashtagInput" type="text" placeholder="Search Hashtags">
+                    <input id="hashtagInput" type="text" placeholder="Search Hashtags" onkeydown="searchHashtag(event)">
                 </p>
             </div>
 

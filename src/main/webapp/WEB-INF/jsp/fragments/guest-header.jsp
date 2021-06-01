@@ -7,7 +7,7 @@
         <div class="nav clearfix">
             <div class="left-nav">
                 <p><a href="/"><strong>Finder</strong></a></p>
-                <p><input id="hashtagInput" type="text" placeholder="Search Hashtags"></p>
+                <p><input id="hashtagInput" type="text" placeholder="Search Hashtags" onkeydown="searchHashtag(event)"></p>
             </div>
 
             <ul class="right-nav">
