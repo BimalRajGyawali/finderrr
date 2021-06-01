@@ -1,36 +1,40 @@
-*{
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
-body{
+
+body {
     background-color: #f2f2f2;
     font-family: 'Open Sans', sans-serif;
-
 }
-.custom-container{
+
+.custom-container {
     padding-left: 50px;
     padding-right: 50px;
 }
-.main{
+
+.main {
     margin-top: 30px;
 }
-#editor{
-}
 
-.line{
-    margin-top:20px;
+#editor {}
+
+.line {
+    margin-top: 20px;
     border-bottom: 0.5px solid #C0C0C0;
     margin-bottom: 20px;
 }
-.custom-card-container{
+
+.custom-card-container {
     border: 1px solid #dfdfdf;
     background-color: white;
     border-radius: 10px;
     padding-top: 20px;
     padding-bottom: 20px;
 }
-.custom-card-img{
+
+.custom-card-img {
     display: block;
     width: 80px;
     height: 80px;
@@ -40,45 +44,51 @@ body{
     border: 2px solid green;
 }
 
-.custom-card-body{
+.custom-card-body {
     text-align: center;
     /* margin-top: 20px; */
-
 }
-.user-name{
+
+.user-name {
     font-family: 'Roboto', sans-serif;
     /* font-weight: bold; */
     font-size: 1.1em;
     margin-bottom: 3px;
     word-wrap: break-word;
 }
-.custom-row{
-   overflow: auto;
+
+.custom-row {
+    overflow: auto;
 }
-.col{
+
+.col {
     float: left;
     padding-left: 30px;
     padding-right: 30px;
 }
-.col1{
+
+.col1 {
     width: 20%;
 }
-.col2{
+
+.col2 {
     width: 54%;
 }
-.col3{
+
+.col3 {
     width: 26%;
     position: relative;
 }
-.col4{
+
+.col4 {
     width: 80%;
-    
 }
-.posts-section{
+
+.posts-section {
     margin-bottom: 10px;
 }
 
-.post-card-container{
+.post-card-container {
     border: 1px solid #dfdfdf;
     background-color: white;
     border-radius: 10px;
@@ -86,7 +96,7 @@ body{
     overflow: auto;
 }
 
-.post-head{
+.post-head {
     padding-left: 20px;
     overflow: auto;
 }
@@ -96,7 +106,8 @@ body{
     padding-top: 10px;
     overflow: auto;
 }
-.post-head-right{
+
+.post-head-right {
     overflow: auto;
     padding-right: 6px;
     padding-left: 6px;
@@ -107,99 +118,107 @@ body{
     margin-right: 20px;
 }
 
-
-.post-head-left .profile-pic{
-   
+.post-head-left .profile-pic {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     display: block;
     float: left;
     margin-right: 14px;
-   
 }
 
-.post-head-left .post-meta{
+.post-head-left .post-meta {
     width: auto;
     float: left;
-} 
+}
 
-.post-user-name{
+.post-user-name {
     font-size: 0.9em;
     word-wrap: break-word;
-
 }
 
-.post-meta p{
+.post-meta p {
     margin-bottom: 0;
 }
-.desc{
+
+.desc {
     font-family: 'Open Sans', sans-serif;
     font-size: 0.9em;
     color: #808080;
     font-weight: 400;
     word-wrap: break-word;
 }
-.post-body{
+
+.post-body {
     font-family: 'Open Sans', sans-serif;
     font-size: 0.85em;
-    padding:20px 30px 20px 30px;
+    padding: 20px 30px 20px 30px;
     overflow: auto;
-    
 }
-.post-content{
+
+.post-content {
     margin-bottom: 50px;
 }
-.dot{
-    width:4px;
+
+.dot {
+    width: 4px;
     height: 4px;
     background: gray;
     float: right;
     margin-right: 3px;
     border-radius: 50%;
 }
-.text-head{
- padding-left: 15px;
- margin-bottom: 20px;
- font-size: 0.9em;
+
+.text-head {
+    padding-left: 15px;
+    margin-bottom: 20px;
+    font-size: 0.9em;
 }
-.followings{
- padding-left: 15px;
+
+.followings {
+    padding-left: 15px;
 }
-.small-hashtag{
+
+.small-hashtag {
     width: auto;
     float: left;
     margin-top: 20px;
-   }
-.small-follow-btn{
+}
+
+.small-follow-btn {
     font-size: 0.8em;
     border: 1px solid blue;
     border-radius: 40px;
     margin-right: 30px;
     padding: 2px 10px 2px 10px;
 }
-.small-follow-btn:focus{
+
+.small-follow-btn:focus {
     outline: none;
 }
-.followed{
+
+.followed {
     border: 1px solid green;
 }
-.hashtag{
+
+.hashtag {
     overflow: auto;
 }
-.hashtag p{
+
+.hashtag p {
     width: 60%;
     font-size: 0.8em;
     font-family: 'Roboto', sans-serif;
     float: left;
 }
-.hashtag p a{
+
+.hashtag p a {
     color: black;
     text-decoration: none;
     word-wrap: break-word;
 }
-.follow-btn{
-    
+
+.follow-btn {
     display: block;
     width: 30%;
     float: right;
@@ -208,221 +227,210 @@ body{
     border: 1px solid blue;
     border-radius: 40px;
 }
-.follow-btn:focus{
+
+.follow-btn:focus {
     outline: none;
 }
 
-.follow-btn:active{
+.follow-btn:active {
     border: 0;
 }
-.recommendations{
+
+.recommendations {
     padding-left: 15px;
 }
-.recommendations a{
+
+.recommendations a {
     font-size: 0.8em;
     text-decoration: none;
     font-family: 'Roboto', sans-serif;
 }
 
-.comment-posting{
+.comment-posting {}
 
-
-}
-.comment-profile-pic{
+.comment-profile-pic {
     width: 35px;
     height: 35px;
     border-radius: 50%;
     float: left;
-    
-
-   
 }
-.comment-box{
 
-}
+.comment-box {}
 
 .comment-box2 {
     display: block;
     width: 100%;
-
     outline: none;
-
     min-height: 40px;
     line-height: 20px;
-
     padding-left: 8px;
     padding-top: 10px;
     padding-bottom: 10px;
-    background-color:#F5FFFA;
-    border-radius:15px;
+    background-color: #F5FFFA;
+    border-radius: 15px;
     border: 1px solid #708090;
-    display:inline-block;
-    width:330px;
+    display: inline-block;
+    width: 330px;
     max-height: 150px;
     overflow: auto;
-
 }
 
 .comment-box2:empty:before {
     content: attr(data-ph);
-     color:grey;
+    color: grey;
 }
 
-
-.comment-details{
-    background-color:#F5FFFA;
-    border-radius:15px;
-    display:inline-block;
-    width:330px;
+.comment-details {
+    background-color: #F5FFFA;
+    border-radius: 15px;
+    display: inline-block;
+    width: 330px;
 }
-.account-name{
+
+.account-name {
     padding-top: 8px;
     padding-left: 8px;
     padding-bottom: 0px;
 }
 
+
 /* div{
     outline: 2px dashed blue;
 } */
-.comment{
-    margin-top: 20px;
-    overflow:auto;
 
-   
+.comment {
+    margin-top: 20px;
+    overflow: auto;
 }
-.account-name{
+
+.account-name {
     font-size: 0.9em;
     font-weight: bold;
 }
 
-.comment-data{
-
+.comment-data {
     padding-left: 8px;
     padding-bottom: 0px;
     word-wrap: break-word;
 }
 
-.comment-post-details{
-    
+.comment-post-details {
     margin-left: 50px;
-    border-radius:15px;
-
+    border-radius: 15px;
 }
 
-.styled-btn{
+.styled-btn {
     border: 0;
     background-color: #fff;
-    
 }
 
-
-.interested-button{
-padding-left: 5px;
-/* padding-top:8px; */
-/* padding-bottom:8px; */
-color: #708090;
-font-weight: 400;
- border-radius: 10px;
- cursor: pointer;
- float: left;
-/* width: 125px; */
-display: inline-block;
-
+.interested-button {
+    padding-left: 5px;
+    /* padding-top:8px; */
+    /* padding-bottom:8px; */
+    color: #708090;
+    font-weight: 400;
+    border-radius: 10px;
+    cursor: pointer;
+    float: left;
+    /* width: 125px; */
+    display: inline-block;
 }
 
-.comment-button{
-padding-left: 40px;
-/* padding-top:8px; */
-/* padding-bottom:8px; */
-color: #708090;
- border-radius: 10px;
- cursor: pointer;
-font-weight: 400;
-/* width: 100px; */
-display: inline-block;
-float:none;
- margin-right: 3px;
-  margin-left: 3px;
-
-
+.comment-button {
+    padding-left: 40px;
+    /* padding-top:8px; */
+    /* padding-bottom:8px; */
+    color: #708090;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 400;
+    /* width: 100px; */
+    display: inline-block;
+    float: none;
+    margin-right: 3px;
+    margin-left: 3px;
 }
 
-.share-button{
-padding-left: 40px;
-/* padding-top:8px; */
-/* padding-bottom:8px; */
-color: #708090;
-font-weight: 400;
- border-radius: 10px;
- cursor: pointer;
-/* width: 125px; */
-display: inline-block;
-
-
+.share-button {
+    padding-left: 40px;
+    /* padding-top:8px; */
+    /* padding-bottom:8px; */
+    color: #708090;
+    font-weight: 400;
+    border-radius: 10px;
+    cursor: pointer;
+    /* width: 125px; */
+    display: inline-block;
 }
 
-
-.interested-button:hover{
-background-color: #F5FFFA;
-text-decoration: underline;
-
-}
-.share-button:hover{
-background-color: #F5FFFA;
-}
-.comment-button:hover{
-background-color: #F5FFFA;
+.interested-button:hover {
+    background-color: #F5FFFA;
+    text-decoration: underline;
 }
 
-.reply-button{
-font-size: 11px;
-font-weight: 750;
-color: #708090;
-margin-left:40px;
-
+.share-button:hover {
+    background-color: #F5FFFA;
 }
-.reply-button-clickable{
+
+.comment-button:hover {
+    background-color: #F5FFFA;
+}
+
+.reply-button {
+    font-size: 11px;
+    font-weight: 750;
+    color: #708090;
+    margin-left: 40px;
+}
+
+.reply-button-clickable {
     cursor: pointer;
 }
-.reply{
- background-color:#F5FFFA;
- border-radius:15px;
 
+.reply {
+    background-color: #F5FFFA;
+    border-radius: 15px;
 }
 
-.invisible-form{
+.invisible-form {
     display: none;
 }
-.link{
-    color : black;
+
+.link {
+    color: black;
 }
 
-.error{
-	color:#ff3333;
-	margin:5px;
+.error {
+    color: #ff3333;
+    margin: 5px;
 }
-#empty-post-error, #empty-hashtag-error{
+
+#empty-post-error,
+#empty-hashtag-error {
     display: none;
 }
-.update-btn{
+
+.update-btn {
     border: 0;
     border-radius: 40px;
     background: #4169E1;
-    color : white;
-    padding:5px 20px 5px 20px;
+    color: white;
+    padding: 5px 20px 5px 20px;
     margin-top: 50px;
 }
-.delete-btn{
+
+.delete-btn {
     margin-top: 50px;
     margin-left: 10px;
-    padding:5px 20px 5px 20px;
-    color : white;
+    padding: 5px 20px 5px 20px;
+    color: white;
     background: #DC143C;
     border: 0;
     border-radius: 40px;
-    
- }
- 
+}
+
+
 /* .completed{
     background: blue;
     color: white;
@@ -432,7 +440,7 @@ margin-left:40px;
     padding-right: 5px;
 } */
 
-.post-input{
+.post-input {
     margin-top: 3px;
     border-radius: 40px;
     cursor: pointer;
@@ -445,14 +453,15 @@ margin-left:40px;
     color: #808080;
     border: 1px solid #c0c0c0;
     text-decoration: none;
-    
 }
-.post-input:hover{
+
+.post-input:hover {
     text-decoration: none;
     color: #808080;
     background: #f2f2f2;
 }
-.hashtag-input{
+
+.hashtag-input {
     border: 1px solid #c0c0c0;
     border-radius: 40px;
     width: 300px;
@@ -460,6 +469,7 @@ margin-left:40px;
     margin-bottom: 10px;
     background: white;
 }
-.hashtag-input:focus{
-   outline: none;
+
+.hashtag-input:focus {
+    outline: none;
 }
