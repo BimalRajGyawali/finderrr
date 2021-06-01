@@ -84,8 +84,8 @@
                                                 <div class="post-head">
                                                     <div class="post-head-left">
                                                         <c:choose>
-                                                            <c:when test="${sessionScope.profile_pic != null}">
-                                                                <img class="small-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Profile Picture">
+                                                            <c:when test="${post.user.profilePic != null}">
+                                                                <img class="small-img" src="/resources/uploads/${post.user.profilePic}" alt="Profile Picture">
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <img class="small-img" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
@@ -181,8 +181,8 @@
 
                                                                     <a href="" class="link post-head-left jr">
                                                                         <c:choose>
-                                                                            <c:when test="${sessionScope.profile_pic != null}">
-                                                                                <img class="small-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Profile Picture">
+                                                                            <c:when test="${user.profilePic != null}">
+                                                                                <img class="small-img" src="/resources/uploads/${user.profilePic}" alt="Profile Picture">
                                                                             </c:when>
                                                                             <c:otherwise>
                                                                                 <img class="small-img" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
