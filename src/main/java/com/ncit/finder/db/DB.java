@@ -17,6 +17,7 @@ public class DB {
 		Connection conn = null;
 		try {
 			conn = dataSource.getConnection();
+			System.out.println("Connecteddddddddddd");
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

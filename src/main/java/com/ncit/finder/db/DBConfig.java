@@ -11,9 +11,9 @@ public class DBConfig {
     @Bean
     public DataSource dataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
-            dataSourceBuilder.url("jdbc:mysql://localhost:3306/finder");
-            dataSourceBuilder.username("root");
-            dataSourceBuilder.password("");
+            dataSourceBuilder.url("jdbc:postgresql://localhost:5432/postgres");
+            dataSourceBuilder.username("postgres");
+            dataSourceBuilder.password("root");
             return dataSourceBuilder.build();   
     }
 }
