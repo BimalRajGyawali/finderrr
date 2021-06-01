@@ -8,7 +8,9 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.ncit.finder.db.DB;
 import com.ncit.finder.db.DBResponse;
@@ -220,7 +222,7 @@ public class PostRepository {
 			// 2. Get all hashtags of post and insert into hashtags table if not exist
 			// already
 
-			List<HashTag> hashTags = post.getHashTags();
+			Set<HashTag> hashTags = new HashSet<>(post.getHashTags());
 
 			for (HashTag hashTag : hashTags) {
 
@@ -231,13 +233,15 @@ public class PostRepository {
 					// If no exception occurs, hashtag doesnot exist already.
 
 				} catch (SQLIntegrityConstraintViolationException ex) {
-					ex.printStackTrace();
+					System.out.println("caught");
 				}
 				// 3. Also link the post and hashtag in posts_hashtags table
 				preparedStatement = connection.prepareStatement(postHashTagSql);
 				preparedStatement.setInt(1, generatedPostId);
 				preparedStatement.setString(2, hashTag.getTitle());
 				preparedStatement.executeUpdate();
+
+				System.out.println("Inserted =========="+hashTag);
 
 			}
 		}catch(SQLException e){

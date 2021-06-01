@@ -10,7 +10,7 @@
                 <p><input id="hashtagInput" type="text" placeholder="Search Hashtags" onkeydown="searchHashtag(event)"></p>
             </div>
 
-            <ul class="right-nav">
+            <ul class="right-nav guest-right-nav">
                 <li><a class="custom-button" href="/login/post/${post.id}">Log In</a></li>
                 <li><a class="signup-btn " href="/register/post/${post.id}">Create an Account</a></li>
             </ul>

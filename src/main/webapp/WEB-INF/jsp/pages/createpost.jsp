@@ -9,18 +9,15 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <script src="https://cdn.ckeditor.com/ckeditor5/23.1.0/classic/ckeditor.js"></script>
 
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-                integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
-                crossorigin="anonymous">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-            <link rel="stylesheet"
-                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
 
-            <link href="<c:url value=" /resources/css/style.css" />" rel="stylesheet">
-            <link href="<c:url value=" /resources/css/hashtag.css" />" rel="stylesheet">
+            <link href="<c:url value=" /resources/css/style.css " />" rel="stylesheet">
+            <link href="<c:url value=" /resources/css/hashtag.css " />" rel="stylesheet">
 
             <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
@@ -35,13 +32,17 @@
                 <div class="main">
                     <div class="custom-row">
                         <div class="col col1">
-                            <div class="custom-card-container">
-                                <img class="custom-card-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Card image cap">
-                                <div class="custom-card-body">
-                                <p class="user-name"> ${sessionScope.firstname} ${sessionScope.middlename} ${sessionScope.lastname}</p>
-                                    <p class="desc">${sessionScope.bio}</p>
-                                </div>
-                            </div>
+                            <c:choose>
+                                <c:when test="${not empty sessionScope.email}">
+                                    <jsp:include page="../fragments/left-bar.jsp" />
+                                </c:when>
+
+                                <c:otherwise>
+
+                                    <div class="custom-card-container" style="visibility: hidden;">
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                         <div class="col col2">
                             <c:choose>
@@ -72,18 +73,17 @@
                                     <input id="editor" />
                                     <input hidden name="post-content" type="text" id="post-content">
                                     <p class="mt-5">
-                                        <span>Select Post Status : &nbsp;&nbsp;</span> 
+                                        <span>Select Post Status : &nbsp;&nbsp;</span>
                                         <select name="post-status" id="post-status" class="hashtag-input">
                                             <option value="ongoing" selected>Ongoing</option>
                                             <option value="completed">Completed</option>
                                         </select>
                                     </p>
                                     <p class="mt-5">
-                                      <span>  Select Hashtags&nbsp;&nbsp; : &nbsp;&nbsp;</span>
-                                        <input type="text" name="hashtags" autocomplete="off" class="hashtag-input"
-                                            placeholder="Type hashtag and press Enter" id="hashtags">
+                                        <span>  Select Hashtags&nbsp;&nbsp; : &nbsp;&nbsp;</span>
+                                        <input type="text" name="hashtags" autocomplete="off" class="hashtag-input" placeholder="Type hashtag and press Enter" id="hashtags">
                                     </p>
-                                   
+
                                     <div id="hashtags-container">
                                     </div>
                                     <input type="submit" class="btn btn-primary mt-5" value="Post">
@@ -98,12 +98,12 @@
 
                         </div>
                         <div class="col col3">
-                        
+
                             <c:if test="${not empty sessionScope.email}">
                                 <jsp:include page="../fragments/right-bar.jsp" />
                             </c:if>
-                        
-                    </div>
+
+                        </div>
                     </div>
 
                 </div>
@@ -162,11 +162,6 @@
 
                     }
                 }
-
-
-
-
-
             </script>
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

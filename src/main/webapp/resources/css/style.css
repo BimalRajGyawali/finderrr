@@ -42,7 +42,6 @@ body {
     text-align: center;
     margin: auto;
     border-radius: 50%;
-    border: 2px solid green;
 }
 
 .custom-card-body {
@@ -238,13 +237,14 @@ body {
     height: 35px;
     border-radius: 50%;
     float: left;
+    margin-right: 15px;
 }
 
 .comment-box {}
 
 .comment-box2 {
     display: block;
-    width: 100%;
+    width: 80%;
     outline: none;
     min-height: 40px;
     line-height: 20px;
@@ -267,8 +267,10 @@ body {
 .comment-details {
     background-color: #F5FFFA;
     border-radius: 15px;
-    display: inline-block;
-    width: 330px;
+    /* display: inline-block; */
+    width: 80%;
+    word-wrap: break-word;
+    /* float: left; */
 }
 
 .account-name {
@@ -284,7 +286,8 @@ body {
 
 .comment {
     margin-top: 20px;
-    overflow: auto;
+    display: flex;
+    /* overflow: auto; */
 }
 
 .account-name {
@@ -299,7 +302,7 @@ body {
 }
 
 .comment-post-details {
-    margin-left: 50px;
+    /* margin-left: 50px; */
     border-radius: 15px;
 }
 
@@ -490,9 +493,6 @@ body {
         padding-top: 3px;
         padding-left: 40px;
     }
-    .comment-box2 {
-        width: 80%;
-    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -558,4 +558,15 @@ body {
     .col3 {
         width: 25%;
     }
+}
+
+.jr-list {}
+
+.jr {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.jr img {
+    margin-top: 10px;
 }

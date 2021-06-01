@@ -89,12 +89,7 @@ ul {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 2px solid green;
     margin-right: 20px;
-}
-
-.small-img:hover {
-    border: 2px solid blue;
 }
 
 .right-nav li a i {
@@ -114,6 +109,15 @@ ul {
         padding-top: 20px;
         width: 50%;
         float: right;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .guest-right-nav {
+        justify-content: center;
+    }
+    .guest-right-nav li {
+        margin-left: 40px;
     }
 }
 
