@@ -122,7 +122,6 @@ public class RegistrationController {
 	
 	@PostMapping("/verification2")
 	public String testVerification(HttpServletRequest request,RedirectAttributes redirectAttributes) {
-		String DEFAULT_PIC = "pic.jpeg";
 		System.err.println("entryyy");
 		String fName = request.getParameter("fname");
 		String mName = request.getParameter("mname");
@@ -147,7 +146,6 @@ public class RegistrationController {
 		user.setJoinedOn(LocalDateTime.now());
 		user.setEmail(email);
 		user.setPass(password);
-		user.setProfilePic(DEFAULT_PIC);
 		System.err.println(user);
 		String codeRecieved=request.getParameter("vcode");
 		String codeSent =(String) request.getSession().getAttribute("code");

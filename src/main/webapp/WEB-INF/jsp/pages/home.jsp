@@ -130,11 +130,11 @@
                                     <div class="post-head">
                                         <div class="post-head-left">
                                             <c:choose>
-                                                <c:when test="${not empty sessionScope.email}">
-                                                    <img class="create-post-pp" src="/resources/uploads/${sessionScope.profile_pic}" alt="Card image cap">
+                                                <c:when test="${sessionScope.profile_pic != null}">
+                                                    <img class="small-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Profile Picture">
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <img class="create-post-pp" src="/resources/images/pic.jpeg" alt="Card image cap">
+                                                    <img class="small-img" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
                                                 </c:otherwise>
                                             </c:choose>
                                             <div class="create-post-input ">

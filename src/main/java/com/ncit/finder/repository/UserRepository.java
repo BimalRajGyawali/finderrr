@@ -22,7 +22,7 @@ public class UserRepository {
 	}
 	public boolean createUser(User user){
 		Connection connection =  db.makeConnection();
-		String sql = "INSERT INTO users(firstname,middlename,lastname,joined_on, email, pass, profile_pic) VALUES (?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO users(firstname,middlename,lastname,joined_on, email, pass) VALUES (?,?,?,?,?,?)";
 		
 		PreparedStatement preparedStatement;
 		
@@ -39,9 +39,7 @@ public class UserRepository {
 			preparedStatement.setTimestamp(4, Timestamp.valueOf(user.getJoinedOn()));
 			preparedStatement.setString(5,user.getEmail());
 			preparedStatement.setString(6,user.getPass());
-			preparedStatement.setString(7, user.getProfilePic());
 			preparedStatement.executeUpdate();
-			System.err.println("insertedddddddd");
 		
 			return true;
 		}catch(SQLException e){

@@ -50,7 +50,16 @@
                 <li><a href="/recommended-hashtags"><i class="fa fa-hashtag"></i></a></li>
                 <li><a href="/"><i class="fa fa-bell"></i></a></li>
                 <li>
-                    <a href="/create-profile"><img class="small-img" src="../../../resources/uploads/${sessionScope.profile_pic}" alt=""></a>
+                    <a href="/create-profile">
+                        <c:choose>
+                            <c:when test="${sessionScope.profile_pic != null}">
+                                <img class="small-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Profile Picture">
+                            </c:when>
+                            <c:otherwise>
+                                <img class="small-img" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
+                            </c:otherwise>
+                        </c:choose>
+                    </a>
                 </li>
                 <li><a class="" href="/logout/post/${post.id}"><i class="fa fa-sign-out"></i></a></li>
             </ul>
