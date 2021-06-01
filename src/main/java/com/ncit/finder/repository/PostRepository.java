@@ -8,7 +8,9 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.ncit.finder.db.DB;
 import com.ncit.finder.db.DBResponse;
@@ -104,7 +106,7 @@ public class PostRepository {
 		String sql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
 				+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
 				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio,u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
-				+ "INNER JOIN users u WHERE p.user_id = u.id AND p.posted_on < ' " + before + "'\n"
+				+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
 				+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n";
 
 		try {
@@ -132,7 +134,7 @@ public class PostRepository {
 		String followedPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
 				+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
 				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
-				+ "INNER JOIN users u WHERE p.user_id = u.id AND p.posted_on < ' " + before + "'\n"
+				+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
 				+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n"
 				+ "WHERE sp.p_id IN\n"
 				+"(SELECT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag);";
@@ -140,7 +142,7 @@ public class PostRepository {
 		String nonFollowedPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
 		+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
 		+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
-		+ "INNER JOIN users u WHERE p.user_id = u.id AND p.posted_on < ' " + before + "'\n"
+		+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
 		+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n"
 		+ "WHERE sp.p_id NOT IN\n"
 		+"(SELECT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag);";
@@ -220,7 +222,7 @@ public class PostRepository {
 			// 2. Get all hashtags of post and insert into hashtags table if not exist
 			// already
 
-			List<HashTag> hashTags = post.getHashTags();
+			Set<HashTag> hashTags = new HashSet<>(post.getHashTags());
 
 			for (HashTag hashTag : hashTags) {
 
@@ -231,13 +233,15 @@ public class PostRepository {
 					// If no exception occurs, hashtag doesnot exist already.
 
 				} catch (SQLIntegrityConstraintViolationException ex) {
-					ex.printStackTrace();
+					System.out.println("caught");
 				}
 				// 3. Also link the post and hashtag in posts_hashtags table
 				preparedStatement = connection.prepareStatement(postHashTagSql);
 				preparedStatement.setInt(1, generatedPostId);
 				preparedStatement.setString(2, hashTag.getTitle());
 				preparedStatement.executeUpdate();
+
+				System.out.println("Inserted =========="+hashTag);
 
 			}
 		}catch(SQLException e){

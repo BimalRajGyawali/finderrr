@@ -9,23 +9,20 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <script src="https://cdn.ckeditor.com/ckeditor5/23.1.0/classic/ckeditor.js"></script>
 
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-                integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
-                crossorigin="anonymous">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-            <link rel="stylesheet"
-                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
 
-            <link href="<c:url value=" /resources/css/style.css" />" rel="stylesheet">
-            <link href="<c:url value=" /resources/css/hashtag.css" />" rel="stylesheet">
+            <link href="<c:url value=" /resources/css/style.css " />" rel="stylesheet">
+            <link href="<c:url value=" /resources/css/hashtag.css " />" rel="stylesheet">
 
             <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
 
-            <title>Document</title>
+            <title>Finder - Edit Post</title>
 
         </head>
 
@@ -35,14 +32,19 @@
                 <div class="main">
                     <div class="custom-row">
                         <div class="col col1">
-                            <div class="custom-card-container">
-                                <a href="/create-profile"> <img class="custom-card-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Card image cap"></a>
-                                <div class="custom-card-body">
-                                    <p class="user-name"> ${sessionScope.firstname} ${sessionScope.middlename} ${sessionScope.lastname}</p>
-                                   	 <p class="desc">${sessionScope.bio}</p>
-                                </div>
-                            </div>
+                            <c:choose>
+                                <c:when test="${not empty sessionScope.email}">
+                                    <jsp:include page="../fragments/left-bar.jsp" />
+                                </c:when>
+
+                                <c:otherwise>
+
+                                    <div class="custom-card-container" style="visibility: hidden;">
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
+
                         <div class="col col2">
                             <c:choose>
                                 <c:when test="${success}">
@@ -95,32 +97,30 @@
                                             </p>
                                             <p class="mt-5">
                                                 <span> Select Hashtags&nbsp;&nbsp; : &nbsp;&nbsp;</span>
-                                                <input type="text" name="hashtags" autocomplete="off" class="hashtag-input"
-                                                    placeholder="Type hashtag and press Enter" id="hashtags">
+                                                <input type="text" name="hashtags" autocomplete="off" class="hashtag-input" placeholder="Type hashtag and press Enter" id="hashtags">
                                             </p>
-        
+
                                             <div id="hashtags-container">
-                                                
+
                                             </div>
-                                        
+
                                             <input type="submit" class="update-btn" value="Update">
-        
+
                                         </form>
                                         <form action="/delete-post" method="POST" style="display: inline;">
                                             <input type="text" hidden name="post-id" value="${post.id}">
                                             <input type="submit" name="" id="" value="Delete this post" class="delete-btn">
                                         </form>
-        
+
                                     </c:otherwise>
-                                    </c:choose>
-                               
+                                </c:choose>
+
                             </div>
 
 
                         </div>
-                        
-                    </div>
 
+                    </div>
                 </div>
             </div>
 
@@ -135,14 +135,14 @@
                         console.error(error);
                     })
 
-                window.addEventListener("load", ()=>{
-                   let hashtags = '${post.hashTags}';
-                   hashtags = JSON.parse(hashtags);
-                   for(let i=0; i<hashtags.length; i++){
-                       addHashTag(hashtags[i].title)
-                   }
+                window.addEventListener("load", () => {
+                    let hashtags = '${post.hashTags}';
+                    hashtags = JSON.parse(hashtags);
+                    for (let i = 0; i < hashtags.length; i++) {
+                        addHashTag(hashtags[i].title)
+                    }
 
-                   ed.setData("${post.content}");
+                    ed.setData("${post.content}");
 
                 });
 
@@ -187,11 +187,6 @@
 
                     }
                 }
-
-
-
-
-
             </script>
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

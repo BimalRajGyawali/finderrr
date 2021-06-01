@@ -1,7 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
     <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<!-- 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+        <!-- 
 <nav class="navbar navbar-light bg-light justify-content-between">
     <a  href="/" class="navbar-brand"> <strong>Finder</strong> </a>
     <form class="form-inline" method="POST" action="#" onsubmit="handleSubmit(event);" >
@@ -32,28 +35,37 @@
     
     
   </nav> -->
-  <link rel="stylesheet" href="../../resources/css/header.css">
+        <link rel="stylesheet" href="../../resources/css/header.css">
 
-  <div class="nav clearfix">
-    <div class="left-nav">
-      <a href="/"><strong>Finder</strong></a>
-        <form class="search-box" method="POST" action="#" onsubmit="handleSubmit(event);" >
-          <input id="hashtagInput" type="text" placeholder="Search Hashtags"><button class="custom-button">Search</button>
-          
-        </form>      
-    
-    </div>
-  
-    <ul class="right-nav">
-        <li><a href="/">Home</a></li>
-        <li><a href="/recommended-hashtags">Followings</a></li>
-        <li><a href="/">Notifications</a></li>
-        <li><a href="/create-profile">Profile</a></li>
-        <li ><a  class="custom-button" href="/logout/post/${post.id}">Logout</a></li>
-    </ul>
+        <div class="nav clearfix">
+            <div class="left-nav">
+                <p><a href="/"><strong>Finder</strong></a></p>
+                <p>
+                    <input id="hashtagInput" type="text" placeholder="Search Hashtags" onkeydown="searchHashtag(event)">
+                </p>
+            </div>
 
-   
-  
-</div>
+            <ul class="right-nav">
+                <li><a href="/"><i class="fa fa-home"></i></a></li>
+                <li><a href="/recommended-hashtags"><i class="fa fa-hashtag"></i></a></li>
+                <li><a href="/"><i class="fa fa-bell"></i></a></li>
+                <li>
+                    <a href="/create-profile">
+                        <c:choose>
+                            <c:when test="${sessionScope.profile_pic != null}">
+                                <img class="small-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Profile Picture">
+                            </c:when>
+                            <c:otherwise>
+                                <img class="small-img" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
+                            </c:otherwise>
+                        </c:choose>
+                    </a>
+                </li>
+                <li><a class="" href="/logout/post/${post.id}"><i class="fa fa-sign-out"></i></a></li>
+            </ul>
 
-<script src="../../resources/js/search.js"></script>
+
+
+        </div>
+
+        <script src="../../resources/js/search.js"></script>

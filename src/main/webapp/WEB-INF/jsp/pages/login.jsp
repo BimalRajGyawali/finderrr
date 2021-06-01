@@ -9,20 +9,19 @@
             <meta charset="UTF-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Signup</title>
-            <link href="<c:url value=" /resources/css/style.css" />" rel="stylesheet">
-            <link href="<c:url value=" /resources/css/hashtag.css" />" rel="stylesheet">
+            <title>Finder - Login</title>
+            <link href="<c:url value=" /resources/css/style.css " />" rel="stylesheet">
+            <link href="<c:url value=" /resources/css/hashtag.css " />" rel="stylesheet">
 
             <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
 
             <style>
                 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
-
                 */ *:focus {
                     outline: none;
                 }
-
+                
                 body {
                     margin: 0;
                     padding: 0;
@@ -32,7 +31,7 @@
                     font-family: 'Roboto', sans-serif;
                     font-weight: 300;
                 }
-
+                
                 #login-box {
                     position: relative;
                     margin: 5% auto;
@@ -42,7 +41,7 @@
                     border-radius: 2px;
                     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
                 }
-
+                
                 .left {
                     position: absolute;
                     top: 0;
@@ -52,13 +51,13 @@
                     width: 300px;
                     height: 400px;
                 }
-
+                
                 h1 {
                     margin: 0 0 20px 0;
                     font-weight: 300;
                     font-size: 28px;
                 }
-
+                
                 input[type="text"],
                 input[type="password"] {
                     display: block;
@@ -74,14 +73,14 @@
                     font-size: 15px;
                     transition: 0.2s ease;
                 }
-
+                
                 input[type="text"]:focus,
                 input[type="password"]:focus {
                     border-bottom: 2px solid #16a085;
                     color: #16a085;
                     transition: 0.2s ease;
                 }
-
+                
                 button[type="submit"] {
                     margin: 10px;
                     width: 210px;
@@ -96,14 +95,14 @@
                     transition: 0.1s ease;
                     cursor: pointer;
                 }
-
+                
                 input[type="submit"]:hover,
                 input[type="submit"]:focus {
                     opacity: 0.8;
                     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
                     transition: 0.1s ease;
                 }
-
+                
                 input[type="submit"]:active {
                     opacity: 1;
                     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -122,8 +121,8 @@
                         <c:if test="${error}">
                             <p class="error">Credentials Incorrect.</p>
                         </c:if>
-                        <input type="text" id="email" name="email" placeholder="E-mail" value="${email}"/>
-                        <input type="password" id="pass" name="password" placeholder="Password"  value="${password}"/>
+                        <input type="text" id="email" name="email" placeholder="E-mail" value="${email}" />
+                        <input type="password" id="pass" name="password" placeholder="Password" value="${password}" />
                         <button type="submit" value="Login">Login</button>
                     </form>
                     <p style="margin-left:45%;"> OR </p>

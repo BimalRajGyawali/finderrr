@@ -1,5 +1,6 @@
 package com.ncit.finder.functionality;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +25,12 @@ public class StorageServiceImpl implements StorageService {
 		int c;
 		InputStream f;
 		try {
+			File uploadDir = new File("src/main/webapp/resources/uploads/");
+			if(!uploadDir.exists()){
+				uploadDir.mkdir();
+			}
 			f = file.getInputStream();
-			OutputStream outputStream=new FileOutputStream(new java.io.File("src/main/webapp/resources/uploads/"+newName));
+			OutputStream outputStream=new FileOutputStream(new java.io.File(uploadDir+"/"+newName));
 			
 			while((c=f.read())!=-1) {
 				outputStream.write(c);
