@@ -134,7 +134,7 @@ public class PostRepository {
 		String followedPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
 				+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
 				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
-				+ "INNER JOIN users u WHERE p.user_id = u.id AND p.posted_on < ' " + before + "'\n"
+				+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
 				+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n"
 				+ "WHERE sp.p_id IN\n"
 				+"(SELECT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag);";
@@ -142,7 +142,7 @@ public class PostRepository {
 		String nonFollowedPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
 		+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
 		+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
-		+ "INNER JOIN users u WHERE p.user_id = u.id AND p.posted_on < ' " + before + "'\n"
+		+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
 		+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n"
 		+ "WHERE sp.p_id NOT IN\n"
 		+"(SELECT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag);";

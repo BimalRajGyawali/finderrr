@@ -165,7 +165,16 @@
                                         <div class="post-card-container">
                                             <div class="post-head">
                                                 <div class="post-head-left">
-                                                    <img class="profile-pic" src="../../../resources/uploads/${post.user.profilePic}" alt="Card image cap">
+                                                    <c:choose>
+                                                        <c:when test="${sessionScope.profile_pic != null}">
+                                                            <img class="small-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Profile Picture">
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <img class="small-img" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
+                                                        </c:otherwise>
+                                                    </c:choose>
+
+
                                                     <div class="post-meta">
                                                         <p class="user-name post-user-name">
                                                             <c:out value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  " />
