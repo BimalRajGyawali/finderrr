@@ -50,7 +50,7 @@ public class FileUploadController {
 		 		
 		 		emptyFieldsError=false;
 		 	}
-		 	if(!bio.isBlank()) {
+		 	if(!bio.isEmpty()) {
 		 		int id=(int) request.getSession().getAttribute("id");
 		 		userRepository.insertBio(bio,id);
 		 		request.getSession().setAttribute("bio",bio);
