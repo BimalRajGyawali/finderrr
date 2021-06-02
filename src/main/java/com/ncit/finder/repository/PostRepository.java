@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.ncit.finder.db.DB;
-import com.ncit.finder.db.DBResponse;
+import com.ncit.finder.db.Response;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.JoinRequest;
 import com.ncit.finder.models.Post;
@@ -179,15 +179,16 @@ public class PostRepository {
 				+ "u.id user_id, u.firstname, u.middlename, u.lastname, u.bio, u.joined_on, u.email, u.pass, u.profile_pic\n"
 				+ "FROM posts p INNER JOIN users u ON p.user_id = u.id\n"
 				+ "WHERE p.id IN (SELECT ph.post_id FROM posts_hashtags ph WHERE ph.hashtag LIKE ? )\n"
-				+ "AND p.posted_on < ?\n" + "ORDER BY p.posted_on DESC LIMIT " + n + ") sp \n"
+				+ "AND p.posted_on < ' " + before + "'\n" + "ORDER BY p.posted_on DESC LIMIT " + n + ") sp \n"
 				+ "INNER JOIN posts_hashtags phh on phh.post_id = sp.p_id;";
 
 		try {
+			System.out.println(sql);
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(1, "%" + hashTag + "%");
-			preparedStatement.setString(2, before.toString());
 			ResultSet resultSet = preparedStatement.executeQuery();
 			posts = PostMapper.mapResultSetIntoPosts(resultSet);
+			System.out.println(posts.size());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			
@@ -212,39 +213,56 @@ public class PostRepository {
 			preparedStatement.setTimestamp(2, Timestamp.valueOf(post.getPostedDateTime()));
 			preparedStatement.setInt(3, post.getUser().getId());
 			preparedStatement.setString(4, post.getStatus().toString());
-
+			System.out.println("Inserting post");
 			preparedStatement.executeUpdate();
 			ResultSet rs = preparedStatement.getGeneratedKeys();
 			if (rs.next()) {
 				generatedPostId = rs.getInt(1);
 			}
+			System.out.println("Post inserted -- generated post id : "+generatedPostId);
 
 			// 2. Get all hashtags of post and insert into hashtags table if not exist
 			// already
 
+			// List<HashTag> hashTags = post.getHashTags();
 			Set<HashTag> hashTags = new HashSet<>(post.getHashTags());
+			
 
 			for (HashTag hashTag : hashTags) {
+				System.out.println("Inserting hashtag "+hashTag);
 
 				preparedStatement = connection.prepareStatement(hashTagSql);
 				preparedStatement.setString(1, hashTag.getTitle());
 				try {
 					preparedStatement.executeUpdate();
+					System.out.println("Inserted hashtag "+hashTag);
 					// If no exception occurs, hashtag doesnot exist already.
 
-				} catch (SQLIntegrityConstraintViolationException ex) {
-					System.out.println("caught");
+				} 
+				catch (SQLIntegrityConstraintViolationException ex) {
+					System.out.println("Hashtag "+hashTag+"already exist");
+				
 				}
+				catch(Exception ex){
+					ex.printStackTrace();
+				}
+				System.out.println("Linking "+hashTag+" to post id "+generatedPostId);
 				// 3. Also link the post and hashtag in posts_hashtags table
 				preparedStatement = connection.prepareStatement(postHashTagSql);
 				preparedStatement.setInt(1, generatedPostId);
 				preparedStatement.setString(2, hashTag.getTitle());
-				preparedStatement.executeUpdate();
+				try{
+					preparedStatement.executeUpdate();
 
-				System.out.println("Inserted =========="+hashTag);
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				System.out.println("Linked "+hashTag+" to post id "+generatedPostId+" successfully");
+
 
 			}
 		}catch(SQLException e){
+			e.printStackTrace();
 
 		}finally{
 			db.closeConnection(connection);
@@ -272,7 +290,7 @@ public class PostRepository {
 			preparedStatement.setInt(3, post.getId());
 			preparedStatement.executeUpdate();
 
-			List<HashTag> hashTags = post.getHashTags();
+			Set<HashTag> hashTags = new HashSet<>(post.getHashTags());
 			System.out.println(hashTags);
 
 			for (HashTag hashTag : hashTags) {
@@ -285,12 +303,19 @@ public class PostRepository {
 
 				} catch (SQLIntegrityConstraintViolationException ex) {
 					ex.printStackTrace();
+				}catch(Exception ex){
+					ex.printStackTrace();
 				}
+				
 				// 3. Also link the post and hashtag in posts_hashtags table
 				preparedStatement = connection.prepareStatement(postHashTagSql);
 				preparedStatement.setInt(1, post.getId());
 				preparedStatement.setString(2, hashTag.getTitle());
-				preparedStatement.executeUpdate();
+				try{
+					preparedStatement.executeUpdate();
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 
 			
 			}
@@ -305,13 +330,13 @@ public class PostRepository {
 		return false;
 	}
 
-	public DBResponse addJoinRequest(JoinRequest joinRequest) {
+	public Response addJoinRequest(JoinRequest joinRequest) {
 		Connection connection = db.makeConnection();
 		PreparedStatement statement;
 
 		String sql = "SELECT join_requests_count\n" + "FROM posts WHERE id=?";
 
-		DBResponse response = new DBResponse();
+		Response response = new Response();
 		try {
 
 			statement = connection.prepareStatement(sql);

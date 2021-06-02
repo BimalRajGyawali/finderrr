@@ -8,6 +8,8 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+import com.ncit.finder.db.Response;
+
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,10 +37,13 @@ public class StorageServiceImpl implements StorageService {
 			while((c=f.read())!=-1) {
 				outputStream.write(c);
 			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
+			
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
-		
 	}
 
 	@Override

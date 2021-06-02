@@ -197,7 +197,7 @@
                                                                                 <c:out value="${user.bio}" />
                                                                             </p>
                                                                             <p class="desc" style="margin-top: -8px;">
-                                                                                <c:if test="${sessionScope.id == user.id}">
+                                                                                <c:if test="${sessionScope.id == post.user.id}">
 
                                                                                     <c:out value="${user.email}" />
 

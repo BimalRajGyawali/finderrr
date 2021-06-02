@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ncit.finder.db.Response;
 import com.ncit.finder.functionality.StorageService;
 import com.ncit.finder.repository.UserRepository;
 
@@ -45,7 +46,6 @@ public class FileUploadController {
 		 		userRepository.insertImage(storageName,(String) request.getSession().getAttribute("email"));
 		 		//shouldve sent file name frome here so the same method could be used for diff'n path to save files. 
 		 		storageService.store(file,storageName);
-		 		
 		 		request.getSession().setAttribute("profile_pic",storageName);
 		 		
 		 		emptyFieldsError=false;

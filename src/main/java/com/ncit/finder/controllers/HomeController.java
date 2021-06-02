@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ncit.finder.db.DBResponse;
+import com.ncit.finder.db.Response;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.JoinRequest;
 import com.ncit.finder.models.Post;
@@ -86,8 +86,9 @@ public class HomeController {
 		if (before != null && !before.isEmpty()) {
 			beforeDateTime = LocalDateTime.parse(before);
 		}
-		List<Post> posts = postRepository.getPostsFromHashTag(hashtag, 10, beforeDateTime);
+		List<Post> posts = postRepository.getPostsFromHashTag(hashtag, 30, beforeDateTime);
 		model.addAttribute("posts", posts);
+		System.out.println("posts size "+posts.size());
 
 		if (posts.size() > 0) {
 			model.addAttribute("oldestDate", posts.get(posts.size() - 1).getPostedDateTime());
@@ -199,7 +200,7 @@ public class HomeController {
 		joinRequest.setPost(post);
 		joinRequest.setUser(user);
 
-		DBResponse response = postRepository.addJoinRequest(joinRequest);
+		Response response = postRepository.addJoinRequest(joinRequest);
 
 		redirectAttributes.addFlashAttribute("joinRequestResponse", response);
 
