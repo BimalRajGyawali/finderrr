@@ -27,10 +27,8 @@ public class StorageServiceImpl implements StorageService {
 		int c;
 		InputStream f;
 		try {
-			File uploadDir = new File("src/main/webapp/resources/uploads/");
-			if(!uploadDir.exists()){
-				uploadDir.mkdir();
-			}
+			String uploadDir = "src/main/webapp/resources/uploads/";
+		
 			f = file.getInputStream();
 			OutputStream outputStream=new FileOutputStream(new java.io.File(uploadDir+"/"+newName));
 			
