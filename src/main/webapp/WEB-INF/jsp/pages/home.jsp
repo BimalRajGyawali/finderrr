@@ -284,8 +284,20 @@
                                                                     <img class="comment-profile-pic" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                            <span class="comment-box2" role="textbox" id="comment" contentEditable=true data-ph="Write A Comment..." onkeydown="commentPost(event, '${post.id}')">
-                                                        </span>
+                                                            <c:choose>
+                                                                <c:when test="${not empty sessionScope.email}">
+
+                                                                    <span class="comment-box2" role="textbox" id="comment" contentEditable=true data-ph="Write A Comment..." onkeydown="commentPost(event, '${post.id}')"></span>
+
+                                                                </c:when>
+
+                                                                <c:otherwise>
+                                                                    <a href="/login/post/${post.id}">
+                                                                        <span class="comment-box2" role="textbox" id="comment" contentEditable=false onkeydown="commentPost(event, '${post.id}')"><span style="margin-left:85px;">Login to Comment</span></span>
+                                                                    </a>
+
+                                                                </c:otherwise>
+                                                            </c:choose>
                                                         </c:if>
 
 
