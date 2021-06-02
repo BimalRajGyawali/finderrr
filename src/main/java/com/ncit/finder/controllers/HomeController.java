@@ -37,7 +37,7 @@ public class HomeController {
 
 	@GetMapping("/guest")
 	public String guestHome(@RequestParam(required = false) String before, Model model) {
-		System.out.println("Testing heroku");
+		System.out.println("Testing heroku deploy");
 		LocalDateTime beforeDateTime = LocalDateTime.now();
 		if (before != null && !before.isEmpty()) {
 			beforeDateTime = LocalDateTime.parse(before);
