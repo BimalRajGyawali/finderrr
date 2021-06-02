@@ -22,7 +22,9 @@ public class DBConfig {
             // String username = "postgres";
             // String port = "5432";
             // String password = "root";
-            // String url = "jdbc:postgresql://"+host+":"+port+"/"+database;
+
+            
+            String url = "jdbc:postgresql://"+host+":"+port+"/"+database;
 
             dataSourceBuilder.url(url);
             dataSourceBuilder.username(username);
