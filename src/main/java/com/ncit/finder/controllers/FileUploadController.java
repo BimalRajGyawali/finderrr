@@ -1,20 +1,14 @@
 package com.ncit.finder.controllers;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
 
-import com.ncit.finder.db.Response;
 import com.ncit.finder.functionality.StorageService;
 import com.ncit.finder.repository.UserRepository;
 
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -31,36 +25,35 @@ public class FileUploadController {
 
 
 	@PostMapping("/update-profile")
-	public String handleFileUpload(HttpServletRequest request,@RequestParam("file") MultipartFile file,
+	public String handleFileUpload(HttpServletRequest request,
 			@RequestParam("bio") String bio,RedirectAttributes redirectAttributes, HttpServletRequest re) {
-		 	String fileName=file.getOriginalFilename();
-		 	boolean emptyFieldsError=true;
-		 	int userId = (int)request.getSession().getAttribute("id");
+		 	// String fileName=file.getOriginalFilename();
+		 	// boolean emptyFieldsError=true;
 		 	
-		 	String currentDate = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-		 	System.out.println("fileName="+fileName);
-		 	if(!fileName.isEmpty()) {
+		 	// String currentDate = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		 	// System.out.println("fileName="+fileName);
+		 	// if(!fileName.isEmpty()) {
 		 
-		 		String storageName=fileName.replace(fileName,FilenameUtils.getBaseName(fileName).concat(currentDate)+userId+"."+FilenameUtils.getExtension(fileName));
+		 		// String storageName=fileName.replace(fileName,FilenameUtils.getBaseName(fileName).concat(currentDate)+userId+"."+FilenameUtils.getExtension(fileName));
 		 		
-		 		userRepository.insertImage(storageName,(String) request.getSession().getAttribute("email"));
+		 		// userRepository.insertImage(storageName,(String) request.getSession().getAttribute("email"));
 		 		//shouldve sent file name frome here so the same method could be used for diff'n path to save files. 
-		 		storageService.store(file,storageName);
-		 		request.getSession().setAttribute("profile_pic",storageName);
+		 		// storageService.store(file,storageName);
+		 		// request.getSession().setAttribute("profile_pic",storageName);
+
 		 		
-		 		emptyFieldsError=false;
-		 	}
-		 	if(!bio.isEmpty()) {
+		 		// emptyFieldsError=false;
+		 	// }
+		 	
 		 		int id=(int) request.getSession().getAttribute("id");
-		 		userRepository.insertBio(bio,id);
+		 		boolean status = userRepository.insertBio(bio,id);
 		 		request.getSession().setAttribute("bio",bio);
-		 		emptyFieldsError=false;
-		 	}
-		 	if(emptyFieldsError==true) {
-		 		redirectAttributes.addFlashAttribute("emptyFieldsError",emptyFieldsError);
-				
-		 		return "redirect:/create-profile";
-		 	}
+				if(status){
+					redirectAttributes.addFlashAttribute("bioupdateSuccess", status);
+				}else{
+					redirectAttributes.addFlashAttribute("bioupdateFailure", !status);
+				}	
+		 	
 		
 		return "redirect:/";
 	}

@@ -168,4 +168,35 @@ public class UserRepository {
 //	}
 	
 	
+
+public User getById(int id) {
+		
+	Connection connection =  db.makeConnection();
+	PreparedStatement preparedStatement;
+	String sql="SELECT u.id,u.firstname,u.middlename,u.lastname,u.bio,u.profile_pic FROM users u where id = ?";
+	User user=new User();
+	 try {
+		preparedStatement = connection.prepareStatement(sql);
+		preparedStatement.setInt(1,id);
+		
+		ResultSet resultSet = preparedStatement.executeQuery();
+		if(resultSet.next()) {
+			
+			user.setId(resultSet.getInt("id"));
+			user.setFirstName(resultSet.getString("firstname"));
+			user.setMiddleName(resultSet.getString("middlename"));
+			user.setLastName(resultSet.getString("lastname"));
+			user.setBio(resultSet.getString("bio"));
+			user.setProfilePic(resultSet.getString("profile_pic"));
+			
+		}
+		
+	}catch(SQLException e) {
+		e.printStackTrace();	
+	}finally {
+		db.closeConnection(connection);
+	}
+	 return user;
+	
+ }
 }

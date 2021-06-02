@@ -153,6 +153,8 @@ public class RegistrationController {
 		if(codeRecieved.equals(codeSent)) {
 			user.setPass(passwordHashed);
 			userRepository.createUser(user);
+			/** for temporary. heroku doesnot support file system */
+			userRepository.insertImage("pic.jpeg", email);
 			return "redirect:/login/post/"+post_id;
 		}
 		redirectAttributes.addFlashAttribute("codeError",true);
@@ -164,11 +166,14 @@ public class RegistrationController {
 	}
 	
 	@GetMapping("/create-profile")
-	public String createProfile(HttpServletRequest request) {
+	public String createProfile(HttpServletRequest request, Model model) {
 		if((String) request.getSession().getAttribute("email")==null) {
 			return "redirect:/login";
 		
 		}
+		int id = (int) request.getSession().getAttribute("id");
+		User user = userRepository.getById(id);
+		model.addAttribute("user", user);
 		return "createprofile";
 		
 	}

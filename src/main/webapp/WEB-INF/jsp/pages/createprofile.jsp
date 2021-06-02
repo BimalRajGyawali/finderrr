@@ -96,24 +96,25 @@
         </head>
 
         <body>
-            <form method="POST" enctype="multipart/form-data" action="/update-profile">
+            <form method="POST" action="/update-profile">
                 <div id="login-box">
 
                     <h1>Profile</h1>
 
-                    <c:if test="${emptyFieldsError}">
+                    <!-- <c:if test="${emptyFieldsError}">
                         <p class="error">You need to either attach an Image or change your bio.</p>
                     </c:if>
                     <c:if test="${failedUpload}">
                         <p class="error">File size exceeded ! Try files with less than 2MB.</p>
-                    </c:if>
+                    </c:if> -->
 
-                    <input type="file" name="file" />
+
+                    <!-- <input type="file" name="file" /> -->
 
 
 
                     <p>Bio:</p>
-                    <textarea id="bio" name="bio" rows="4" cols="50"></textarea>
+                    <textarea id="bio" name="bio" rows="4" cols="50">${sessionScope.bio}</textarea>
 
                     <button type="submit" value="profile">Upload</button>
 
