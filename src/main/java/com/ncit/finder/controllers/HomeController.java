@@ -58,7 +58,11 @@ public class HomeController {
 		if (request.getSession().getAttribute("id") != null) {
 			userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
 		} else {
+			if(before != null && !before.isEmpty()){
+				return "redirect:/guest?before="+before;
+			}
 			return "redirect:/guest";
+			
 		}
 		LocalDateTime beforeDateTime = LocalDateTime.now();
 		if (before != null && !before.isEmpty()) {
