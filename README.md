@@ -23,6 +23,4 @@ JavaScript, <strong>Java</strong>, <strong>Spring Boot</strong>, MySQL.
 
 # Demo
 
-<br>
-
-<img src="demo.png">
+The web application is live at <a href="https://finderrr.herokuapp.com/">finderrrr.herokuapp.com</a>
