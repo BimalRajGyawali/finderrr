@@ -153,20 +153,22 @@
                                                 </div>
                                                 <div class="line"></div>
                                                 <div class="jr-bar">
+                                                    <c:if test="${post.status == 'ongoing'}">
 
-                                                    <c:choose>
-                                                        <c:when test="${not empty sessionScope.email}">
-                                                            <form action="/${post.id}/join-requests" method="POST">
-                                                        </c:when>
+                                                        <c:choose>
+                                                            <c:when test="${not empty sessionScope.email}">
+                                                                <form action="/${post.id}/join-requests" method="POST">
+                                                            </c:when>
 
-                                                        <c:otherwise>
-                                                            <form action="/login/post/${post.id}" method="GET">
-                                                        </c:otherwise>
-                                                    </c:choose>
+                                                            <c:otherwise>
+                                                                <form action="/login/post/${post.id}" method="GET">
+                                                            </c:otherwise>
+                                                        </c:choose>
 
 
-                                                    <input class="interested-button styled-btn" type="submit" value="Send a Join Request">
-                                                    </form>
+                                                        <input class="interested-button styled-btn" type="submit" value="Send a Join Request">
+                                                        </form>
+                                                    </c:if>
                                                     <div class="jr-bar-cmt">
                                                         <a class="comment-button" href="/post/${post.id}">Comments (${post.commentsCount})</a>
                                                         <a class="share-button" href="/${post.id}/join-requests">Join Requests (${post.joinRequestsCount})</a>
@@ -190,85 +192,61 @@
                                                 <div class="line"></div>
 
 
+                                                <c:if test="${post.status == 'ongoing'}">
+                                                    <div class="comment-posting">
+                                                        <div class="comment-post-details">
+                                                            <c:choose>
+                                                                <c:when test="${sessionScope.profile_pic != null}">
+                                                                    <img class="comment-profile-pic" src="/resources/uploads/${sessionScope.profile_pic}" alt="Profile Picture">
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <img class="comment-profile-pic" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
+                                                                </c:otherwise>
+                                                            </c:choose>
 
-                                                <div class="comment-posting">
-                                                    <img class="comment-profile-pic" src="/resources/images/pic.jpeg" alt="Card image cap">
-                                                    <div class="comment-post-details">
-                                                        <span class="comment-box2" role="textbox" id="comment" contentEditable=true data-ph="Write A Comment..." onkeydown="commentPost(event, '${post.id}')"></span>
-                                                        <div class="invisible-form">
-                                                            <form action="/write-comment" method="post">
-                                                                <input type="text" name="post_id" value="${post.id}">
-                                                                <input type="text" name="comments_count" value="${post.commentsCount}">
-                                                                <input type="text" id="form_input${post.id}" name="form_comment_content">
-                                                                <input type="submit" value="Submit" id="submit_button${post.id}">
-                                                            </form>
+                                                            <c:choose>
+                                                                <c:when test="${not empty sessionScope.email}">
+
+                                                                    <span class="comment-box2" role="textbox" id="comment" contentEditable=true data-ph="Write A Comment..." onkeydown="commentPost(event, '${post.id}')"></span>
+
+                                                                </c:when>
+
+                                                                <c:otherwise>
+                                                                    <a href="/login/post/${post.id}">
+                                                                        <span class="comment-box2" role="textbox" id="comment" contentEditable=false onkeydown="commentPost(event, '${post.id}')"><span style="margin-left:85px;">Login to Comment</span></span>
+                                                                    </a>
+
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                            <div class="invisible-form">
+                                                                <form action="/write-comment" method="post">
+                                                                    <input type="text" name="post_id" value="${post.id}">
+                                                                    <input type="text" name="comments_count" value="${post.commentsCount}">
+                                                                    <input type="text" id="form_input${post.id}" name="form_comment_content">
+                                                                    <input type="submit" value="Submit" id="submit_button${post.id}">
+                                                                </form>
+                                                            </div>
                                                         </div>
+
                                                     </div>
-
-                                                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                <!-- <div class="comment-posting">
-                                                    <img class="comment-profile-pic" src="resources/images/pic.jpeg"
-                                                        alt="Card image cap">
-                                                    <div class="comment-post-details">
-                                                        <span class="comment-box2" role="textbox" id="comment"
-                                                            contentEditable=true data-ph="Write A Comment..."
-                                                            onkeydown="commentPost(event,'commentContainer${post.id}')"></span>
-                                                    </div>
-
-                                                </div>
-                                                <div class="line"></div>
-                                                <div id="commentContainer${post.id}"> -->
-
-                                                <!-- <div class="comment">
-
-                                            <img class="comment-profile-pic" src="../static/images/pic.jpeg"
-                                                alt="Card image cap">
-                                            <div class="comment-details">
-                                                <p class="account-name">Sampanna Pokhara</p>
-                                                <p class="comment-data">Yeah To the left of that decimal, I need seven
-                                                    figures to play the joint
-                                                    Turn up your decibels, peep how I decimate a joint
-                                                    Check out my projects like them workers that Section 8 appoints
-                                                    And you'll see how I flipped, like exclamation
-                                                    pointssdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                                    My brothers shoot first as if they never played the point, more two
-                                                    guards
-                                                    Enough straps to fill four U-Hauls</p>
-                                            </div>
-                                            <p class="reply-button"><span class="reply-button-clickable">Reply</span>
-                                            </p>
-                                            <div class="reply">
-                                                <p>Ram Sharan</p>
-                                                <p>no u are wrong i dont think it works that way my man.</p>
-                                            </div>
-                                        </div>
-                                    </div> -->
-                                                <!-- </div> -->
-
+                                                </c:if>
 
                                             </div>
                                     </section>
+
                                 </c:forEach>
+                                <c:choose>
+                                    <c:when test="${hasOlderPosts}">
+                                        <a class="btn btn-primary mt-5 mb-5" href="/posts/hashtag/${requestedHashTag}?before=${oldestDate}">Show older posts</a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p class="mt-4 mb-5 small"> You have reached the end of posts with hashtag
+                                            <a href="/posts/hashtag/${requestedHashTag}">${requestedHashTag}</a>.
+                                            <a href="/">Go Back To Home</a></p>
+                                    </c:otherwise>
+                                </c:choose>
 
                                 </div>
-                                <c:if test="${hasPosts }">
-                                    <a class="btn btn-primary mt-5 mb-5" href="/posts/hashtag/${requestedHashTag}?before=${oldestDate}">Show older posts</a>
-                                </c:if>
 
                             </div>
                             <div class="col col3">

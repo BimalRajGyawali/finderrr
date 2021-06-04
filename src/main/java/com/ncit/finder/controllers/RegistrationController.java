@@ -155,6 +155,7 @@ public class RegistrationController {
 			userRepository.createUser(user);
 			/** for temporary. heroku doesnot support file system */
 			userRepository.insertImage("pic.jpeg", email);
+			redirectAttributes.addFlashAttribute("verificationSuccess", true);
 			return "redirect:/login/post/"+post_id;
 		}
 		redirectAttributes.addFlashAttribute("codeError",true);

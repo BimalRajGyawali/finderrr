@@ -54,7 +54,7 @@
                             </div>
                             <div class="col col2">
                                 <c:choose>
-                                    <c:when test="${post != null}">
+                                    <c:when test="${post.id != 0}">
 
                                         <c:if test="${joinRequestResponse != null}">
                                             <c:choose>
@@ -119,7 +119,9 @@
                                                                         <c:out value="${post.secondsTillNow} sec ago" />
                                                                     </c:otherwise>
                                                                 </c:choose>
-                                                                <span class="">. ${post.status}</span>
+
+                                                                .<span class="post-status ${post.status}">
+                                                                    ${post.status}</span>
                                                             </p>
 
                                                         </div>
@@ -227,7 +229,7 @@
                                         </section>
                                     </c:when>
                                     <c:otherwise>
-                                        <c:out value="404 error" />
+                                        <c:out value="NO POSTS AVAILABLE" />
                                     </c:otherwise>
                                 </c:choose>
                                 </div>

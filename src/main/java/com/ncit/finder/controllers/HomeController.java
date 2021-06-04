@@ -28,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class HomeController {
 	private PostRepository postRepository;
 	private FollowingRepository followingRepository;
+	private static final int POSTS_SIZE = 50;
 
 	@Autowired
 	public HomeController(PostRepository postRepository, FollowingRepository followingRepository) {
@@ -42,13 +43,18 @@ public class HomeController {
 		if (before != null && !before.isEmpty()) {
 			beforeDateTime = LocalDateTime.parse(before);
 		}
-		List<Post> posts = postRepository.getDetailedPosts(30, beforeDateTime);
+		List<Post> posts = postRepository.getDetailedPosts(POSTS_SIZE, beforeDateTime);
 		model.addAttribute("posts", posts);
 
 		if (posts.size() > 0) {
-			model.addAttribute("oldestDate", posts.get(posts.size() - 1).getPostedDateTime());
+			LocalDateTime oldestDateTime = posts.get(posts.size() - 1).getPostedDateTime();
+			model.addAttribute("oldestDate", oldestDateTime);
 			model.addAttribute("hasPosts", true);
+			List<Post> olderPosts = postRepository.getDetailedPosts(POSTS_SIZE, oldestDateTime);
+			boolean hasOlderPosts = olderPosts.size() != 0 ;
+			model.addAttribute("hasOlderPosts", hasOlderPosts);
 		}
+		
 		return "home";
 	}
 
@@ -68,7 +74,7 @@ public class HomeController {
 		if (before != null && !before.isEmpty()) {
 			beforeDateTime = LocalDateTime.parse(before);
 		}
-		List<Post> posts = postRepository.getRecommendedPosts(userId, 30, beforeDateTime);
+		List<Post> posts = postRepository.getRecommendedPosts(userId, POSTS_SIZE, beforeDateTime);
 		model.addAttribute("posts", posts);
 		List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
 		if (recommendedHashTags.size() > 0) {
@@ -78,12 +84,54 @@ public class HomeController {
 			model.addAttribute("hasRecommendations", false);
 		}
 		if (posts.size() > 0) {
-			model.addAttribute("oldestDate", posts.get(posts.size() - 1).getPostedDateTime());
+			LocalDateTime oldestDateTime = posts.get(posts.size() - 1).getPostedDateTime();
+			model.addAttribute("oldestDate", oldestDateTime);
 			model.addAttribute("hasPosts", true);
+			List<Post> olderPosts = postRepository.getRecommendedPosts(userId, POSTS_SIZE, oldestDateTime);
+			boolean hasOlderPosts = olderPosts.size() != 0;
+			model.addAttribute("hasOlderPosts", hasOlderPosts);
 		}
 		return "home";
 	}
 
+	@GetMapping("/explore")
+	public String explore(@RequestParam(required = false) String before,
+							 Model model, HttpServletRequest request) {
+		int userId;
+		if (request.getSession().getAttribute("id") != null) {
+			userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+		} else {
+			if(before != null && !before.isEmpty()){
+				return "redirect:/guest?before="+before;
+			}
+			return "redirect:/guest";
+			
+		}
+		LocalDateTime beforeDateTime = LocalDateTime.now();
+		if (before != null && !before.isEmpty()) {
+			beforeDateTime = LocalDateTime.parse(before);
+		}
+		List<Post> posts = postRepository.getExploringPosts(userId, POSTS_SIZE, beforeDateTime);
+		model.addAttribute("posts", posts);
+		List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
+		if (recommendedHashTags.size() > 0) {
+			model.addAttribute("recommendedHashTags", recommendedHashTags);
+			model.addAttribute("hasRecommendations", true);
+		} else {
+			model.addAttribute("hasRecommendations", false);
+		}
+		if (posts.size() > 0) {
+			LocalDateTime oldestDateTime = posts.get(posts.size() - 1).getPostedDateTime();
+			model.addAttribute("oldestDate", oldestDateTime);
+			model.addAttribute("hasPosts", true);
+			List<Post> olderPosts = postRepository.getExploringPosts(userId, POSTS_SIZE, oldestDateTime);
+			boolean hasOlderPosts = olderPosts.size() != 0;
+			model.addAttribute("hasOlderPosts", hasOlderPosts);
+		}
+		return "explore";
+	}
+
+	
 	@GetMapping("/posts/hashtag/{hashtag}")
 	public String getPostsFromHashTag(@PathVariable String hashtag, @RequestParam(required = false) String before,
 			Model model, HttpServletRequest request) {
@@ -91,14 +139,19 @@ public class HomeController {
 		if (before != null && !before.isEmpty()) {
 			beforeDateTime = LocalDateTime.parse(before);
 		}
-		List<Post> posts = postRepository.getPostsFromHashTag(hashtag, 30, beforeDateTime);
+		List<Post> posts = postRepository.getPostsFromHashTag(hashtag, POSTS_SIZE, beforeDateTime);
 		model.addAttribute("posts", posts);
 		System.out.println("posts size "+posts.size());
 
 		if (posts.size() > 0) {
-			model.addAttribute("oldestDate", posts.get(posts.size() - 1).getPostedDateTime());
+			LocalDateTime oldestDateTime = posts.get(posts.size() - 1).getPostedDateTime();
+			model.addAttribute("oldestDate", oldestDateTime);
 			model.addAttribute("hasPosts", true);
+			List<Post> olderPosts = postRepository.getPostsFromHashTag(hashtag, POSTS_SIZE, oldestDateTime);
+			boolean hasOlderPosts = olderPosts.size() != 0;
+			model.addAttribute("hasOlderPosts", hasOlderPosts);
 		}
+		
 		boolean isHashTagPresent = followingRepository.isHashTagPresent(hashtag);
 		model.addAttribute("requestedHashTag", hashtag);
 		model.addAttribute("isHashTagPresent", isHashTagPresent);
@@ -175,6 +228,7 @@ public class HomeController {
 	public String getPostWithJoinRequests(@PathVariable int postId, Model model, HttpServletRequest request) {
 		Post post = postRepository.getPostWithJoinRequests(postId);
 		model.addAttribute("post", post);
+		
 		model.addAttribute("hasJoinRequests", post.getUsersRequestingToJoin().size() > 0);
 		System.out.println(post.getUsersRequestingToJoin().size());
 
@@ -265,7 +319,7 @@ public class HomeController {
 		redirectAttributes.addFlashAttribute("updateSuccess", status);
 		redirectAttributes.addFlashAttribute("updateFailure", !status);
 
-		return "redirect:/";
+		return "redirect:/post/"+post.getId();
 	}
 
 	@PostMapping("/delete-post")

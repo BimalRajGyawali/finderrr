@@ -72,6 +72,22 @@ pageEncoding="ISO-8859-1"%>
                                 </c:when>
 
                             </c:choose>
+                            <c:choose>
+                                <c:when test="${updateSuccess}">
+                                    <div class="alert alert-success alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <strong>Success!</strong> Post updated successfully.
+                                    </div>
+                                </c:when>
+
+                                <c:when test="${updateFailure}">
+                                    <div class="alert alert-danger alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <strong>Failed!</strong> Error in updating post.
+                                    </div>
+                                </c:when>
+
+                            </c:choose>
 
 
                             <section class="posts-section">
@@ -111,7 +127,8 @@ pageEncoding="ISO-8859-1"%>
                                                             <c:out value="${post.secondsTillNow} sec ago" />
                                                         </c:otherwise>
                                                     </c:choose>
-                                                    <span class="">. ${post.status}</span>
+                                                    .<span class="post-status ${post.status}">
+                                                        ${post.status}</span>
                                                 </p>
 
                                             </div>

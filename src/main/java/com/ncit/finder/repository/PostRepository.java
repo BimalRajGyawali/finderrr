@@ -17,6 +17,7 @@ import com.ncit.finder.db.Response;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.JoinRequest;
 import com.ncit.finder.models.Post;
+import com.ncit.finder.models.Status;
 import com.ncit.finder.models.User;
 import com.ncit.finder.utils.LocalDateTimeParser;
 
@@ -107,7 +108,8 @@ public class PostRepository {
 				+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
 				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio,u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
 				+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
-				+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n";
+				+ "ORDER BY p.posted_on DESC LIMIT\n" + n +")sp \n" 
+				+ "ON ph.post_id = sp.p_id ORDER BY sp.posted_on DESC; \n";
 
 		try {
 			preparedStatement = connection.prepareStatement(sql);
@@ -123,39 +125,57 @@ public class PostRepository {
 		return posts;
 	}
 
+	
 	public List<Post> getRecommendedPosts(int userId, int n, LocalDateTime dateTime) {
 
 		Timestamp before = Timestamp.valueOf(dateTime);
 		Connection connection = db.makeConnection();
 		PreparedStatement preparedStatement;
 		List<Post> followedPosts = new ArrayList<>();
-		List<Post> nonFollowedPosts = new ArrayList<>();
 
 		String followedPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
-				+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
-				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
-				+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
-				+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n"
-				+ "WHERE sp.p_id IN\n"
-				+"(SELECT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag);";
-
-		String nonFollowedPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
-		+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
-		+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
-		+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
-		+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n"
-		+ "WHERE sp.p_id NOT IN\n"
-		+"(SELECT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag);";
+						+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
+						+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
+						+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
+						+ "AND p.id IN\n"
+						+"(SELECT DISTINCT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag WHERE f.user_id = ?\n)"
+						+ "ORDER BY p.posted_on DESC LIMIT\n"+n+")sp \n" + "ON ph.post_id = sp.p_id\n"
+						+"ORDER BY sp.posted_on DESC ;";
 
 		try {
 			preparedStatement = connection.prepareStatement(followedPostsSql);
+			preparedStatement.setInt(1, userId);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			followedPosts = PostMapper.mapResultSetIntoPosts(resultSet);
 
-			preparedStatement = connection.prepareStatement(nonFollowedPostsSql);
-			resultSet = preparedStatement.executeQuery();
-			nonFollowedPosts = PostMapper.mapResultSetIntoPosts(resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.closeConnection(connection);
+		}
+		return followedPosts;
+	}
+	
+	public List<Post> getExploringPosts(int userId, int n, LocalDateTime dateTime){
+		Timestamp before = Timestamp.valueOf(dateTime);
+		Connection connection = db.makeConnection();
+		PreparedStatement preparedStatement;
+		List<Post> exploringPosts = new ArrayList<>();
 
+		String exploringPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
+						+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
+						+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
+						+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
+						+ "AND p.id NOT IN\n"
+						+"(SELECT DISTINCT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag WHERE f.user_id = ?\n)"
+						+ "ORDER BY p.posted_on DESC LIMIT\n"+n+")sp \n" + "ON ph.post_id = sp.p_id\n"
+						+"ORDER BY sp.posted_on DESC ;";
+
+		try {
+			preparedStatement = connection.prepareStatement(exploringPostsSql);
+			preparedStatement.setInt(1, userId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			exploringPosts = PostMapper.mapResultSetIntoPosts(resultSet);
 
 
 		} catch (SQLException e) {
@@ -163,10 +183,9 @@ public class PostRepository {
 		} finally {
 			db.closeConnection(connection);
 		}
-		followedPosts.addAll(nonFollowedPosts);
-		return followedPosts;
+		return exploringPosts;
+
 	}
-	
 	public List<Post> getPostsFromHashTag(String hashTag, int n, LocalDateTime dateTime) {
 
 		Timestamp before = Timestamp.valueOf(dateTime);
@@ -178,14 +197,15 @@ public class PostRepository {
 				+ "( SELECT p.id p_id, p.content, p.posted_on, p.comments_count, p.join_requests_count,p.status,"
 				+ "u.id user_id, u.firstname, u.middlename, u.lastname, u.bio, u.joined_on, u.email, u.pass, u.profile_pic\n"
 				+ "FROM posts p INNER JOIN users u ON p.user_id = u.id\n"
-				+ "WHERE p.id IN (SELECT ph.post_id FROM posts_hashtags ph WHERE ph.hashtag LIKE ? )\n"
-				+ "AND p.posted_on < ' " + before + "'\n" + "ORDER BY p.posted_on DESC LIMIT " + n + ") sp \n"
-				+ "INNER JOIN posts_hashtags phh on phh.post_id = sp.p_id;";
+				+ "WHERE p.id IN (SELECT ph.post_id FROM posts_hashtags ph WHERE LOWER(ph.hashtag) LIKE ? )\n"
+				+ "AND p.posted_on < ' " + before + "'\n" 
+				+ "ORDER BY p.posted_on DESC LIMIT\n"+n+") sp \n"
+				+ "INNER JOIN posts_hashtags phh on phh.post_id = sp.p_id\n"
+				+"ORDER BY sp.posted_on DESC;";
 
 		try {
-			System.out.println(sql);
 			preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, "%" + hashTag + "%");
+			preparedStatement.setString(1, "%" + hashTag.toLowerCase() + "%");
 			ResultSet resultSet = preparedStatement.executeQuery();
 			posts = PostMapper.mapResultSetIntoPosts(resultSet);
 			System.out.println(posts.size());
@@ -381,7 +401,7 @@ public class PostRepository {
 	}
 
 	public Post getPostWithJoinRequests(int postId) {
-		String sql = "SELECT sp.post_id, sp.post_content, sp.post_posted_on, sp.post_comments_count, sp.post_join_requests_count,"
+		String sql = "SELECT sp.post_id, sp.post_content, sp.post_posted_on, sp.post_comments_count,sp.status, sp.post_join_requests_count,"
 				+ "sp.post_user_id, sp.post_user_firstname , sp.post_user_middlename, sp.post_user_lastname, sp.post_user_joined_on, sp.post_user_bio, sp.post_user_email, sp.post_user_pass, sp.post_user_pp"
 				+ ", u.id join_requests_user_id, u.firstname join_requests_user_firstname, u.middlename join_requests_user_middlename, u.lastname join_requests_user_lastname, u.joined_on join_requests_user_joined_on, u.bio join_requests_user_bio, u.email join_requests_user_email, u.pass join_requests_user_pass, u.profile_pic join_requests_user_pp\n"
 				+ "FROM join_requests j\n" + "INNER JOIN users u on j.user_id = u.id\n" + "RIGHT JOIN\n" + "(SELECT\n"
@@ -422,6 +442,7 @@ public class PostRepository {
 				post.setContent(resultSet.getString("post_content"));
 				post.setCommentsCount(resultSet.getInt("post_comments_count"));
 				post.setJoinRequestsCount(resultSet.getInt("post_join_requests_count"));
+				post.setStatus(Status.valueOf(resultSet.getString("status")));
 
 				if (resultSet.getTimestamp("post_posted_on") != null) {
 					post.setPostedDateTime(resultSet.getTimestamp("post_posted_on").toLocalDateTime());

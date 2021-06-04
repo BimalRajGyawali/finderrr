@@ -14,6 +14,7 @@ import com.ncit.finder.db.DB;
 import com.ncit.finder.models.Comment;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.Post;
+import com.ncit.finder.models.Status;
 import com.ncit.finder.models.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +37,12 @@ public class CommentRepository {
 		User post_user = new User();
 		Connection connection = db.makeConnection();
 		PreparedStatement preparedStatement;
-		String sql = "SELECT sp.post_id, sp.post_content, sp.post_posted_on, sp.post_comments_count, sp.post_join_requests_count,\r\n"
+		String sql = "SELECT sp.post_id, sp.post_content, sp.post_posted_on, sp.post_comments_count,sp.status, sp.post_join_requests_count,\r\n"
 				+ "        sp.post_user_id, sp.post_user_firstname , sp.post_user_middlename, sp.post_user_lastname, sp.post_user_joined_on, sp.post_user_bio,sp.post_user_email, sp.post_user_pass, sp.post_user_pp, c.id comment_id,c.content comment_content, c.commented_on\r\n"
 				+ "        ,u.id comments_user_id, u.firstname comments_user_firstname, u.middlename comments_user_middlename, u.lastname comments_user_lastname, u.joined_on comments_user_joined_on, u.bio comments_user_bio, u.email comments_user_email, u.pass comments_user_pass, u.profile_pic comments_user_pp\r\n"
 				+ "        FROM comments c\r\n" + "        INNER JOIN users u on c.user_id = u.id\r\n"
 				+ "        RIGHT JOIN \r\n" + "        (SELECT\r\n"
-				+ "        p.id post_id, p.content post_content, p.posted_on post_posted_on, p.comments_count post_comments_count, p.join_requests_count post_join_requests_count,\r\n"
+				+ "        p.id post_id, p.content post_content,p.status, p.posted_on post_posted_on, p.comments_count post_comments_count, p.join_requests_count post_join_requests_count,\r\n"
 				+ "        u.id post_user_id, u.firstname post_user_firstname , u.middlename post_user_middlename, u.lastname post_user_lastname, u.joined_on post_user_joined_on, u.bio post_user_bio,u.email post_user_email, u.pass post_user_pass, u.profile_pic post_user_pp\r\n"
 				+ "        FROM posts p INNER JOIN users u on p.user_id = u.id where p.id=?) sp ON c.post_id = sp.post_id ORDER BY c.commented_on DESC";
 
@@ -54,6 +55,7 @@ public class CommentRepository {
 					flag = false;
 					post.setId(resultSet.getInt("post_id"));
 					post.setContent(resultSet.getString("post_content"));
+					post.setStatus(Status.valueOf(resultSet.getString("status")));
 					if (resultSet.getTimestamp("post_posted_on") != null) {
 						post.setPostedDateTime(resultSet.getTimestamp("post_posted_on").toLocalDateTime());
 
