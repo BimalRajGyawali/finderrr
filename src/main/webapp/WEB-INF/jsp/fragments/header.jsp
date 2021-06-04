@@ -38,16 +38,18 @@
 
         </div>
         <script>
-            var pathname = window.location.href;
-            var paths = document.getElementsByClassName("path");
+            (function fn() {
+                var pathname = window.location.href;
+                var paths = document.getElementsByClassName("path");
 
-            for (var i = 0; i < paths.length; i++) {
-                if (pathname == paths[i].href) {
-                    paths[i].childNodes[0].style.color = "blue";
+                for (var i = 0; i < paths.length; i++) {
+                    if (pathname == paths[i].href) {
+                        paths[i].childNodes[0].style.color = "blue";
 
-                } else {
-                    paths[i].childNodes[0].style.color = "grey";
+                    } else {
+                        paths[i].childNodes[0].style.color = "grey";
+                    }
                 }
-            }
+            })();
         </script>
         <script src="../../resources/js/search.js"></script>
