@@ -182,14 +182,16 @@
 
 
                                                                     <a href="" class="link post-head-left jr">
-                                                                        <c:choose>
-                                                                            <c:when test="${user.profilePic != null}">
-                                                                                <img class="small-img" src="/resources/uploads/${user.profilePic}" alt="Profile Picture">
-                                                                            </c:when>
-                                                                            <c:otherwise>
-                                                                                <img class="small-img" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
-                                                                            </c:otherwise>
-                                                                        </c:choose>
+                                                                        <div>
+                                                                            <c:choose>
+                                                                                <c:when test="${user.profilePic != null}">
+                                                                                    <img class="small-img" src="/resources/uploads/${user.profilePic}" alt="Profile Picture">
+                                                                                </c:when>
+                                                                                <c:otherwise>
+                                                                                    <img class="small-img" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
+                                                                                </c:otherwise>
+                                                                            </c:choose>
+                                                                        </div>
                                                                         <div class="jr-user">
                                                                             <p class="mt-4">
                                                                                 <span class="user-name post-user-name "> <c:out value="${user.firstName} ${user.middleName} ${user.lastName}  " /></span>
@@ -199,6 +201,7 @@
                                                                                 <c:out value="${user.bio}" />
                                                                             </p>
                                                                             <p class="desc" style="margin-top: -8px;">
+
                                                                                 <c:if test="${sessionScope.id == post.user.id}">
 
                                                                                     <c:out value="${user.email}" />

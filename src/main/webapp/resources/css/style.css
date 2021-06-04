@@ -554,11 +554,10 @@ body {
     }
 }
 
-.jr-list {}
-
 .jr {
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .jr img {
@@ -568,8 +567,4 @@ body {
 .small {
     font-size: 0.9em;
     color: grey;
-}
-
-.active {
-    color: blue;
 }
