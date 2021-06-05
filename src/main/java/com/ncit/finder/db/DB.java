@@ -16,7 +16,7 @@ public class DB {
 	public Connection makeConnection() {
 		Connection conn = null;
 		try {
-			conn = dataSource.getConnection();
+			dataSource.getConnection();
 			System.out.println("Connecteddddddddddd");
 			
 		} catch (SQLException e) {
