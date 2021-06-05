@@ -22,6 +22,7 @@ public class DB {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Connection "+conn);
 		return conn;
 	}
 	
