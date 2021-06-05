@@ -8,16 +8,7 @@ public class HashTag {
 	}
 
 	public void setTitle(String title) {
-		String[] hashtagParts = title.split("#");
-		
-		if (hashtagParts.length == 0) {
-			this.title = "empty";
-		} else {
-			String hashtag = hashtagParts[hashtagParts.length - 1];
-			this.title = hashtag;
-
-		}
-
+		this.title = sanitize(title);
 	}
 
 	/** Do not change this format. This is in JSON Format */
@@ -49,6 +40,19 @@ public class HashTag {
 		} else if (!title.equals(other.title))
 			return false;
 		return true;
+	}
+
+	public static String sanitize(String title){
+		String[] hashtagParts = title.split("#");
+		String sanitizedHashtag = "";
+		if (hashtagParts.length == 0) {
+			sanitizedHashtag ="empty";
+		} else {
+			String hashtag = hashtagParts[hashtagParts.length - 1];
+			sanitizedHashtag = hashtag;
+
+		}
+		return sanitizedHashtag;
 	}
 
 }

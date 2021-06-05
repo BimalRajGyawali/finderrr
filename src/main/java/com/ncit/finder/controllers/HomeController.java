@@ -135,6 +135,7 @@ public class HomeController {
 	@GetMapping("/posts/hashtag/{hashtag}")
 	public String getPostsFromHashTag(@PathVariable String hashtag, @RequestParam(required = false) String before,
 			Model model, HttpServletRequest request) {
+				hashtag = HashTag.sanitize(hashtag);
 		LocalDateTime beforeDateTime = LocalDateTime.now();
 		if (before != null && !before.isEmpty()) {
 			beforeDateTime = LocalDateTime.parse(before);
