@@ -260,6 +260,7 @@ public class HomeController {
 		joinRequest.setUser(user);
 
 		Response response = postRepository.addJoinRequest(joinRequest);
+		System.out.println(response);
 
 		redirectAttributes.addFlashAttribute("joinRequestResponse", response);
 

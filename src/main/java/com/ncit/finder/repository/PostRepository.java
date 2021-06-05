@@ -391,17 +391,21 @@ public class PostRepository {
 			response.setSuccessStatus(true);
 			return response;
 		} catch(PSQLException ex){
+			System.out.println("already sent");
 			response.setResponseMessage("Join Request to this post has been already sent");
 			response.setSuccessStatus(true);
-		}
-		
-		catch (SQLException e) {
+		}catch (SQLException e) {
+			response.setResponseMessage("Error in sending join request");
+			response.setSuccessStatus(false);
 			e.printStackTrace();
-		} finally {
+		} catch(Exception e){
+			response.setResponseMessage("Error in sending join request");
+			response.setSuccessStatus(false);
+			e.printStackTrace();
+		}finally {
 			db.closeConnection(connection);
 		}
-		response.setResponseMessage("Error in sending join request");
-		response.setSuccessStatus(false);
+		
 
 		return response;
 	}
