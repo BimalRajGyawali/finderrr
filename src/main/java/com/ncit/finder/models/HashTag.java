@@ -45,12 +45,8 @@ public class HashTag {
 	public static String sanitize(String title){
 		String[] hashtagParts = title.split("#");
 		String sanitizedHashtag = "";
-		if (hashtagParts.length == 0) {
-			sanitizedHashtag ="empty";
-		} else {
-			String hashtag = hashtagParts[hashtagParts.length - 1];
-			sanitizedHashtag = hashtag;
-
+		if (hashtagParts.length != 0) {
+			sanitizedHashtag = hashtagParts[hashtagParts.length - 1];
 		}
 		return sanitizedHashtag;
 	}

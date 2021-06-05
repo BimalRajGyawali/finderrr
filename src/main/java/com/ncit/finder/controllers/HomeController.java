@@ -173,6 +173,22 @@ public class HomeController {
 		}
 		return "posts";
 	}
+	@GetMapping("/posts/hashtag/")
+	public String redirectToGetPostsFromHashtag(Model model, HttpServletRequest request){
+		if (request.getSession().getAttribute("id") != null) {
+			int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+
+			List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
+			if (recommendedHashTags.size() > 0) {
+				model.addAttribute("recommendedHashTags", recommendedHashTags);
+				model.addAttribute("hasRecommendations", true);
+			} else {
+				model.addAttribute("hasRecommendations", false);
+			}
+
+		}
+		return "hashtagerror";
+	}
 
 	@GetMapping("/create-post")
 	public String getCreatePostPage(HttpServletRequest request, Model model) {
@@ -217,12 +233,12 @@ public class HomeController {
 		post.setUser(user);
 		post.setHashTags(hashTags);
 		post.setStatus(pStatus);
-		boolean status = postRepository.createPost(post);
+		int generatedId = postRepository.createPost(post);
 
-		redirectAttributes.addFlashAttribute("success", status);
-		redirectAttributes.addFlashAttribute("failure", !status);
+		redirectAttributes.addFlashAttribute("success", generatedId != 0);
+		redirectAttributes.addFlashAttribute("failure", generatedId == 0);
 
-		return "redirect:/";
+		return "redirect:/"+generatedId+"/join-requests";
 	}
 
 	@GetMapping("/{postId}/join-requests")

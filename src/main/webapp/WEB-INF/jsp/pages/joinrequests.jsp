@@ -54,6 +54,23 @@
                             </div>
                             <div class="col col2">
                                 <c:choose>
+                                    <c:when test="${success}">
+                                        <div class="alert alert-success alert-dismissible">
+                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                            <strong>Success!</strong> Post created successfully.
+                                        </div>
+                                    </c:when>
+
+                                    <c:when test="${failure}">
+                                        <div class="alert alert-danger alert-dismissible">
+                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                            <strong>Failed!</strong> Error in creating post.
+                                        </div>
+                                    </c:when>
+
+                                </c:choose>
+
+                                <c:choose>
                                     <c:when test="${post.id != 0}">
 
                                         <c:if test="${joinRequestResponse != null}">

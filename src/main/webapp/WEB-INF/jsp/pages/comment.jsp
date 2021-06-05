@@ -145,7 +145,7 @@ pageEncoding="ISO-8859-1"%>
                                             ${post.content}
                                             <p class="mt-5">
                                                 <c:forEach var="hashtag" items="${post.hashTags}">
-                                                    <a href="/posts/hashtag/${hashtag.title}">
+                                                    <a href="/posts/?hashtag=${hashtag.title}">
                                                         <c:out value="#${hashtag.title}" />
                                                     </a>
                                                     &nbsp;

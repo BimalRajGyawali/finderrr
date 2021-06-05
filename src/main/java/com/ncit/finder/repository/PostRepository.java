@@ -217,7 +217,8 @@ public class PostRepository {
 		return posts;
 	}
 
-	public boolean createPost(Post post) {
+	public int createPost(Post post) {
+		System.out.println("helllllllllllllllllllllllllooo");
 		Connection connection = db.makeConnection();
 		String postSql = "INSERT INTO posts(content, posted_on, user_id, status) VALUES(?, ?, ?, ?);";
 		String hashTagSql = "INSERT INTO hashtags(title) VALUES(?);";
@@ -227,6 +228,7 @@ public class PostRepository {
 		int generatedPostId = 0;
 
 		try {
+			System.err.println("Creating post.............");
 
 			// 1. Insert post into posts table
 			preparedStatement = connection.prepareStatement(postSql, new String[] { "id" });
@@ -248,10 +250,12 @@ public class PostRepository {
 			// List<HashTag> hashTags = post.getHashTags();
 			Set<HashTag> hashTags = new HashSet<>(post.getHashTags());
 			
-
+			System.out.println(hashTags);
 			for (HashTag hashTag : hashTags) {
+				if(hashTag.getTitle().isEmpty()){
+					continue;
+				}
 				System.out.println("Inserting hashtag "+hashTag);
-
 				preparedStatement = connection.prepareStatement(hashTagSql);
 				preparedStatement.setString(1, hashTag.getTitle());
 				try {
@@ -288,7 +292,7 @@ public class PostRepository {
 		}finally{
 			db.closeConnection(connection);
 		}
-			return true;
+			return generatedPostId;
 		}
 
 	public boolean updatePost(Post post) {
@@ -315,7 +319,9 @@ public class PostRepository {
 			System.out.println(hashTags);
 
 			for (HashTag hashTag : hashTags) {
-
+				if(hashTag.getTitle().isEmpty()){
+					continue;
+				}
 				preparedStatement = connection.prepareStatement(hashTagSql);
 				preparedStatement.setString(1, hashTag.getTitle());
 				try {
