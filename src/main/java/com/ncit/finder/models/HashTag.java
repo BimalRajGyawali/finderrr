@@ -2,13 +2,24 @@ package com.ncit.finder.models;
 
 public class HashTag {
 	private String title;
-	
+
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
-		this.title = title;
+		String[] hashtagParts = title.split("#");
+		
+		if (hashtagParts.length == 0) {
+			this.title = "empty";
+		} else {
+			String hashtag = hashtagParts[hashtagParts.length - 1];
+			this.title = hashtag;
+
+		}
+
 	}
+
 	/** Do not change this format. This is in JSON Format */
 	@Override
 	public String toString() {
@@ -22,6 +33,7 @@ public class HashTag {
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -38,6 +50,5 @@ public class HashTag {
 			return false;
 		return true;
 	}
-	
-	
+
 }
