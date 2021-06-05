@@ -21,6 +21,7 @@ import com.ncit.finder.models.Status;
 import com.ncit.finder.models.User;
 import com.ncit.finder.utils.LocalDateTimeParser;
 
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -389,7 +390,12 @@ public class PostRepository {
 			response.setResponseMessage("Join Request to this post has been already sent");
 			response.setSuccessStatus(true);
 			return response;
-		} catch (SQLException e) {
+		} catch(PSQLException ex){
+			response.setResponseMessage("Join Request to this post has been already sent");
+			response.setSuccessStatus(true);
+		}
+		
+		catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			db.closeConnection(connection);
