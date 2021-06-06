@@ -9,10 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import com.ncit.finder.db.Response;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.JoinRequest;
+import com.ncit.finder.models.Notification;
 import com.ncit.finder.models.Post;
 import com.ncit.finder.models.Status;
 import com.ncit.finder.models.User;
 import com.ncit.finder.repository.FollowingRepository;
+import com.ncit.finder.repository.NotificationRepository;
 import com.ncit.finder.repository.PostRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +30,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class HomeController {
 	private PostRepository postRepository;
 	private FollowingRepository followingRepository;
+	private NotificationRepository notificationRepository;
+
 	private static final int POSTS_SIZE = 50;
 
 	@Autowired
-	public HomeController(PostRepository postRepository, FollowingRepository followingRepository) {
+	public HomeController(PostRepository postRepository, FollowingRepository followingRepository,
+			NotificationRepository notificationRepository) {
 		this.postRepository = postRepository;
 		this.followingRepository = followingRepository;
+		this.notificationRepository = notificationRepository;
 	}
+
 
 	@GetMapping("/guest")
 	public String guestHome(@RequestParam(required = false) String before, Model model) {
@@ -206,6 +213,7 @@ public class HomeController {
 		}
 
 		return "createpost";
+
 	}
 
 	@PostMapping("/create-post")
@@ -277,7 +285,15 @@ public class HomeController {
 		joinRequest.setUser(user);
 
 		Response response = postRepository.addJoinRequest(joinRequest);
-		System.out.println(response);
+		if(response.isSuccessStatus()){
+			Notification notification = new Notification();
+			notification.setInitiator(user);
+			notification.setPost(post);
+			notification.setSeen(false);
+			notification.setNotificationType(Notification.JOIN_REQUEST);
+			notification.setInitiatedOn(LocalDateTime.now());
+			notificationRepository.save(notification);
+		}
 
 		redirectAttributes.addFlashAttribute("joinRequestResponse", response);
 

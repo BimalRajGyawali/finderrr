@@ -16,7 +16,7 @@
                 <li><a class="path" href="/"><i class="fa fa-home"></i></a></li>
                 <li><a class="path" href="/recommended-hashtags"><i class="fa fa-hashtag"></i></a></li>
                 <li><a class="path" href="/explore"><i class="fa fa-globe"></i></a></li>
-                <!-- <li><a class="path" href="/notification"><i class="fa fa-bell"></i></a></li> -->
+                <li><a class="path" href="/notifications"><i class="fa fa-bell"></i></a></li>
                 <li>
 
                     <a href="/create-profile">

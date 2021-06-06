@@ -69,8 +69,19 @@ CREATE TABLE join_requests(
     post_id INT,
     user_id INT,
     requested_on TIMESTAMP,
-     PRIMARY KEY(user_id, post_id),
+    PRIMARY KEY(user_id, post_id),
    	FOREIGN KEY(post_id) REFERENCES posts(id),
     FOREIGN KEY(user_id) REFERENCES users(id)
 
+);
+
+CREATE TABLE notifications(
+  id SERIAL PRIMARY KEY,
+  initiator_id INT,
+  post_id INT,
+  seen BOOLEAN,
+  notification_type VARCHAR(50),
+  initiated_on TIMESTAMP,
+  FOREIGN KEY(initiator_id) REFERENCES users(id),
+  FOREIGN KEY(post_id) REFERENCES posts(id)
 );
