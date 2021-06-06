@@ -213,7 +213,9 @@ public class PostRepository {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			
-		}
+		}finally{
+            db.closeConnection(connection);
+        }
 		return posts;
 	}
 
@@ -352,7 +354,9 @@ public class PostRepository {
 
 		catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}finally{
+            db.closeConnection(connection);
+        }
 
 		return false;
 	}

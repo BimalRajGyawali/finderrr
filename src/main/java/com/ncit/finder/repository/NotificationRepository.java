@@ -49,6 +49,8 @@ public class NotificationRepository {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        }finally{
+            db.closeConnection(connection);
         }
         return false;
     }
@@ -133,6 +135,8 @@ public class NotificationRepository {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        }finally{
+            db.closeConnection(connection);
         }
 
         return notifications;
@@ -176,6 +180,8 @@ public class NotificationRepository {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally{
+            db.closeConnection(connection);
         }
         return null;
     }
@@ -200,6 +206,8 @@ public class NotificationRepository {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        }finally{
+            db.closeConnection(connection);
         }
 
         return false;

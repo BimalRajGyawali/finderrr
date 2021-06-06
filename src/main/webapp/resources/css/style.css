@@ -73,6 +73,29 @@ body {
     overflow: auto;
 }
 
+.noti-card {
+    background-color: white;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 20px 10px 20px 10px;
+    border-bottom: 1px solid #C0C0C0;
+}
+
+.noti-card:last-child {
+    border-bottom: 0;
+}
+
+.noti-desc .desc {
+    display: block;
+    margin-top: -5px;
+}
+
+.noti-desc a {
+    color: black;
+    text-decoration: none;
+}
+
 .post-head {
     padding-left: 20px;
     overflow: auto;

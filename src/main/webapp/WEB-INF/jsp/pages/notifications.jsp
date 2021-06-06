@@ -60,57 +60,140 @@
 
                                 <c:choose>
                                     <c:when test="${hasNotifications}">
-                                        <ul>
 
-                                            <c:forEach var="n" items="${notifications}">
-                                                <li>
-                                                    <!-- <c:if test="${sessionScope.id != n.initiator.id}"> -->
+
+                                        <c:forEach var="n" items="${notifications}">
+                                            <div class="noti-card">
+                                                <div class="noti-img">
                                                     <c:choose>
-                                                        <c:when test="${n.notificationType eq 'comment'}">
-                                                            <p><a href="/notifications/${n.id}/">
+                                                        <c:when test="${n.initiator.profilePic != null}">
+
+                                                            <img class="small-img" src="/resources/uploads/${n.initiator.profilePic}" alt="Profile Picture">
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <img class="small-img" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </div>
+                                                <div class="noti-desc">
+                                                    <c:choose>
+                                                        <c:when test="${n.seen}">
+                                                            <c:choose>
+                                                                <c:when test="${n.notificationType eq 'comment'}">
+                                                                    <p><a href="/notifications/${n.id}/">
                                                     ${n.initiator.firstName} ${n.initiator.middleName} ${n.initiator.lastName}
                                                     commented on your post.
                                                 </a>
-                                                            </p>
-                                                        </c:when>
-                                                        <c:when test="${n.notificationType eq 'joinrequest'}">
-                                                            <p><a href="/notifications/${n.id}">
+                                                                    </p>
+                                                                </c:when>
+                                                                <c:when test="${n.notificationType eq 'joinrequest'}">
+                                                                    <p><a href="/notifications/${n.id}">
                                                         ${n.initiator.firstName} ${n.initiator.middleName} ${n.initiator.lastName}
                                                         sent a join request on your post.
                                                     </a>
-                                                            </p>
+                                                                    </p>
 
-                                                        </c:when>
+                                                                </c:when>
 
-                                                    </c:choose>
-
-                                                    <c:choose>
-                                                        <c:when test="${n.yearsTillNow != 0}">
-                                                            <c:out value="${n.yearsTillNow} y ago" />
-                                                        </c:when>
-                                                        <c:when test="${n.monthsTillNow != 0}">
-                                                            <c:out value="${n.monthsTillNow} m ago" />
-                                                        </c:when>
-                                                        <c:when test="${n.daysTillNow != 0}">
-                                                            <c:out value="${n.daysTillNow} d ago" />
-                                                        </c:when>
-                                                        <c:when test="${n.hoursTillNow != 0}">
-                                                            <c:out value="${n.hoursTillNow} h ago" />
-                                                        </c:when>
-                                                        <c:when test="${n.minutesTillNow != 0}">
-                                                            <c:out value="${n.minutesTillNow} min ago" />
+                                                            </c:choose>
+                                                            <span class="desc">
+                                                <c:choose>
+                                                    <c:when test="${n.yearsTillNow != 0}">
+                                                        <c:out value="${n.yearsTillNow} y ago" />
+                                                    </c:when>
+                                                    <c:when test="${n.monthsTillNow != 0}">
+                                                        <c:out value="${n.monthsTillNow} m ago" />
+                                                    </c:when>
+                                                    <c:when test="${n.daysTillNow != 0}">
+                                                        <c:out value="${n.daysTillNow} d ago" />
+                                                    </c:when>
+                                                    <c:when test="${n.hoursTillNow != 0}">
+                                                        <c:out value="${n.hoursTillNow} h ago" />
+                                                    </c:when>
+                                                    <c:when test="${n.minutesTillNow != 0}">
+                                                        <c:out value="${n.minutesTillNow} min ago" />
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:out value="${n.secondsTillNow} sec ago" />
+                                                    </c:otherwise>
+                                                    
+                                                </c:choose>
+                                                </span>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <c:out value="${n.secondsTillNow} sec ago" />
+                                                            <c:choose>
+                                                                <c:when test="${n.notificationType eq 'comment'}">
+                                                                    <p>
+                                                                        <a href="/notifications/${n.id}/">
+                                                                            <strong>${n.initiator.firstName} ${n.initiator.middleName} ${n.initiator.lastName}
+                                                        commented on your post.</strong>
+                                                                        </a>
+                                                                    </p>
+                                                                </c:when>
+                                                                <c:when test="${n.notificationType eq 'joinrequest'}">
+                                                                    <p>
+                                                                        <a href="/notifications/${n.id}">
+                                                                            <strong>  ${n.initiator.firstName} ${n.initiator.middleName} ${n.initiator.lastName}
+                                                        sent a join request on your post.</strong>
+                                                                        </a>
+                                                                    </p>
+
+                                                                </c:when>
+
+                                                            </c:choose>
+                                                            <span class="desc" style="font-weight: bold;">
+                                                <c:choose>
+                                                    <c:when test="${n.yearsTillNow != 0}">
+                                                        <c:out value="${n.yearsTillNow} y ago" />
+                                                    </c:when>
+                                                    <c:when test="${n.monthsTillNow != 0}">
+                                                        <c:out value="${n.monthsTillNow} m ago" />
+                                                    </c:when>
+                                                    <c:when test="${n.daysTillNow != 0}">
+                                                        <c:out value="${n.daysTillNow} d ago" />
+                                                    </c:when>
+                                                    <c:when test="${n.hoursTillNow != 0}">
+                                                        <c:out value="${n.hoursTillNow} h ago" />
+                                                    </c:when>
+                                                    <c:when test="${n.minutesTillNow != 0}">
+                                                        <c:out value="${n.minutesTillNow} min ago" />
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:out value="${n.secondsTillNow} sec ago" />
+                                                    </c:otherwise>
+                                                    
+                                                </c:choose>
+                                                </span>
+
+
                                                         </c:otherwise>
+
                                                     </c:choose>
 
-                                                    <!-- </c:if> -->
+
+                                                </div>
 
 
-                                                </li>
-                                            </c:forEach>
-                                        </ul>
+                                                <!-- <c:if test="${sessionScope.id != n.initiator.id}"> -->
+
+                                                <!-- </c:if> -->
+
+                                            </div>
+
+
+                                        </c:forEach>
+
+                                        <c:choose>
+                                            <c:when test="${hasOlderNotifications}">
+                                                <a class="btn btn-primary mt-5 mb-5" href="/notifications?before=${oldestDate}">Show older notifications</a>
+                                            </c:when>
+                                            <c:otherwise>
+
+                                                <p class="mt-4 mb-5 small"> You have reached the end of notifications.
+                                                    <a href="/notifications">Go to top</a></p>
+                                            </c:otherwise>
+                                        </c:choose>
+
 
                                     </c:when>
                                     <c:otherwise>
