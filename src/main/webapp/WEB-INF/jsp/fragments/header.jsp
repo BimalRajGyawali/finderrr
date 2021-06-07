@@ -23,6 +23,7 @@
                         <li>
                             <a class="" href="/notifications">
                                 <i id="noti-bell" class="fa fa-bell" style="position: relative;"></i>
+
                             </a>
                         </li>
                     </c:when>

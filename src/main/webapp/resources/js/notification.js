@@ -12,7 +12,10 @@
          if (notiCount) {
              notiCount.innerText = `${data.count}`;
          } else {
-             notiBell.innerHTML = ` <span id="noti-count"> ${data.count}</span>`;
+             let span = document.createElement("span");
+             span.id = "noti-count";
+             span.innerText = `${data.count}`;
+             notiBell.parentNode.appendChild(span);
          }
      }
 
