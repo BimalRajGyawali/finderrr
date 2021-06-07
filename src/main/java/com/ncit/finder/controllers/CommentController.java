@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ncit.finder.functionality.EmitterService;
 import com.ncit.finder.models.Comment;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.Notification;
@@ -13,6 +14,7 @@ import com.ncit.finder.models.User;
 import com.ncit.finder.repository.CommentRepository;
 import com.ncit.finder.repository.FollowingRepository;
 import com.ncit.finder.repository.NotificationRepository;
+import com.ncit.finder.repository.PostRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,15 +29,19 @@ public class CommentController {
 	private CommentRepository commentRepository;
 	private FollowingRepository followingRepository;
 	private NotificationRepository notificationRepository;
+	private PostRepository postRepository;
+	private EmitterService emitterService;
 
 	@Autowired
 	public CommentController(CommentRepository commentRepository, FollowingRepository followingRepository,
-			NotificationRepository notificationRepository) {
+			NotificationRepository notificationRepository, PostRepository postRepository,
+			EmitterService emitterService) {
 		this.commentRepository = commentRepository;
 		this.followingRepository = followingRepository;
 		this.notificationRepository = notificationRepository;
+		this.postRepository = postRepository;
+		this.emitterService = emitterService;
 	}
-
 
 	@GetMapping("/post/{post_id}")
 	public String postWithComment(Model model, @PathVariable("post_id") String post_id, HttpServletRequest request) {
@@ -54,6 +60,8 @@ public class CommentController {
 			} else {
 				model.addAttribute("hasRecommendations", false);
 			}
+			int notificationCount = notificationRepository.getNotificationCount(userId);
+			model.addAttribute("notificationCount", notificationCount);
 		}
 		return "comment";
 
@@ -76,7 +84,9 @@ public class CommentController {
 
 		boolean status = commentRepository.createComment(comment, post_id, comments_count);
 
-		if(status){
+		int authorId = postRepository.getAuthor(post_id).getId();
+
+		if(status && user.getId() != authorId){
 				Post post = new Post();
 				post.setId(post_id);
 		
@@ -87,6 +97,9 @@ public class CommentController {
 				notification.setNotificationType(Notification.COMMENT);
 				notification.setInitiatedOn(LocalDateTime.now());
 				notificationRepository.save(notification);
+				int notificationCount = notificationRepository.getNotificationCount(authorId);
+				emitterService.pushNotification(authorId, notificationCount);
+
 			
 		}
 		redirectAttributes.addFlashAttribute("success", status);

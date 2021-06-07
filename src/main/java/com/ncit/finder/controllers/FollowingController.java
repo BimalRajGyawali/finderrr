@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.ncit.finder.models.Following;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.repository.FollowingRepository;
+import com.ncit.finder.repository.NotificationRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,13 +24,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class FollowingController {
 
     private FollowingRepository followingRepository;
-    
+    private NotificationRepository notificationRepository;
+  
     @Autowired
-    public FollowingController(FollowingRepository followingRepository) {
-        this.followingRepository = followingRepository;
-    }
+    public FollowingController(FollowingRepository followingRepository, NotificationRepository notificationRepository) {
+		this.followingRepository = followingRepository;
+		this.notificationRepository = notificationRepository;
+	}
 
-    @PostMapping("/follow")
+	@PostMapping("/follow")
     public ResponseEntity<Boolean> follow(@RequestBody Map<String, String> hashtagMap, HttpServletRequest request){
         if (request.getSession().getAttribute("id") == null) {
             return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
@@ -86,6 +89,8 @@ public class FollowingController {
 		}else{
 			model.addAttribute("hasFollowings", false);
         }
+        int notificationCount = notificationRepository.getNotificationCount(userId);
+		model.addAttribute("notificationCount", notificationCount);
         return "recommendedHashTags";
     }
 

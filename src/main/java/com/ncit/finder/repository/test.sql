@@ -15,3 +15,13 @@ WHERE p.user_id = 3
 )sp ON sp.pid = n.post_id
 WHERE n.initiated_on < '2021-06-06T13:53:09.363477'
 ORDER BY n.initiated_on DESC LIMIT 30;
+
+
+
+SELECT COUNT(*)
+FROM notifications n 
+INNER JOIN (
+    SELECT p.id post_id FROM posts p INNER JOIN users u ON u.id = p.user_id
+    WHERE u.id = 3
+)sp ON sp.post_id = n.post_id 
+WHERE n.seen = 'f';

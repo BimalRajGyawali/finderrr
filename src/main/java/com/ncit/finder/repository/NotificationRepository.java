@@ -49,7 +49,7 @@ public class NotificationRepository {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        }finally{
+        } finally {
             db.closeConnection(connection);
         }
         return false;
@@ -71,78 +71,76 @@ public class NotificationRepository {
                 + ")sp ON sp.pid = n.post_id\n" + "WHERE n.initiated_on < '" + before + "'\n"
                 + "ORDER BY n.initiated_on DESC LIMIT " + n + ";";
 
-                System.out.println(sql);
+        System.out.println(sql);
         try {
             statement = connection.prepareStatement(sql);
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 Notification notification = new Notification();
 
-            User initiator = new User();
-            initiator.setId(resultSet.getInt("inu_id"));
-            initiator.setFirstName(resultSet.getString("inu_firstname"));
-            initiator.setMiddleName(resultSet.getString("inu_middlename"));
-            initiator.setLastName(resultSet.getString("inu_lastname"));
-            initiator.setProfilePic(resultSet.getString("inu_pp"));
+                User initiator = new User();
+                initiator.setId(resultSet.getInt("inu_id"));
+                initiator.setFirstName(resultSet.getString("inu_firstname"));
+                initiator.setMiddleName(resultSet.getString("inu_middlename"));
+                initiator.setLastName(resultSet.getString("inu_lastname"));
+                initiator.setProfilePic(resultSet.getString("inu_pp"));
 
-            notification.setInitiator(initiator);
+                notification.setInitiator(initiator);
 
-            Post post = new Post();
-            post.setId(resultSet.getInt("pid"));
-            post.setContent(resultSet.getString("content"));
+                Post post = new Post();
+                post.setId(resultSet.getInt("pid"));
+                post.setContent(resultSet.getString("content"));
 
-            User user = new User();
-            user.setId(resultSet.getInt("pu_id"));
-            user.setFirstName(resultSet.getString("pu_firstname"));
-            user.setMiddleName(resultSet.getString("pu_middlename"));
-            user.setLastName(resultSet.getString("pu_lastname"));
+                User user = new User();
+                user.setId(resultSet.getInt("pu_id"));
+                user.setFirstName(resultSet.getString("pu_firstname"));
+                user.setMiddleName(resultSet.getString("pu_middlename"));
+                user.setLastName(resultSet.getString("pu_lastname"));
 
-            post.setUser(user);
+                post.setUser(user);
 
-            notification.setPost(post);
-            notification.setId(resultSet.getInt("nid"));
-            notification.setSeen(resultSet.getBoolean("nseen"));
-            notification.setNotificationType(resultSet.getString("ntype"));
-            
-            if (resultSet.getTimestamp("initiated_on") != null) {
-                notification.setInitiatedOn(resultSet.getTimestamp("initiated_on").toLocalDateTime());
+                notification.setPost(post);
+                notification.setId(resultSet.getInt("nid"));
+                notification.setSeen(resultSet.getBoolean("nseen"));
+                notification.setNotificationType(resultSet.getString("ntype"));
 
-                LocalDateTime fromTemp = notification.getInitiatedOn();
-                long[] parsedDateTime = LocalDateTimeParser.parse(fromTemp);
-                long years = parsedDateTime[0];
-                long months = parsedDateTime[1];
-                long days = parsedDateTime[2];
-                long hours = parsedDateTime[3];
-                long minutes = parsedDateTime[4];
-                long seconds = parsedDateTime[5];
+                if (resultSet.getTimestamp("initiated_on") != null) {
+                    notification.setInitiatedOn(resultSet.getTimestamp("initiated_on").toLocalDateTime());
 
-                notification.setYearsTillNow(years);
-                notification.setMonthsTillNow(months);
-                notification.setDaysTillNow(days);
-                notification.setHoursTillNow(hours);
-                notification.setMinutesTillNow(minutes);
-                notification.setSecondsTillNow(seconds);
+                    LocalDateTime fromTemp = notification.getInitiatedOn();
+                    long[] parsedDateTime = LocalDateTimeParser.parse(fromTemp);
+                    long years = parsedDateTime[0];
+                    long months = parsedDateTime[1];
+                    long days = parsedDateTime[2];
+                    long hours = parsedDateTime[3];
+                    long minutes = parsedDateTime[4];
+                    long seconds = parsedDateTime[5];
 
-            }
-            notifications.add(notification);
+                    notification.setYearsTillNow(years);
+                    notification.setMonthsTillNow(months);
+                    notification.setDaysTillNow(days);
+                    notification.setHoursTillNow(hours);
+                    notification.setMinutesTillNow(minutes);
+                    notification.setSecondsTillNow(seconds);
 
-
+                }
+                notifications.add(notification);
 
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        }finally{
+        } finally {
             db.closeConnection(connection);
         }
 
         return notifications;
     }
 
-    public Notification getNotificationById(int id){
+    public Notification getNotificationById(int id) {
         Connection connection = db.makeConnection();
         PreparedStatement statement;
         Notification notification = null;
@@ -153,8 +151,8 @@ public class NotificationRepository {
             statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
-            if(resultSet.next()){
-                 notification = new Notification();
+            if (resultSet.next()) {
+                notification = new Notification();
 
                 int initiatorId = resultSet.getInt("initiator_id");
                 int postId = resultSet.getInt("post_id");
@@ -176,28 +174,26 @@ public class NotificationRepository {
                 notification.setNotificationType(notificationType);
 
                 return notification;
-             
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally{
+        } finally {
             db.closeConnection(connection);
         }
         return null;
     }
 
-    public boolean markAsSeen(int nid){
+    public boolean markAsSeen(int nid) {
 
         Connection connection = db.makeConnection();
         PreparedStatement statement;
-        String sql = "UPDATE notifications \n" 
-                    + "SET seen = true\n"
-                    + "WHERE id = ?";
+        String sql = "UPDATE notifications \n" + "SET seen = true\n" + "WHERE id = ?";
 
         try {
             statement = connection.prepareStatement(sql);
             statement.setInt(1, nid);
-        
+
             statement.executeUpdate();
 
             return true;
@@ -206,11 +202,36 @@ public class NotificationRepository {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        }finally{
+        } finally {
             db.closeConnection(connection);
         }
 
         return false;
+    }
+
+    public int getNotificationCount(int userId) {
+        Connection connection = db.makeConnection();
+        PreparedStatement statement;
+        int notificationCount = 0;
+
+        String sql = "SELECT COUNT(*) count\n" + "FROM notifications n\n" + "INNER JOIN (\n"
+                + "SELECT p.id post_id FROM posts p INNER JOIN users u ON u.id = p.user_id\n" + "WHERE u.id = ?\n"
+                + ")sp ON sp.post_id = n.post_id \n" + "WHERE n.seen = 'f';";
+
+        try {
+			statement = connection.prepareStatement(sql);
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                notificationCount = resultSet.getInt("count");
+            }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+            db.closeConnection(connection);
+        }
+
+        return notificationCount;
     }
 
 }

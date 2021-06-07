@@ -16,7 +16,27 @@
                 <li><a class="path" href="/"><i class="fa fa-home"></i></a></li>
                 <li><a class="path" href="/recommended-hashtags"><i class="fa fa-hashtag"></i></a></li>
                 <li><a class="path" href="/explore"><i class="fa fa-globe"></i></a></li>
-                <li><a class="path" href="/notifications"><i class="fa fa-bell"></i></a></li>
+                <c:choose>
+
+                    <c:when test="${notificationCount == 0}">
+
+                        <li>
+                            <a class="" href="/notifications">
+                                <i id="noti-bell" class="fa fa-bell" style="position: relative;"></i>
+                            </a>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                            <a class="" href="/notifications">
+                                <i id="noti-bell" class="fa fa-bell" style="position: absolute;"></i>
+                                <span id="noti-count">
+                                    ${notificationCount}</span>
+                            </a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
+
                 <li>
 
                     <a href="/create-profile">
@@ -37,9 +57,11 @@
 
 
         </div>
+        <script src="/resources/js/notification.js"></script>
         <script>
+            var loggedInUserId = '${sessionScope.id}';
             (function fn() {
-                var pathname = window.location.href;
+                var pathname = window.location.href.split("?")[0];
                 var paths = document.getElementsByClassName("path");
 
                 for (var i = 0; i < paths.length; i++) {

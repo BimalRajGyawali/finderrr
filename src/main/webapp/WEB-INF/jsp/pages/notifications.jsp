@@ -174,12 +174,9 @@
                                                 </div>
 
 
-                                                <!-- <c:if test="${sessionScope.id != n.initiator.id}"> -->
 
-                                                <!-- </c:if> -->
 
                                             </div>
-
 
                                         </c:forEach>
 

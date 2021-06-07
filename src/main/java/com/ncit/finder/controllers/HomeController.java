@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ncit.finder.db.Response;
+import com.ncit.finder.functionality.EmitterService;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.JoinRequest;
 import com.ncit.finder.models.Notification;
@@ -31,17 +32,18 @@ public class HomeController {
 	private PostRepository postRepository;
 	private FollowingRepository followingRepository;
 	private NotificationRepository notificationRepository;
+	private EmitterService emitterService;
 
 	private static final int POSTS_SIZE = 50;
 
 	@Autowired
 	public HomeController(PostRepository postRepository, FollowingRepository followingRepository,
-			NotificationRepository notificationRepository) {
+			NotificationRepository notificationRepository, EmitterService emitterService) {
 		this.postRepository = postRepository;
 		this.followingRepository = followingRepository;
 		this.notificationRepository = notificationRepository;
+		this.emitterService = emitterService;
 	}
-
 
 	@GetMapping("/guest")
 	public String guestHome(@RequestParam(required = false) String before, Model model) {
@@ -61,6 +63,7 @@ public class HomeController {
 			boolean hasOlderPosts = olderPosts.size() != 0 ;
 			model.addAttribute("hasOlderPosts", hasOlderPosts);
 		}
+		
 		
 		return "home";
 	}
@@ -98,6 +101,8 @@ public class HomeController {
 			boolean hasOlderPosts = olderPosts.size() != 0;
 			model.addAttribute("hasOlderPosts", hasOlderPosts);
 		}
+		int notificationCount = notificationRepository.getNotificationCount(userId);
+		model.addAttribute("notificationCount", notificationCount);
 		return "home";
 	}
 
@@ -135,6 +140,9 @@ public class HomeController {
 			boolean hasOlderPosts = olderPosts.size() != 0;
 			model.addAttribute("hasOlderPosts", hasOlderPosts);
 		}
+		int notificationCount = notificationRepository.getNotificationCount(userId);
+		model.addAttribute("notificationCount", notificationCount);
+
 		return "explore";
 	}
 
@@ -167,7 +175,7 @@ public class HomeController {
 		if (request.getSession().getAttribute("id") != null) {
 			int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
 			boolean hasFollowed = followingRepository.hasFollowed(userId, hashtag);
-
+			model.addAttribute("hasFollowed", hasFollowed);
 			List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
 			if (recommendedHashTags.size() > 0) {
 				model.addAttribute("recommendedHashTags", recommendedHashTags);
@@ -175,9 +183,14 @@ public class HomeController {
 			} else {
 				model.addAttribute("hasRecommendations", false);
 			}
-			model.addAttribute("hasFollowed", hasFollowed);
-
 		}
+		if (request.getSession().getAttribute("id") != null) {
+			int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+			int notificationCount = notificationRepository.getNotificationCount(userId);
+			model.addAttribute("notificationCount", notificationCount);
+		}
+		
+
 		return "posts";
 	}
 	@GetMapping("/posts/hashtag/")
@@ -192,7 +205,8 @@ public class HomeController {
 			} else {
 				model.addAttribute("hasRecommendations", false);
 			}
-
+			int notificationCount = notificationRepository.getNotificationCount(userId);
+			model.addAttribute("notificationCount", notificationCount);
 		}
 		return "hashtagerror";
 	}
@@ -211,7 +225,8 @@ public class HomeController {
 		} else {
 			model.addAttribute("hasRecommendations", false);
 		}
-
+		int notificationCount = notificationRepository.getNotificationCount(userId);
+		model.addAttribute("notificationCount", notificationCount);
 		return "createpost";
 
 	}
@@ -266,6 +281,8 @@ public class HomeController {
 			} else {
 				model.addAttribute("hasRecommendations", false);
 			}
+			int notificationCount = notificationRepository.getNotificationCount(userId);
+			model.addAttribute("notificationCount", notificationCount);
 		}
 		return "joinrequests";
 	}
@@ -285,7 +302,9 @@ public class HomeController {
 		joinRequest.setUser(user);
 
 		Response response = postRepository.addJoinRequest(joinRequest);
-		if(response.isSuccessStatus()){
+		int authorId = postRepository.getAuthor(postId).getId();
+		// if jr is added successfully and person sending jr is not the author
+		if(response.isSuccessStatus() && user.getId() != authorId){
 			Notification notification = new Notification();
 			notification.setInitiator(user);
 			notification.setPost(post);
@@ -293,6 +312,9 @@ public class HomeController {
 			notification.setNotificationType(Notification.JOIN_REQUEST);
 			notification.setInitiatedOn(LocalDateTime.now());
 			notificationRepository.save(notification);
+			int notificationCount = notificationRepository.getNotificationCount(authorId);
+			emitterService.pushNotification(authorId, notificationCount);
+
 		}
 
 		redirectAttributes.addFlashAttribute("joinRequestResponse", response);
@@ -304,8 +326,9 @@ public class HomeController {
 	public String getEditPostPage(@PathVariable int postId, Model model, HttpServletRequest request) {
 		Post post = postRepository.getPostById(postId);
 		System.err.println(post);
+		int userId;
 		if (request.getSession().getAttribute("id") != null) {
-			int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+			 userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
 			if (userId != post.getUser().getId()) {
 				return "redirect:/";
 			}
@@ -326,6 +349,8 @@ public class HomeController {
 		}
 		model.addAttribute("ongoingStatus", ongoingStatus);
 		model.addAttribute("completedStatus", completedStatus);
+		int notificationCount = notificationRepository.getNotificationCount(userId);
+		model.addAttribute("notificationCount", notificationCount);
 		return "editpost";
 	}
 

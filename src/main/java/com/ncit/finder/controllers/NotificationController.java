@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ncit.finder.functionality.EmitterService;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.Notification;
 import com.ncit.finder.repository.FollowingRepository;
@@ -16,38 +17,41 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Controller
 public class NotificationController {
 
     private NotificationRepository notificationRepository;
     private FollowingRepository followingRepository;
+    private EmitterService emitterService;
 
-    private static final int SIZE = 3;
+    private static final int SIZE = 30;
 
     @Autowired
     public NotificationController(NotificationRepository notificationRepository,
-            FollowingRepository followingRepository) {
+            FollowingRepository followingRepository, EmitterService emitterService) {
         this.notificationRepository = notificationRepository;
         this.followingRepository = followingRepository;
+        this.emitterService = emitterService;
     }
 
     @GetMapping("/notifications")
     public String showAllNotifications(@RequestParam(required = false) String before, HttpServletRequest request,
             Model model) {
-        int userId;
-        if (request.getSession().getAttribute("id") != null) {
-            userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
-            List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
-            if (recommendedHashTags.size() > 0) {
-                model.addAttribute("recommendedHashTags", recommendedHashTags);
-                model.addAttribute("hasRecommendations", true);
-            } else {
-                model.addAttribute("hasRecommendations", false);
-            }
-        } else {
+        if (request.getSession().getAttribute("id") == null) {
             return "redirect:/guest";
         }
+
+        int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+        List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
+        if (recommendedHashTags.size() > 0) {
+            model.addAttribute("recommendedHashTags", recommendedHashTags);
+            model.addAttribute("hasRecommendations", true);
+        } else {
+            model.addAttribute("hasRecommendations", false);
+        }
+
         LocalDateTime beforeDateTime = LocalDateTime.now();
         if (before != null && !before.isEmpty()) {
             beforeDateTime = LocalDateTime.parse(before);
@@ -64,7 +68,8 @@ public class NotificationController {
             model.addAttribute("hasOlderNotifications", hasOlderNotifications);
 
         }
-        System.out.println(notifications);
+        int notificationCount = notificationRepository.getNotificationCount(userId);
+		model.addAttribute("notificationCount", notificationCount);
         return "notifications";
     }
 
@@ -83,6 +88,17 @@ public class NotificationController {
         // else it is a comment
         return "redirect:/post/" + notification.getPost().getId();
 
+    }
+
+    @GetMapping("/subscription")
+    public SseEmitter subsribe() {
+        System.out.println("subscribing...");
+
+        SseEmitter sseEmitter = new SseEmitter(24 * 60 * 60 * 1000l);
+        emitterService.addEmitter(sseEmitter);
+
+        System.out.println("subscribed");
+        return sseEmitter;
     }
 
 }
