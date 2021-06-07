@@ -1,4 +1,4 @@
- const eventSource = new EventSource("http://localhost:8080/subscription");
+ const eventSource = new EventSource("https://finderrr.herokuapp.com/subscription");
 
 
  eventSource.onmessage = (e) => {
