@@ -153,6 +153,7 @@ public class RegistrationController {
 		if(codeRecieved.equals(codeSent)) {
 			user.setPass(passwordHashed);
 			userRepository.createUser(user);
+			request.getSession().invalidate();
 			/** for temporary. heroku doesnot support file system */
 			userRepository.insertImage("pic.jpeg", email);
 			redirectAttributes.addFlashAttribute("verificationSuccess", true);
