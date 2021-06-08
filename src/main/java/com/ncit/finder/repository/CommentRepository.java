@@ -82,6 +82,7 @@ public class CommentRepository {
 						post.setYearsTillNow(years);
 						post.setMonthsTillNow(months);
 						post.setHoursTillNow(hours);
+						post.setDaysTillNow(days);
 						post.setMinutesTillNow(minutes);
 						post.setSecondsTillNow(seconds);
 
