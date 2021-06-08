@@ -117,8 +117,8 @@ pageEncoding="ISO-8859-1"%>
                                                         <c:when test="${post.monthsTillNow != 0}">
                                                             <c:out value="${post.monthsTillNow} m ago" />
                                                         </c:when>
-                                                        <c:when test="${comment.daysTillNow != 0}">
-                                                            <c:out value="${comment.daysTillNow} d ago" />
+                                                        <c:when test="${post.daysTillNow != 0}">
+                                                            <c:out value="${post.daysTillNow} d ago" />
                                                         </c:when>
 
                                                         <c:when test="${post.hoursTillNow != 0}">
