@@ -99,6 +99,7 @@ public class CommentRepository {
 					post_user.setEmail(resultSet.getString("post_user_email"));
 					post_user.setPass(resultSet.getString("post_user_pass"));
 					post_user.setProfilePic(resultSet.getString("post_user_pp"));
+					post_user.setBio(resultSet.getString("post_user_bio"));
 
 					if (resultSet.getTimestamp("post_user_joined_on") != null) {
 						post_user.setJoinedOn(resultSet.getTimestamp("post_user_joined_on").toLocalDateTime());

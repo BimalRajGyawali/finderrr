@@ -112,13 +112,17 @@ pageEncoding="ISO-8859-1"%>
                                                 <p class="desc post-desc">
                                                     <c:choose>
                                                         <c:when test="${post.yearsTillNow != 0}">
-                                                            <c:out value="${post.yearsTillNow} years ago" />
+                                                            <c:out value="${post.yearsTillNow} y ago" />
                                                         </c:when>
                                                         <c:when test="${post.monthsTillNow != 0}">
-                                                            <c:out value="${post.monthsTillNow} months ago" />
+                                                            <c:out value="${post.monthsTillNow} m ago" />
                                                         </c:when>
+                                                        <c:when test="${comment.daysTillNow != 0}">
+                                                            <c:out value="${comment.daysTillNow} d ago" />
+                                                        </c:when>
+
                                                         <c:when test="${post.hoursTillNow != 0}">
-                                                            <c:out value="${post.hoursTillNow} hours ago" />
+                                                            <c:out value="${post.hoursTillNow} h ago" />
                                                         </c:when>
                                                         <c:when test="${post.minutesTillNow != 0}">
                                                             <c:out value="${post.minutesTillNow} min ago" />
