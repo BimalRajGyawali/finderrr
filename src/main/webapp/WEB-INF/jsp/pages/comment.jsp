@@ -103,9 +103,9 @@ pageEncoding="ISO-8859-1"%>
                                                 </c:otherwise>
                                             </c:choose>
                                             <div class="post-meta">
-                                                <p class="user-name post-user-name">
+                                                <a href="/profile/id/${post.user.id}" class="profileLink"><p class="user-name post-user-name">
                                                     <c:out value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  " />
-                                                </p>
+                                                </p></a>
                                                 <p class="desc post-desc">
                                                     <c:out value="${post.user.bio}" />
                                                 </p>
@@ -236,7 +236,7 @@ pageEncoding="ISO-8859-1"%>
 
 
                                                     <div class="comment-details">
-                                                        <p class="account-name">${comment.user.firstName} ${comment.user.middleName} ${comment.user.lastName}</p>
+                                                       <a href="/profile/id/${comment.user.id}" class="profileLink"> <p class="account-name">${comment.user.firstName} ${comment.user.middleName} ${comment.user.lastName}</p></a>
 
                                                         <p class="comment-data">${comment.content}</p>
                                                         <p class="comment-data desc post-desc">

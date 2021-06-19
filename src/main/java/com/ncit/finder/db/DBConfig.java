@@ -21,7 +21,7 @@ public class DBConfig {
             // String database = "finder";
             // String username = "postgres";
             // String port = "5432";
-            // String password = "root";
+            // String password = "password";
 
 
             String url = "jdbc:postgresql://"+host+":"+port+"/"+database;

@@ -563,6 +563,44 @@ public class PostRepository {
 
 		return false;
 	}
+
+	public List<Post> getUserIdSpecificPosts(String id,int n, LocalDateTime dateTime) {
+
+		Timestamp before = Timestamp.valueOf(dateTime);
+		Connection connection = db.makeConnection();
+		PreparedStatement preparedStatement;
+		List<Post> posts = new ArrayList<>();
+
+		String sql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
+		+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
+		+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio,u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
+		+ "RIGHT OUTER JOIN users u ON p.user_id = u.id WHERE user_id=? and p.posted_on < ? \n"
+		+ "ORDER BY p.posted_on DESC LIMIT ? )sp \n" 
+		+ "ON ph.post_id = sp.p_id ORDER BY sp.posted_on DESC; \n";
+
+		// String sql="SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
+		// + "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
+		// + "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio,u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
+		// + "RIGHT OUTER JOIN users u ON p.user_id = u.id WHERE user_id=' "+id+" ' and p.posted_on < ' " + before + "'\n"
+		// + "ORDER BY p.posted_on DESC LIMIT\n" + n +")sp \n" 
+		// + "ON ph.post_id = sp.p_id ORDER BY sp.posted_on DESC; \n";
+
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1,Integer.parseInt(id));
+			preparedStatement.setTimestamp(2,before);
+			preparedStatement.setInt(3,n);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			posts = PostMapper.mapResultSetIntoPosts(resultSet);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.closeConnection(connection);
+		}
+
+		return posts;
+	}
 			
 	
 }

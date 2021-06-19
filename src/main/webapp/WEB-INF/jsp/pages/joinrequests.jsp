@@ -109,9 +109,13 @@
                                                             </c:otherwise>
                                                         </c:choose>
                                                         <div class="post-meta">
-                                                            <p class="user-name post-user-name">
-                                                                <c:out value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  " />
-                                                            </p>
+                                                            
+
+                                                            <a href="/profile/id/${post.user.id}" class="profileLink">
+                                                                <p class="user-name post-user-name">
+                                                                    <c:out value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  " />
+                                                                </p>
+                                                            </a>
                                                             <p class="desc post-desc">
                                                                 <c:out value="${post.user.bio}" />
                                                             </p>
@@ -198,7 +202,7 @@
                                                                 <c:forEach var="user" items="${post.usersRequestingToJoin}">
 
 
-                                                                    <a href="" class="link post-head-left jr">
+                                                                    <a href="/profile/id/${user.id}" class="link post-head-left jr">
                                                                         <div>
                                                                             <c:choose>
                                                                                 <c:when test="${user.profilePic != null}">
@@ -211,6 +215,7 @@
                                                                         </div>
                                                                         <div class="jr-user">
                                                                             <p class="mt-4">
+                                                                                
                                                                                 <span class="user-name post-user-name "> <c:out value="${user.firstName} ${user.middleName} ${user.lastName}  " /></span>
 
                                                                             </p>

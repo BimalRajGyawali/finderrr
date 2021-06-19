@@ -591,3 +591,10 @@ body {
     font-size: 0.9em;
     color: grey;
 }
+
+.profileLink,.profileLink:hover
+{
+   color:#181515;
+   text-decoration: none;
+   background-color: none;
+}

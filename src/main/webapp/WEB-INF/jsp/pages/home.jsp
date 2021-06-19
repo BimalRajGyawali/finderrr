@@ -136,7 +136,12 @@
 
                                                         <div class="post-meta">
                                                             <p class="user-name post-user-name">
-                                                                <c:out value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  " />
+                                                                <a href="/profile/id/${post.user.id}" class="profileLink">
+                                                                    
+                                                                        <c:out value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  " />
+                                                                    
+                                                                </a>
+                                                                
                                                             </p>
                                                             <p class="desc post-desc">
                                                                 <c:out value="${post.user.bio}" />
