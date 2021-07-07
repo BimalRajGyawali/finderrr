@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ncit.finder.repository.NotificationRepository;
 import com.ncit.finder.repository.PostRepository;
 import com.ncit.finder.repository.UserRepository;
 
@@ -24,16 +25,17 @@ import com.ncit.finder.models.User;
 @Controller
 public class ProfileController {
     
-    private PostRepository postRepository;
-	private UserRepository userRepository;
+    private final PostRepository postRepository;
+	private final UserRepository userRepository;
+	private final NotificationRepository notificationRepository;
 
-    @Autowired
-	public ProfileController(PostRepository postRepository,UserRepository userRepository) {
+	public ProfileController(PostRepository postRepository, UserRepository userRepository, NotificationRepository notificationRepository) {
 		this.postRepository = postRepository;
-		this.userRepository=userRepository;
+		this.userRepository = userRepository;
+		this.notificationRepository = notificationRepository;
 	}
 
-    @GetMapping("/profile/id/{profile_id}")
+	@GetMapping("/profile/id/{profile_id}")
 	public String createComment(@PathVariable("profile_id") String id,@RequestParam(required = false) String before,HttpServletRequest request,Model model) {
        	LocalDateTime beforeDateTime = LocalDateTime.now();
 		if (before != null && !before.isEmpty()) {
@@ -56,7 +58,7 @@ public class ProfileController {
 			
 		}else{
 			User user=new User();
-			user=userRepository.getById(Integer.valueOf(id));
+			user=userRepository.getById(Integer.parseInt(id));
 			if(user.getId()==0){
 				model.addAttribute("error", true);
 			}
@@ -66,6 +68,8 @@ public class ProfileController {
 		}
 		
 		model.addAttribute("posts", posts);
+		int notificationCount = notificationRepository.getNotificationCount(Integer.parseInt(id));
+		model.addAttribute("notificationCount", notificationCount);
         return "profile";
 	}
     

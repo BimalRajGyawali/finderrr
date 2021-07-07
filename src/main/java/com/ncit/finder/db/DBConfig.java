@@ -17,11 +17,11 @@ public class DBConfig {
             String port = "5432";
             String password = "201123a3c686a22eb14f50e256d81c710457a236b249ebb57665a9ba5b18d3bc";
 
-            // String host = "localhost";
-            // String database = "finder";
-            // String username = "postgres";
-            // String port = "5432";
-            // String password = "password";
+//             String host = "localhost";
+//             String database = "finder";
+//             String username = "postgres";
+//             String port = "5432";
+//             String password = "password";
 
 
             String url = "jdbc:postgresql://"+host+":"+port+"/"+database;
