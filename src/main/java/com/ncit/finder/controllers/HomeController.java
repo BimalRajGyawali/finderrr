@@ -29,14 +29,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class HomeController {
-	private PostRepository postRepository;
-	private FollowingRepository followingRepository;
-	private NotificationRepository notificationRepository;
-	private EmitterService emitterService;
+	private final PostRepository postRepository;
+	private final FollowingRepository followingRepository;
+	private final NotificationRepository notificationRepository;
+	private final EmitterService emitterService;
 
 	private static final int POSTS_SIZE = 50;
 
-	@Autowired
 	public HomeController(PostRepository postRepository, FollowingRepository followingRepository,
 			NotificationRepository notificationRepository, EmitterService emitterService) {
 		this.postRepository = postRepository;

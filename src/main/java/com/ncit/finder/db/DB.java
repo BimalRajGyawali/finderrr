@@ -10,19 +10,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DB {
-	@Autowired
-	private DataSource dataSource;
-	
+
+	private final DataSource dataSource;
+
+	public DB(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
 	public Connection makeConnection() {
 		Connection conn = null;
 		try {
 			conn = dataSource.getConnection();
-			System.out.println("Connecteddddddddddd");
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Connection "+conn);
 		return conn;
 	}
 	

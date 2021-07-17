@@ -23,10 +23,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Controller
 public class FollowingController {
 
-    private FollowingRepository followingRepository;
-    private NotificationRepository notificationRepository;
+    private final FollowingRepository followingRepository;
+    private final NotificationRepository notificationRepository;
   
-    @Autowired
     public FollowingController(FollowingRepository followingRepository, NotificationRepository notificationRepository) {
 		this.followingRepository = followingRepository;
 		this.notificationRepository = notificationRepository;

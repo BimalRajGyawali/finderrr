@@ -26,13 +26,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class CommentController {
-	private CommentRepository commentRepository;
-	private FollowingRepository followingRepository;
-	private NotificationRepository notificationRepository;
-	private PostRepository postRepository;
-	private EmitterService emitterService;
+	private final CommentRepository commentRepository;
+	private final FollowingRepository followingRepository;
+	private final NotificationRepository notificationRepository;
+	private final PostRepository postRepository;
+	private final EmitterService emitterService;
 
-	@Autowired
 	public CommentController(CommentRepository commentRepository, FollowingRepository followingRepository,
 			NotificationRepository notificationRepository, PostRepository postRepository,
 			EmitterService emitterService) {

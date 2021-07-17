@@ -22,13 +22,12 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Controller
 public class NotificationController {
 
-    private NotificationRepository notificationRepository;
-    private FollowingRepository followingRepository;
-    private EmitterService emitterService;
+    private final NotificationRepository notificationRepository;
+    private final FollowingRepository followingRepository;
+    private final EmitterService emitterService;
 
     private static final int SIZE = 30;
 
-    @Autowired
     public NotificationController(NotificationRepository notificationRepository,
             FollowingRepository followingRepository, EmitterService emitterService) {
         this.notificationRepository = notificationRepository;

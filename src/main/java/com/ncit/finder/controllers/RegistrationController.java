@@ -23,9 +23,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class RegistrationController {
 
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-	@Autowired
 	public RegistrationController(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}

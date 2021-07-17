@@ -17,7 +17,6 @@ public class FileUploadController {
 	private final StorageService storageService;
 	private final UserRepository userRepository;
 
-	@Autowired
 	public FileUploadController(StorageService storageService, UserRepository userRepository) {
 		this.storageService = storageService;
 		this.userRepository = userRepository;

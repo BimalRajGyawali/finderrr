@@ -16,9 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class LoginController {
 
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-	@Autowired
 	public LoginController(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
