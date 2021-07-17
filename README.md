@@ -1,6 +1,6 @@
-# Finder
+# Finderrr
 
-Finder is a web based social networking application which provides a
+Finderrr is a web based social networking application which provides a
 platform for people to find like-minded individuals to pursue goals
 together. Finder connects a user with certain interests to other users
 with similar interests.
