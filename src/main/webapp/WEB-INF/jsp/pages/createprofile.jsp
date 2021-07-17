@@ -96,20 +96,20 @@
         </head>
 
         <body>
-            <form method="POST" action="/update-profile">
+            <form method="POST" action="/update-profile" enctype="multipart/form-data">
                 <div id="login-box">
 
                     <h1>Profile</h1>
 
-                    <!-- <c:if test="${emptyFieldsError}">
+                    <c:if test="${emptyFieldsError}">
                         <p class="error">You need to either attach an Image or change your bio.</p>
                     </c:if>
                     <c:if test="${failedUpload}">
                         <p class="error">File size exceeded ! Try files with less than 2MB.</p>
-                    </c:if> -->
+                    </c:if>
 
 
-                    <!-- <input type="file" name="file" /> -->
+                    <input type="file" name="file" />
 
 
 
