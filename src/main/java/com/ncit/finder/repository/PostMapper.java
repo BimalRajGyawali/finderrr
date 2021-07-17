@@ -12,7 +12,7 @@ import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.Post;
 import com.ncit.finder.models.Status;
 import com.ncit.finder.models.User;
-import com.ncit.finder.utils.LocalDateTimeParser;
+import com.ncit.finder.functionality.LocalDateTimeParser;
 
 public class PostMapper {
 

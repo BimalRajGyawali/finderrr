@@ -106,7 +106,7 @@ public class RegistrationController {
 		model.addAttribute("user",user);
 		model.addAttribute("post_id",post_id);
 		
-		// MailSender.send(code,email);
+//		 MailSender.send(code,email);
 		request.getSession().setAttribute("code", code);
 		return "verification";
 

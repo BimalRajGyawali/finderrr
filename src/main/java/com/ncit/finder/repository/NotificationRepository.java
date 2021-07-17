@@ -13,7 +13,7 @@ import com.ncit.finder.db.DB;
 import com.ncit.finder.models.Notification;
 import com.ncit.finder.models.Post;
 import com.ncit.finder.models.User;
-import com.ncit.finder.utils.LocalDateTimeParser;
+import com.ncit.finder.functionality.LocalDateTimeParser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
