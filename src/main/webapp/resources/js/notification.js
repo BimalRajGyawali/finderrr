@@ -1,10 +1,9 @@
- const eventSource = new EventSource("https://finderrr.herokuapp.com/subscription");
+ const eventSource = new EventSource("http://localhost:8080/subscription");
 
 
  eventSource.onmessage = (e) => {
      let data = JSON.parse(e.data);
-     console.log(data);
-     if (data.userId == loggedInUserId) {
+     if (data.userId === loggedInUserId) {
          console.log("matched");
          let notiBell = document.querySelector("#noti-bell");
          notiBell.style.position = "absolute";
