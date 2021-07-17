@@ -72,6 +72,22 @@ pageEncoding="ISO-8859-1"%>
                                 </c:when>
 
                             </c:choose>
+                            <c:choose>
+                                <c:when test="${updateSuccess}">
+                                    <div class="alert alert-success alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <strong>Success!</strong> Post updated successfully.
+                                    </div>
+                                </c:when>
+
+                                <c:when test="${updateFailure}">
+                                    <div class="alert alert-danger alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <strong>Failed!</strong> Error in updating post.
+                                    </div>
+                                </c:when>
+
+                            </c:choose>
 
 
                             <section class="posts-section">
@@ -87,22 +103,26 @@ pageEncoding="ISO-8859-1"%>
                                                 </c:otherwise>
                                             </c:choose>
                                             <div class="post-meta">
-                                                <p class="user-name post-user-name">
+                                                <a href="/profile/id/${post.user.id}" class="profileLink"><p class="user-name post-user-name">
                                                     <c:out value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  " />
-                                                </p>
+                                                </p></a>
                                                 <p class="desc post-desc">
                                                     <c:out value="${post.user.bio}" />
                                                 </p>
                                                 <p class="desc post-desc">
                                                     <c:choose>
                                                         <c:when test="${post.yearsTillNow != 0}">
-                                                            <c:out value="${post.yearsTillNow} years ago" />
+                                                            <c:out value="${post.yearsTillNow} y ago" />
                                                         </c:when>
                                                         <c:when test="${post.monthsTillNow != 0}">
-                                                            <c:out value="${post.monthsTillNow} months ago" />
+                                                            <c:out value="${post.monthsTillNow} m ago" />
                                                         </c:when>
+                                                        <c:when test="${post.daysTillNow != 0}">
+                                                            <c:out value="${post.daysTillNow} d ago" />
+                                                        </c:when>
+
                                                         <c:when test="${post.hoursTillNow != 0}">
-                                                            <c:out value="${post.hoursTillNow} hours ago" />
+                                                            <c:out value="${post.hoursTillNow} h ago" />
                                                         </c:when>
                                                         <c:when test="${post.minutesTillNow != 0}">
                                                             <c:out value="${post.minutesTillNow} min ago" />
@@ -111,7 +131,8 @@ pageEncoding="ISO-8859-1"%>
                                                             <c:out value="${post.secondsTillNow} sec ago" />
                                                         </c:otherwise>
                                                     </c:choose>
-                                                    <span class="">. ${post.status}</span>
+                                                    .<span class="post-status ${post.status}">
+                                                        ${post.status}</span>
                                                 </p>
 
                                             </div>
@@ -128,7 +149,7 @@ pageEncoding="ISO-8859-1"%>
                                             ${post.content}
                                             <p class="mt-5">
                                                 <c:forEach var="hashtag" items="${post.hashTags}">
-                                                    <a href="/posts/hashtag/${hashtag.title}">
+                                                    <a href="/posts/?hashtag=${hashtag.title}">
                                                         <c:out value="#${hashtag.title}" />
                                                     </a>
                                                     &nbsp;
@@ -215,7 +236,7 @@ pageEncoding="ISO-8859-1"%>
 
 
                                                     <div class="comment-details">
-                                                        <p class="account-name">${comment.user.firstName} ${comment.user.middleName} ${comment.user.lastName}</p>
+                                                       <a href="/profile/id/${comment.user.id}" class="profileLink"> <p class="account-name">${comment.user.firstName} ${comment.user.middleName} ${comment.user.lastName}</p></a>
 
                                                         <p class="comment-data">${comment.content}</p>
                                                         <p class="comment-data desc post-desc">

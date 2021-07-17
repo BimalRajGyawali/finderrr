@@ -13,13 +13,15 @@ import java.util.List;
 import java.util.Set;
 
 import com.ncit.finder.db.DB;
-import com.ncit.finder.db.DBResponse;
+import com.ncit.finder.db.Response;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.JoinRequest;
 import com.ncit.finder.models.Post;
+import com.ncit.finder.models.Status;
 import com.ncit.finder.models.User;
-import com.ncit.finder.utils.LocalDateTimeParser;
+import com.ncit.finder.functionality.LocalDateTimeParser;
 
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -107,7 +109,8 @@ public class PostRepository {
 				+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
 				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio,u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
 				+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
-				+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n";
+				+ "ORDER BY p.posted_on DESC LIMIT\n" + n +")sp \n" 
+				+ "ON ph.post_id = sp.p_id ORDER BY sp.posted_on DESC; \n";
 
 		try {
 			preparedStatement = connection.prepareStatement(sql);
@@ -123,39 +126,57 @@ public class PostRepository {
 		return posts;
 	}
 
+	
 	public List<Post> getRecommendedPosts(int userId, int n, LocalDateTime dateTime) {
 
 		Timestamp before = Timestamp.valueOf(dateTime);
 		Connection connection = db.makeConnection();
 		PreparedStatement preparedStatement;
 		List<Post> followedPosts = new ArrayList<>();
-		List<Post> nonFollowedPosts = new ArrayList<>();
 
 		String followedPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
-				+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
-				+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
-				+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
-				+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n"
-				+ "WHERE sp.p_id IN\n"
-				+"(SELECT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag);";
-
-		String nonFollowedPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
-		+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
-		+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
-		+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
-		+ "ORDER BY p.posted_on DESC LIMIT " + n + " )sp \n" + "ON ph.post_id = sp.p_id\n"
-		+ "WHERE sp.p_id NOT IN\n"
-		+"(SELECT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag);";
+						+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
+						+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
+						+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
+						+ "AND p.id IN\n"
+						+"(SELECT DISTINCT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag WHERE f.user_id = ?\n)"
+						+ "ORDER BY p.posted_on DESC LIMIT\n"+n+")sp \n" + "ON ph.post_id = sp.p_id\n"
+						+"ORDER BY sp.posted_on DESC ;";
 
 		try {
 			preparedStatement = connection.prepareStatement(followedPostsSql);
+			preparedStatement.setInt(1, userId);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			followedPosts = PostMapper.mapResultSetIntoPosts(resultSet);
 
-			preparedStatement = connection.prepareStatement(nonFollowedPostsSql);
-			resultSet = preparedStatement.executeQuery();
-			nonFollowedPosts = PostMapper.mapResultSetIntoPosts(resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.closeConnection(connection);
+		}
+		return followedPosts;
+	}
+	
+	public List<Post> getExploringPosts(int userId, int n, LocalDateTime dateTime){
+		Timestamp before = Timestamp.valueOf(dateTime);
+		Connection connection = db.makeConnection();
+		PreparedStatement preparedStatement;
+		List<Post> exploringPosts = new ArrayList<>();
 
+		String exploringPostsSql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
+						+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
+						+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio, u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
+						+ "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
+						+ "AND p.id NOT IN\n"
+						+"(SELECT DISTINCT ph1.post_id FROM posts_hashtags ph1 INNER JOIN followings f ON ph1.hashtag = f.hashtag WHERE f.user_id = ?\n)"
+						+ "ORDER BY p.posted_on DESC LIMIT\n"+n+")sp \n" + "ON ph.post_id = sp.p_id\n"
+						+"ORDER BY sp.posted_on DESC ;";
+
+		try {
+			preparedStatement = connection.prepareStatement(exploringPostsSql);
+			preparedStatement.setInt(1, userId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			exploringPosts = PostMapper.mapResultSetIntoPosts(resultSet);
 
 
 		} catch (SQLException e) {
@@ -163,10 +184,9 @@ public class PostRepository {
 		} finally {
 			db.closeConnection(connection);
 		}
-		followedPosts.addAll(nonFollowedPosts);
-		return followedPosts;
+		return exploringPosts;
+
 	}
-	
 	public List<Post> getPostsFromHashTag(String hashTag, int n, LocalDateTime dateTime) {
 
 		Timestamp before = Timestamp.valueOf(dateTime);
@@ -178,24 +198,29 @@ public class PostRepository {
 				+ "( SELECT p.id p_id, p.content, p.posted_on, p.comments_count, p.join_requests_count,p.status,"
 				+ "u.id user_id, u.firstname, u.middlename, u.lastname, u.bio, u.joined_on, u.email, u.pass, u.profile_pic\n"
 				+ "FROM posts p INNER JOIN users u ON p.user_id = u.id\n"
-				+ "WHERE p.id IN (SELECT ph.post_id FROM posts_hashtags ph WHERE ph.hashtag LIKE ? )\n"
-				+ "AND p.posted_on < ?\n" + "ORDER BY p.posted_on DESC LIMIT " + n + ") sp \n"
-				+ "INNER JOIN posts_hashtags phh on phh.post_id = sp.p_id;";
+				+ "WHERE p.id IN (SELECT ph.post_id FROM posts_hashtags ph WHERE LOWER(ph.hashtag) LIKE ? )\n"
+				+ "AND p.posted_on < ' " + before + "'\n" 
+				+ "ORDER BY p.posted_on DESC LIMIT\n"+n+") sp \n"
+				+ "INNER JOIN posts_hashtags phh on phh.post_id = sp.p_id\n"
+				+"ORDER BY sp.posted_on DESC;";
 
 		try {
 			preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, "%" + hashTag + "%");
-			preparedStatement.setString(2, before.toString());
+			preparedStatement.setString(1, "%" + hashTag.toLowerCase() + "%");
 			ResultSet resultSet = preparedStatement.executeQuery();
 			posts = PostMapper.mapResultSetIntoPosts(resultSet);
+			System.out.println(posts.size());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			
-		}
+		}finally{
+            db.closeConnection(connection);
+        }
 		return posts;
 	}
 
-	public boolean createPost(Post post) {
+	public int createPost(Post post) {
+		System.out.println("helllllllllllllllllllllllllooo");
 		Connection connection = db.makeConnection();
 		String postSql = "INSERT INTO posts(content, posted_on, user_id, status) VALUES(?, ?, ?, ?);";
 		String hashTagSql = "INSERT INTO hashtags(title) VALUES(?);";
@@ -205,6 +230,7 @@ public class PostRepository {
 		int generatedPostId = 0;
 
 		try {
+			System.err.println("Creating post.............");
 
 			// 1. Insert post into posts table
 			preparedStatement = connection.prepareStatement(postSql, new String[] { "id" });
@@ -212,44 +238,63 @@ public class PostRepository {
 			preparedStatement.setTimestamp(2, Timestamp.valueOf(post.getPostedDateTime()));
 			preparedStatement.setInt(3, post.getUser().getId());
 			preparedStatement.setString(4, post.getStatus().toString());
-
+			System.out.println("Inserting post");
 			preparedStatement.executeUpdate();
 			ResultSet rs = preparedStatement.getGeneratedKeys();
 			if (rs.next()) {
 				generatedPostId = rs.getInt(1);
 			}
+			System.out.println("Post inserted -- generated post id : "+generatedPostId);
 
 			// 2. Get all hashtags of post and insert into hashtags table if not exist
 			// already
 
+			// List<HashTag> hashTags = post.getHashTags();
 			Set<HashTag> hashTags = new HashSet<>(post.getHashTags());
-
+			
+			System.out.println(hashTags);
 			for (HashTag hashTag : hashTags) {
-
+				if(hashTag.getTitle().isEmpty()){
+					continue;
+				}
+				System.out.println("Inserting hashtag "+hashTag);
 				preparedStatement = connection.prepareStatement(hashTagSql);
 				preparedStatement.setString(1, hashTag.getTitle());
 				try {
 					preparedStatement.executeUpdate();
+					System.out.println("Inserted hashtag "+hashTag);
 					// If no exception occurs, hashtag doesnot exist already.
 
-				} catch (SQLIntegrityConstraintViolationException ex) {
-					System.out.println("caught");
+				} 
+				catch (SQLIntegrityConstraintViolationException ex) {
+					System.out.println("Hashtag "+hashTag+"already exist");
+				
 				}
+				catch(Exception ex){
+					ex.printStackTrace();
+				}
+				System.out.println("Linking "+hashTag+" to post id "+generatedPostId);
 				// 3. Also link the post and hashtag in posts_hashtags table
 				preparedStatement = connection.prepareStatement(postHashTagSql);
 				preparedStatement.setInt(1, generatedPostId);
 				preparedStatement.setString(2, hashTag.getTitle());
-				preparedStatement.executeUpdate();
+				try{
+					preparedStatement.executeUpdate();
 
-				System.out.println("Inserted =========="+hashTag);
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				System.out.println("Linked "+hashTag+" to post id "+generatedPostId+" successfully");
+
 
 			}
 		}catch(SQLException e){
+			e.printStackTrace();
 
 		}finally{
 			db.closeConnection(connection);
 		}
-			return true;
+			return generatedPostId;
 		}
 
 	public boolean updatePost(Post post) {
@@ -272,11 +317,13 @@ public class PostRepository {
 			preparedStatement.setInt(3, post.getId());
 			preparedStatement.executeUpdate();
 
-			List<HashTag> hashTags = post.getHashTags();
+			Set<HashTag> hashTags = new HashSet<>(post.getHashTags());
 			System.out.println(hashTags);
 
 			for (HashTag hashTag : hashTags) {
-
+				if(hashTag.getTitle().isEmpty()){
+					continue;
+				}
 				preparedStatement = connection.prepareStatement(hashTagSql);
 				preparedStatement.setString(1, hashTag.getTitle());
 				try {
@@ -285,12 +332,19 @@ public class PostRepository {
 
 				} catch (SQLIntegrityConstraintViolationException ex) {
 					ex.printStackTrace();
+				}catch(Exception ex){
+					ex.printStackTrace();
 				}
+				
 				// 3. Also link the post and hashtag in posts_hashtags table
 				preparedStatement = connection.prepareStatement(postHashTagSql);
 				preparedStatement.setInt(1, post.getId());
 				preparedStatement.setString(2, hashTag.getTitle());
-				preparedStatement.executeUpdate();
+				try{
+					preparedStatement.executeUpdate();
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 
 			
 			}
@@ -300,18 +354,20 @@ public class PostRepository {
 
 		catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}finally{
+            db.closeConnection(connection);
+        }
 
 		return false;
 	}
 
-	public DBResponse addJoinRequest(JoinRequest joinRequest) {
+	public Response addJoinRequest(JoinRequest joinRequest) {
 		Connection connection = db.makeConnection();
 		PreparedStatement statement;
 
 		String sql = "SELECT join_requests_count\n" + "FROM posts WHERE id=?";
 
-		DBResponse response = new DBResponse();
+		Response response = new Response();
 		try {
 
 			statement = connection.prepareStatement(sql);
@@ -344,19 +400,28 @@ public class PostRepository {
 			response.setResponseMessage("Join Request to this post has been already sent");
 			response.setSuccessStatus(true);
 			return response;
-		} catch (SQLException e) {
+		} catch(PSQLException ex){
+			System.out.println("already sent");
+			response.setResponseMessage("Join Request to this post has been already sent");
+			response.setSuccessStatus(true);
+		}catch (SQLException e) {
+			response.setResponseMessage("Error in sending join request");
+			response.setSuccessStatus(false);
 			e.printStackTrace();
-		} finally {
+		} catch(Exception e){
+			response.setResponseMessage("Error in sending join request");
+			response.setSuccessStatus(false);
+			e.printStackTrace();
+		}finally {
 			db.closeConnection(connection);
 		}
-		response.setResponseMessage("Error in sending join request");
-		response.setSuccessStatus(false);
+		
 
 		return response;
 	}
 
 	public Post getPostWithJoinRequests(int postId) {
-		String sql = "SELECT sp.post_id, sp.post_content, sp.post_posted_on, sp.post_comments_count, sp.post_join_requests_count,"
+		String sql = "SELECT sp.post_id, sp.post_content, sp.post_posted_on, sp.post_comments_count,sp.status, sp.post_join_requests_count,"
 				+ "sp.post_user_id, sp.post_user_firstname , sp.post_user_middlename, sp.post_user_lastname, sp.post_user_joined_on, sp.post_user_bio, sp.post_user_email, sp.post_user_pass, sp.post_user_pp"
 				+ ", u.id join_requests_user_id, u.firstname join_requests_user_firstname, u.middlename join_requests_user_middlename, u.lastname join_requests_user_lastname, u.joined_on join_requests_user_joined_on, u.bio join_requests_user_bio, u.email join_requests_user_email, u.pass join_requests_user_pass, u.profile_pic join_requests_user_pp\n"
 				+ "FROM join_requests j\n" + "INNER JOIN users u on j.user_id = u.id\n" + "RIGHT JOIN\n" + "(SELECT\n"
@@ -397,6 +462,7 @@ public class PostRepository {
 				post.setContent(resultSet.getString("post_content"));
 				post.setCommentsCount(resultSet.getInt("post_comments_count"));
 				post.setJoinRequestsCount(resultSet.getInt("post_join_requests_count"));
+				post.setStatus(Status.valueOf(resultSet.getString("status")));
 
 				if (resultSet.getTimestamp("post_posted_on") != null) {
 					post.setPostedDateTime(resultSet.getTimestamp("post_posted_on").toLocalDateTime());
@@ -496,6 +562,44 @@ public class PostRepository {
 		}
 
 		return false;
+	}
+
+	public List<Post> getUserIdSpecificPosts(String id,int n, LocalDateTime dateTime) {
+
+		Timestamp before = Timestamp.valueOf(dateTime);
+		Connection connection = db.makeConnection();
+		PreparedStatement preparedStatement;
+		List<Post> posts = new ArrayList<>();
+
+		String sql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
+		+ "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
+		+ "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio,u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
+		+ "RIGHT OUTER JOIN users u ON p.user_id = u.id WHERE user_id=? and p.posted_on < ? \n"
+		+ "ORDER BY p.posted_on DESC LIMIT ? )sp \n" 
+		+ "ON ph.post_id = sp.p_id ORDER BY sp.posted_on DESC; \n";
+
+		// String sql="SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
+		// + "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
+		// + "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio,u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
+		// + "RIGHT OUTER JOIN users u ON p.user_id = u.id WHERE user_id=' "+id+" ' and p.posted_on < ' " + before + "'\n"
+		// + "ORDER BY p.posted_on DESC LIMIT\n" + n +")sp \n" 
+		// + "ON ph.post_id = sp.p_id ORDER BY sp.posted_on DESC; \n";
+
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1,Integer.parseInt(id));
+			preparedStatement.setTimestamp(2,before);
+			preparedStatement.setInt(3,n);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			posts = PostMapper.mapResultSetIntoPosts(resultSet);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.closeConnection(connection);
+		}
+
+		return posts;
 	}
 			
 	

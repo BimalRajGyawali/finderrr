@@ -43,9 +43,9 @@
                 }
                 
                 .left {
-                    position: absolute;
+                    /* position: absolute;
                     top: 0;
-                    left: 0;
+                    left: 0; */
                     box-sizing: border-box;
                     padding: 40px;
                     width: 300px;
@@ -115,7 +115,12 @@
         <body>
 
             <div id="login-box">
+                <c:if test="${verificationSuccess}">
+                    <p style="color: green;padding-left:40px;padding-top: 30px;">Account created successfully. Login to continue.</p>
+
+                </c:if>
                 <div class="left">
+
                     <form action="/loginsubmit/post/${post_id}" method="post">
                         <h1>Login</h1>
                         <c:if test="${error}">

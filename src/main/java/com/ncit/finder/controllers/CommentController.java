@@ -5,12 +5,16 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ncit.finder.functionality.EmitterService;
 import com.ncit.finder.models.Comment;
 import com.ncit.finder.models.HashTag;
+import com.ncit.finder.models.Notification;
 import com.ncit.finder.models.Post;
 import com.ncit.finder.models.User;
 import com.ncit.finder.repository.CommentRepository;
 import com.ncit.finder.repository.FollowingRepository;
+import com.ncit.finder.repository.NotificationRepository;
+import com.ncit.finder.repository.PostRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,13 +26,20 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class CommentController {
-	private CommentRepository commentRepository;
-	private FollowingRepository followingRepository;
+	private final CommentRepository commentRepository;
+	private final FollowingRepository followingRepository;
+	private final NotificationRepository notificationRepository;
+	private final PostRepository postRepository;
+	private final EmitterService emitterService;
 
-	@Autowired
-	public CommentController(CommentRepository commentRepository, FollowingRepository followingRepository) {
+	public CommentController(CommentRepository commentRepository, FollowingRepository followingRepository,
+			NotificationRepository notificationRepository, PostRepository postRepository,
+			EmitterService emitterService) {
 		this.commentRepository = commentRepository;
 		this.followingRepository = followingRepository;
+		this.notificationRepository = notificationRepository;
+		this.postRepository = postRepository;
+		this.emitterService = emitterService;
 	}
 
 	@GetMapping("/post/{post_id}")
@@ -48,6 +59,8 @@ public class CommentController {
 			} else {
 				model.addAttribute("hasRecommendations", false);
 			}
+			int notificationCount = notificationRepository.getNotificationCount(userId);
+			model.addAttribute("notificationCount", notificationCount);
 		}
 		return "comment";
 
@@ -58,7 +71,6 @@ public class CommentController {
 		String post_content = request.getParameter("form_comment_content");
 		int post_id = Integer.parseInt(request.getParameter("post_id"));
 		int comments_count = Integer.parseInt(request.getParameter("comments_count"));
-		// System.out.println(post_content+post_id+comments_count);
 
 		User user = new User();
 		user.setId((int) request.getSession().getAttribute("id"));
@@ -71,8 +83,24 @@ public class CommentController {
 
 		boolean status = commentRepository.createComment(comment, post_id, comments_count);
 
-		// System.out.println(post_content+post_id+comment+status);
+		int authorId = postRepository.getAuthor(post_id).getId();
 
+		if(status && user.getId() != authorId){
+				Post post = new Post();
+				post.setId(post_id);
+		
+				Notification notification = new Notification();
+				notification.setInitiator(user);
+				notification.setPost(post);
+				notification.setSeen(false);
+				notification.setNotificationType(Notification.COMMENT);
+				notification.setInitiatedOn(LocalDateTime.now());
+				notificationRepository.save(notification);
+				int notificationCount = notificationRepository.getNotificationCount(authorId);
+				emitterService.pushNotification(authorId, notificationCount);
+
+			
+		}
 		redirectAttributes.addFlashAttribute("success", status);
 		redirectAttributes.addFlashAttribute("failure", !status);
 		return "redirect:/post/" + post_id;

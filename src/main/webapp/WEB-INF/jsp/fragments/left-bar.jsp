@@ -5,7 +5,7 @@
             <div class="custom-card-body">
 
 
-                <a href="/create-profile">
+                <a href="profile/id/${sessionScope.id}">
                     <c:choose>
                         <c:when test="${sessionScope.profile_pic != null}">
                             <img class="custom-card-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Profile Picture">

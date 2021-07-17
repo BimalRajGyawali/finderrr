@@ -6,13 +6,16 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ncit.finder.db.DBResponse;
+import com.ncit.finder.db.Response;
+import com.ncit.finder.functionality.EmitterService;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.JoinRequest;
+import com.ncit.finder.models.Notification;
 import com.ncit.finder.models.Post;
 import com.ncit.finder.models.Status;
 import com.ncit.finder.models.User;
 import com.ncit.finder.repository.FollowingRepository;
+import com.ncit.finder.repository.NotificationRepository;
 import com.ncit.finder.repository.PostRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,44 +29,87 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class HomeController {
-	private PostRepository postRepository;
-	private FollowingRepository followingRepository;
+	private final PostRepository postRepository;
+	private final FollowingRepository followingRepository;
+	private final NotificationRepository notificationRepository;
+	private final EmitterService emitterService;
 
-	@Autowired
-	public HomeController(PostRepository postRepository, FollowingRepository followingRepository) {
+	private static final int POSTS_SIZE = 50;
+
+	public HomeController(PostRepository postRepository, FollowingRepository followingRepository,
+			NotificationRepository notificationRepository, EmitterService emitterService) {
 		this.postRepository = postRepository;
 		this.followingRepository = followingRepository;
+		this.notificationRepository = notificationRepository;
+		this.emitterService = emitterService;
 	}
 
 	@GetMapping("/guest")
 	public String guestHome(@RequestParam(required = false) String before, Model model) {
-		LocalDateTime beforeDateTime = LocalDateTime.now();
-		if (before != null && !before.isEmpty()) {
-			beforeDateTime = LocalDateTime.parse(before);
-		}
-		List<Post> posts = postRepository.getDetailedPosts(30, beforeDateTime);
+
+		LocalDateTime beforeDateTime = (before != null && !before.isEmpty()) ?
+										LocalDateTime.parse(before) : LocalDateTime.now();
+
+		List<Post> posts = postRepository.getDetailedPosts(POSTS_SIZE, beforeDateTime);
 		model.addAttribute("posts", posts);
 
 		if (posts.size() > 0) {
-			model.addAttribute("oldestDate", posts.get(posts.size() - 1).getPostedDateTime());
+			LocalDateTime oldestDateTime = posts.get(posts.size() - 1).getPostedDateTime();
+			model.addAttribute("oldestDate", oldestDateTime);
 			model.addAttribute("hasPosts", true);
+			List<Post> olderPosts = postRepository.getDetailedPosts(POSTS_SIZE, oldestDateTime);
+			boolean hasOlderPosts = olderPosts.size() != 0 ;
+			model.addAttribute("hasOlderPosts", hasOlderPosts);
 		}
 		return "home";
 	}
 
 	@GetMapping("/")
 	public String index(@RequestParam(required = false) String before, Model model, HttpServletRequest request) {
-		int userId;
-		if (request.getSession().getAttribute("id") != null) {
-			userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+		if(request.getSession().getAttribute("id") == null){
+			return "redirect:/guest?before="+before;
+		}
+		LocalDateTime beforeDateTime = (before != null && !before.isEmpty()) ?
+				LocalDateTime.parse(before) : LocalDateTime.now();
+
+		int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+
+		List<Post> posts = postRepository.getRecommendedPosts(userId, POSTS_SIZE, beforeDateTime);
+		model.addAttribute("posts", posts);
+
+		List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
+
+		if (recommendedHashTags.size() > 0) {
+			model.addAttribute("recommendedHashTags", recommendedHashTags);
+			model.addAttribute("hasRecommendations", true);
 		} else {
-			return "redirect:/guest";
+			model.addAttribute("hasRecommendations", false);
 		}
-		LocalDateTime beforeDateTime = LocalDateTime.now();
-		if (before != null && !before.isEmpty()) {
-			beforeDateTime = LocalDateTime.parse(before);
+		if (posts.size() > 0) {
+			LocalDateTime oldestDateTime = posts.get(posts.size() - 1).getPostedDateTime();
+			model.addAttribute("oldestDate", oldestDateTime);
+			model.addAttribute("hasPosts", true);
+			List<Post> olderPosts = postRepository.getRecommendedPosts(userId, POSTS_SIZE, oldestDateTime);
+			boolean hasOlderPosts = olderPosts.size() != 0;
+			model.addAttribute("hasOlderPosts", hasOlderPosts);
 		}
-		List<Post> posts = postRepository.getRecommendedPosts(userId, 30, beforeDateTime);
+		int notificationCount = notificationRepository.getNotificationCount(userId);
+		model.addAttribute("notificationCount", notificationCount);
+		return "home";
+	}
+
+	@GetMapping("/explore")
+	public String explore(@RequestParam(required = false) String before,
+							 Model model, HttpServletRequest request) {
+		if(request.getSession().getAttribute("id") == null){
+			return "redirect:/guest?before="+before;
+		}
+		LocalDateTime beforeDateTime = (before != null && !before.isEmpty()) ?
+				LocalDateTime.parse(before) : LocalDateTime.now();
+
+		int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+
+		List<Post> posts = postRepository.getExploringPosts(userId, POSTS_SIZE, beforeDateTime);
 		model.addAttribute("posts", posts);
 		List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
 		if (recommendedHashTags.size() > 0) {
@@ -73,26 +119,40 @@ public class HomeController {
 			model.addAttribute("hasRecommendations", false);
 		}
 		if (posts.size() > 0) {
-			model.addAttribute("oldestDate", posts.get(posts.size() - 1).getPostedDateTime());
+			LocalDateTime oldestDateTime = posts.get(posts.size() - 1).getPostedDateTime();
+			model.addAttribute("oldestDate", oldestDateTime);
 			model.addAttribute("hasPosts", true);
+			List<Post> olderPosts = postRepository.getExploringPosts(userId, POSTS_SIZE, oldestDateTime);
+			boolean hasOlderPosts = olderPosts.size() != 0;
+			model.addAttribute("hasOlderPosts", hasOlderPosts);
 		}
-		return "home";
+		int notificationCount = notificationRepository.getNotificationCount(userId);
+		model.addAttribute("notificationCount", notificationCount);
+
+		return "explore";
 	}
 
+	
 	@GetMapping("/posts/hashtag/{hashtag}")
 	public String getPostsFromHashTag(@PathVariable String hashtag, @RequestParam(required = false) String before,
 			Model model, HttpServletRequest request) {
-		LocalDateTime beforeDateTime = LocalDateTime.now();
-		if (before != null && !before.isEmpty()) {
-			beforeDateTime = LocalDateTime.parse(before);
-		}
-		List<Post> posts = postRepository.getPostsFromHashTag(hashtag, 10, beforeDateTime);
+				hashtag = HashTag.sanitize(hashtag);
+		LocalDateTime beforeDateTime = (before != null && !before.isEmpty()) ?
+				LocalDateTime.parse(before) : LocalDateTime.now();
+
+		List<Post> posts = postRepository.getPostsFromHashTag(hashtag, POSTS_SIZE, beforeDateTime);
 		model.addAttribute("posts", posts);
+		System.out.println("posts size "+posts.size());
 
 		if (posts.size() > 0) {
-			model.addAttribute("oldestDate", posts.get(posts.size() - 1).getPostedDateTime());
+			LocalDateTime oldestDateTime = posts.get(posts.size() - 1).getPostedDateTime();
+			model.addAttribute("oldestDate", oldestDateTime);
 			model.addAttribute("hasPosts", true);
+			List<Post> olderPosts = postRepository.getPostsFromHashTag(hashtag, POSTS_SIZE, oldestDateTime);
+			boolean hasOlderPosts = olderPosts.size() != 0;
+			model.addAttribute("hasOlderPosts", hasOlderPosts);
 		}
+		
 		boolean isHashTagPresent = followingRepository.isHashTagPresent(hashtag);
 		model.addAttribute("requestedHashTag", hashtag);
 		model.addAttribute("isHashTagPresent", isHashTagPresent);
@@ -100,6 +160,28 @@ public class HomeController {
 		if (request.getSession().getAttribute("id") != null) {
 			int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
 			boolean hasFollowed = followingRepository.hasFollowed(userId, hashtag);
+			model.addAttribute("hasFollowed", hasFollowed);
+			List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
+			if (recommendedHashTags.size() > 0) {
+				model.addAttribute("recommendedHashTags", recommendedHashTags);
+				model.addAttribute("hasRecommendations", true);
+			} else {
+				model.addAttribute("hasRecommendations", false);
+			}
+		}
+		if (request.getSession().getAttribute("id") != null) {
+			int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+			int notificationCount = notificationRepository.getNotificationCount(userId);
+			model.addAttribute("notificationCount", notificationCount);
+		}
+
+		return "posts";
+	}
+
+	@GetMapping("/posts/hashtag/")
+	public String redirectToGetPostsFromHashtag(Model model, HttpServletRequest request){
+		if (request.getSession().getAttribute("id") != null) {
+			int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
 
 			List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
 			if (recommendedHashTags.size() > 0) {
@@ -108,10 +190,10 @@ public class HomeController {
 			} else {
 				model.addAttribute("hasRecommendations", false);
 			}
-			model.addAttribute("hasFollowed", hasFollowed);
-
+			int notificationCount = notificationRepository.getNotificationCount(userId);
+			model.addAttribute("notificationCount", notificationCount);
 		}
-		return "posts";
+		return "hashtagerror";
 	}
 
 	@GetMapping("/create-post")
@@ -128,8 +210,10 @@ public class HomeController {
 		} else {
 			model.addAttribute("hasRecommendations", false);
 		}
-
+		int notificationCount = notificationRepository.getNotificationCount(userId);
+		model.addAttribute("notificationCount", notificationCount);
 		return "createpost";
+
 	}
 
 	@PostMapping("/create-post")
@@ -157,18 +241,19 @@ public class HomeController {
 		post.setUser(user);
 		post.setHashTags(hashTags);
 		post.setStatus(pStatus);
-		boolean status = postRepository.createPost(post);
+		int generatedId = postRepository.createPost(post);
 
-		redirectAttributes.addFlashAttribute("success", status);
-		redirectAttributes.addFlashAttribute("failure", !status);
+		redirectAttributes.addFlashAttribute("success", generatedId != 0);
+		redirectAttributes.addFlashAttribute("failure", generatedId == 0);
 
-		return "redirect:/";
+		return "redirect:/"+generatedId+"/join-requests";
 	}
 
 	@GetMapping("/{postId}/join-requests")
 	public String getPostWithJoinRequests(@PathVariable int postId, Model model, HttpServletRequest request) {
 		Post post = postRepository.getPostWithJoinRequests(postId);
 		model.addAttribute("post", post);
+		
 		model.addAttribute("hasJoinRequests", post.getUsersRequestingToJoin().size() > 0);
 		System.out.println(post.getUsersRequestingToJoin().size());
 
@@ -181,6 +266,8 @@ public class HomeController {
 			} else {
 				model.addAttribute("hasRecommendations", false);
 			}
+			int notificationCount = notificationRepository.getNotificationCount(userId);
+			model.addAttribute("notificationCount", notificationCount);
 		}
 		return "joinrequests";
 	}
@@ -199,7 +286,21 @@ public class HomeController {
 		joinRequest.setPost(post);
 		joinRequest.setUser(user);
 
-		DBResponse response = postRepository.addJoinRequest(joinRequest);
+		Response response = postRepository.addJoinRequest(joinRequest);
+		int authorId = postRepository.getAuthor(postId).getId();
+		// if jr is added successfully and person sending jr is not the author
+		if(response.isSuccessStatus() && user.getId() != authorId){
+			Notification notification = new Notification();
+			notification.setInitiator(user);
+			notification.setPost(post);
+			notification.setSeen(false);
+			notification.setNotificationType(Notification.JOIN_REQUEST);
+			notification.setInitiatedOn(LocalDateTime.now());
+			notificationRepository.save(notification);
+			int notificationCount = notificationRepository.getNotificationCount(authorId);
+			emitterService.pushNotification(authorId, notificationCount);
+
+		}
 
 		redirectAttributes.addFlashAttribute("joinRequestResponse", response);
 
@@ -210,8 +311,9 @@ public class HomeController {
 	public String getEditPostPage(@PathVariable int postId, Model model, HttpServletRequest request) {
 		Post post = postRepository.getPostById(postId);
 		System.err.println(post);
+		int userId;
 		if (request.getSession().getAttribute("id") != null) {
-			int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+			 userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
 			if (userId != post.getUser().getId()) {
 				return "redirect:/";
 			}
@@ -232,6 +334,8 @@ public class HomeController {
 		}
 		model.addAttribute("ongoingStatus", ongoingStatus);
 		model.addAttribute("completedStatus", completedStatus);
+		int notificationCount = notificationRepository.getNotificationCount(userId);
+		model.addAttribute("notificationCount", notificationCount);
 		return "editpost";
 	}
 
@@ -259,7 +363,7 @@ public class HomeController {
 		redirectAttributes.addFlashAttribute("updateSuccess", status);
 		redirectAttributes.addFlashAttribute("updateFailure", !status);
 
-		return "redirect:/";
+		return "redirect:/post/"+post.getId();
 	}
 
 	@PostMapping("/delete-post")

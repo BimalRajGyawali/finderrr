@@ -23,9 +23,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class RegistrationController {
 
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-	@Autowired
 	public RegistrationController(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
@@ -107,7 +106,7 @@ public class RegistrationController {
 		model.addAttribute("user",user);
 		model.addAttribute("post_id",post_id);
 		
-		MailSender.send(code,email);
+//		 MailSender.send(code,email);
 		request.getSession().setAttribute("code", code);
 		return "verification";
 
@@ -153,6 +152,10 @@ public class RegistrationController {
 		if(codeRecieved.equals(codeSent)) {
 			user.setPass(passwordHashed);
 			userRepository.createUser(user);
+			request.getSession().invalidate();
+			/** for temporary. heroku doesnot support file system */
+			userRepository.insertImage("pic.jpeg", email);
+			redirectAttributes.addFlashAttribute("verificationSuccess", true);
 			return "redirect:/login/post/"+post_id;
 		}
 		redirectAttributes.addFlashAttribute("codeError",true);
@@ -164,11 +167,14 @@ public class RegistrationController {
 	}
 	
 	@GetMapping("/create-profile")
-	public String createProfile(HttpServletRequest request) {
+	public String createProfile(HttpServletRequest request, Model model) {
 		if((String) request.getSession().getAttribute("email")==null) {
 			return "redirect:/login";
 		
 		}
+		int id = (int) request.getSession().getAttribute("id");
+		User user = userRepository.getById(id);
+		model.addAttribute("user", user);
 		return "createprofile";
 		
 	}

@@ -47,7 +47,7 @@
                                             <c:when test="${hasRecommendations}">
                                                 <c:forEach var="recommendedHashTag" items="${recommendedHashTags}">
                                                     <div class="small-hashtag">
-                                                        <p><span>#${recommendedHashTag.title}</span>
+                                                        <p><a href="posts/hashtag/${recommendedHashTag.title}" style="color:#696969;">#${recommendedHashTag.title}</a>
                                                             <button class="small-follow-btn" id="${recommendedHashTag.title}" onclick="follow(event)">Follow</button>
                                                         </p>
 
@@ -73,7 +73,8 @@
                                             <c:when test="${hasFollowings}">
                                                 <c:forEach var="followedHashTag" items="${followedHashTags}">
                                                     <div class="small-hashtag">
-                                                        <p><span>#${followedHashTag.title}</span>
+                                                        <p>
+                                                            <a href="posts/hashtag/${recommendedHashTag.title}" style="color:#696969;">#${followedHashTag.title}</a>
                                                             <button class="small-follow-btn followed" id="${followedHashTag.title}" onclick="follow(event)">Unfollow</button>
                                                         </p>
 

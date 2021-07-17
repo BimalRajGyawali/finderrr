@@ -1,6 +1,11 @@
 .nav {
-    padding-bottom: 15px;
+    padding-bottom: 5px;
     background: white;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    border-bottom: 0.5px solid #d0d0d0;
 }
 
 .nav a {
@@ -96,6 +101,18 @@ ul {
     font-size: 25px;
     color: grey;
     padding-right: 20px;
+}
+
+#noti-count {
+    position: relative;
+    top: -15px;
+    left: 15px;
+    color: white;
+    background: red;
+    border-radius: 50%;
+    padding: 1px 5px 1px 5px;
+    display: block;
+    margin-right: 20px;
 }
 
 @media only screen and (min-width: 700px) {

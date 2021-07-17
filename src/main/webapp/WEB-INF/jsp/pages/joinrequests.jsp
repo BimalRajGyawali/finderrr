@@ -54,7 +54,24 @@
                             </div>
                             <div class="col col2">
                                 <c:choose>
-                                    <c:when test="${post != null}">
+                                    <c:when test="${success}">
+                                        <div class="alert alert-success alert-dismissible">
+                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                            <strong>Success!</strong> Post created successfully.
+                                        </div>
+                                    </c:when>
+
+                                    <c:when test="${failure}">
+                                        <div class="alert alert-danger alert-dismissible">
+                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                            <strong>Failed!</strong> Error in creating post.
+                                        </div>
+                                    </c:when>
+
+                                </c:choose>
+
+                                <c:choose>
+                                    <c:when test="${post.id != 0}">
 
                                         <c:if test="${joinRequestResponse != null}">
                                             <c:choose>
@@ -92,9 +109,13 @@
                                                             </c:otherwise>
                                                         </c:choose>
                                                         <div class="post-meta">
-                                                            <p class="user-name post-user-name">
-                                                                <c:out value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  " />
-                                                            </p>
+                                                            
+
+                                                            <a href="/profile/id/${post.user.id}" class="profileLink">
+                                                                <p class="user-name post-user-name">
+                                                                    <c:out value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  " />
+                                                                </p>
+                                                            </a>
                                                             <p class="desc post-desc">
                                                                 <c:out value="${post.user.bio}" />
                                                             </p>
@@ -119,7 +140,9 @@
                                                                         <c:out value="${post.secondsTillNow} sec ago" />
                                                                     </c:otherwise>
                                                                 </c:choose>
-                                                                <span class="">. ${post.status}</span>
+
+                                                                .<span class="post-status ${post.status}">
+                                                                    ${post.status}</span>
                                                             </p>
 
                                                         </div>
@@ -179,17 +202,20 @@
                                                                 <c:forEach var="user" items="${post.usersRequestingToJoin}">
 
 
-                                                                    <a href="" class="link post-head-left jr">
-                                                                        <c:choose>
-                                                                            <c:when test="${user.profilePic != null}">
-                                                                                <img class="small-img" src="/resources/uploads/${user.profilePic}" alt="Profile Picture">
-                                                                            </c:when>
-                                                                            <c:otherwise>
-                                                                                <img class="small-img" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
-                                                                            </c:otherwise>
-                                                                        </c:choose>
+                                                                    <a href="/profile/id/${user.id}" class="link post-head-left jr">
+                                                                        <div>
+                                                                            <c:choose>
+                                                                                <c:when test="${user.profilePic != null}">
+                                                                                    <img class="small-img" src="/resources/uploads/${user.profilePic}" alt="Profile Picture">
+                                                                                </c:when>
+                                                                                <c:otherwise>
+                                                                                    <img class="small-img" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
+                                                                                </c:otherwise>
+                                                                            </c:choose>
+                                                                        </div>
                                                                         <div class="jr-user">
                                                                             <p class="mt-4">
+                                                                                
                                                                                 <span class="user-name post-user-name "> <c:out value="${user.firstName} ${user.middleName} ${user.lastName}  " /></span>
 
                                                                             </p>
@@ -197,7 +223,8 @@
                                                                                 <c:out value="${user.bio}" />
                                                                             </p>
                                                                             <p class="desc" style="margin-top: -8px;">
-                                                                                <c:if test="${sessionScope.id == user.id}">
+
+                                                                                <c:if test="${sessionScope.id == post.user.id}">
 
                                                                                     <c:out value="${user.email}" />
 
@@ -227,7 +254,7 @@
                                         </section>
                                     </c:when>
                                     <c:otherwise>
-                                        <c:out value="404 error" />
+                                        <c:out value="NO POSTS AVAILABLE" />
                                     </c:otherwise>
                                 </c:choose>
                                 </div>

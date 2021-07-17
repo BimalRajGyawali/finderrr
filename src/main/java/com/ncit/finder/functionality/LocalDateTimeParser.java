@@ -1,4 +1,4 @@
-package com.ncit.finder.utils;
+package com.ncit.finder.functionality;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

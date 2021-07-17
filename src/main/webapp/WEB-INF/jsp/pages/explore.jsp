@@ -40,11 +40,9 @@
             </c:choose>
 
             <div class="custom-container">
-
                 <div class="main">
                     <div class="custom-row">
                         <div class="col col1">
-
                             <c:choose>
                                 <c:when test="${not empty sessionScope.email}">
                                     <jsp:include page="../fragments/left-bar.jsp" />
@@ -62,56 +60,18 @@
                             <c:if test="${not empty sessionScope.email}">
                                 <div class="alert alert-success alert-dismissible">
                                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                    <p class="small">In this section, you will see the posts with hashtags you have followed. To explore more posts, go to <a href="/explore">explore section.</a>
+                                    <p class="small">This is the exploration section. To view personalized posts, go to <a href="/">home section.</a>
                                     </p>
 
                                 </div>
                             </c:if>
 
 
-                            <c:choose>
-                                <c:when test="${deleteSuccess}">
-                                    <div class="alert alert-success alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Success!</strong> Post Deleted successfully.
-                                    </div>
-                                </c:when>
 
-                                <c:when test="${deleteFailure}">
-                                    <div class="alert alert-danger alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Failed!</strong> Error in deleting post.
-                                    </div>
-                                </c:when>
-
-                            </c:choose>
                             <div id="follow-error" style="display: none;">
 
                             </div>
 
-
-                            <div class="post-card-container">
-                                <div class="post-head">
-                                    <div class="post-head-left">
-                                        <c:choose>
-                                            <c:when test="${sessionScope.profile_pic != null}">
-                                                <img class="small-img" src="/resources/uploads/${sessionScope.profile_pic}" alt="Profile Picture">
-                                            </c:when>
-                                            <c:otherwise>
-                                                <img class="small-img" src="../../../resources/images/pic.jpeg" alt="Profile Picture">
-                                            </c:otherwise>
-                                        </c:choose>
-                                        <div class="create-post-input ">
-                                            <a href="${not empty sessionScope.email ? " /create-post "
-                                                : "/login/post/create " }" class="post-input">Want to find someone ?
-                                                Create a Post </a>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="line"></div>
 
                             <c:choose>
                                 <c:when test="${hasPosts}">
@@ -136,12 +96,7 @@
 
                                                         <div class="post-meta">
                                                             <p class="user-name post-user-name">
-                                                                <a href="/profile/id/${post.user.id}" class="profileLink">
-                                                                    
-                                                                        <c:out value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  " />
-                                                                    
-                                                                </a>
-                                                                
+                                                                <c:out value="${post.user.firstName} ${post.user.middleName} ${post.user.lastName}  " />
                                                             </p>
                                                             <p class="desc post-desc">
                                                                 <c:out value="${post.user.bio}" />
@@ -174,9 +129,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="post-head-right">
-                                                        <!-- <div class="dot"></div>
-                                                            <div class="dot"></div>
-                                                            <div class="dot"></div> -->
+
                                                         <c:if test="${sessionScope.id==post.user.id}"><a href="/editpost/${post.id}">Edit Post</a></c:if>
                                                     </div>
                                                 </div>
@@ -198,6 +151,7 @@
 
                                                     <div class="jr-bar">
                                                         <c:if test="${post.status == 'ongoing'}">
+
                                                             <c:choose>
                                                                 <c:when test="${not empty sessionScope.email}">
                                                                     <form action="/${post.id}/join-requests" method="POST">
@@ -211,7 +165,6 @@
 
                                                             <input class="interested-button styled-btn" type="submit" value="Send a Join Request">
                                                             </form>
-
                                                         </c:if>
                                                         <div class="jr-bar-cmt">
                                                             <a class="comment-button" href="/post/${post.id}">Comments (${post.commentsCount})</a>
@@ -222,21 +175,12 @@
 
                                                     </div>
 
-                                                    <!-- <p style="margin-left:35px;">
-                                                            <c:choose>
-                                                                <c:when test="${post.joinRequestsCount > 0}">
-                                                                    <a href="/${post.id}/join-requests"><c:out value="${post.joinRequestsCount}" /> people sent join requests</a>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <p>No join requests in this post</p>
-                                                                </c:otherwise>
-                                                            </c:choose>
-                                                            
-                                                        </p> -->
+
                                                     <div class="line"></div>
 
 
                                                     <c:if test="${post.status == 'ongoing'}">
+
                                                         <div class="comment-posting">
                                                             <div class="comment-post-details">
                                                                 <c:choose>
@@ -281,54 +225,43 @@
 
 
                                                 </div>
+                                            </div>
                                         </section>
                                     </c:forEach>
                                     <c:choose>
                                         <c:when test="${hasOlderPosts}">
-                                            <a class="btn btn-primary mt-5 mb-5" href="/?before=${oldestDate}">Show older posts</a>
+                                            <a class="btn btn-primary mt-5 mb-5" href="/explore?before=${oldestDate}">Show older posts</a>
                                         </c:when>
                                         <c:otherwise>
-                                            <c:choose>
-                                                <c:when test="${not empty sessionScope.email}">
-                                                    <p class="small mt-4 mb-5"> You have reached the end of posts with hashtags you have followed.
-                                                        <a href="/explore">Explore more posts</a> &nbsp;&nbsp;OR&nbsp;&nbsp;
-                                                        <a href="/recommended-hashtags">Follow hashtags</a>&nbsp;&nbsp;OR&nbsp;&nbsp;
-                                                        <a href="/">Click to refresh</a></p>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <p class="mt-4 mb-5"> You have reached the end of posts.
-                                                        <a href="/">Click to refresh</a></p>
-                                                </c:otherwise>
-                                            </c:choose>
-
+                                            <p class="mt-4 mb-5"> No more posts to explore. You have explored them all.
+                                                <a href="/explore">Click to refresh</a></p>
                                         </c:otherwise>
                                     </c:choose>
 
                                 </c:when>
                                 <c:otherwise>
-                                    <p>No posts available with hashtags you have followed.
-                                        <a href="/explore">Explore more posts</a> &nbsp;&nbsp;OR&nbsp;&nbsp;
-                                        <a href="/recommended-hashtags">Follow hashtags</a>&nbsp;&nbsp;OR&nbsp;&nbsp;
+                                    <p>No posts available for exploration.
+
                                         <a href="/">Click to refresh</a></p>
                                 </c:otherwise>
 
                             </c:choose>
 
-
-
-
-                            </div>
-                            <div class="col col3">
-
-                                <c:if test="${not empty sessionScope.email}">
-                                    <jsp:include page="../fragments/right-bar.jsp" />
-                                </c:if>
-
-                            </div>
                         </div>
 
+
+
+                        <div class="col col3">
+
+                            <c:if test="${not empty sessionScope.email}">
+                                <jsp:include page="../fragments/right-bar.jsp" />
+                            </c:if>
+
+                        </div>
                     </div>
+
                 </div>
+            </div>
 
             </div>
             <script src="resources/js/solo_post.js"></script>
