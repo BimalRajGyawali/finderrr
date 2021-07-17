@@ -1,4 +1,4 @@
-package com.ncit.finder.controllers;
+package com.ncit.finder.advices;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
