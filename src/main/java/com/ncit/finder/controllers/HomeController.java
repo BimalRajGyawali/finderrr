@@ -46,11 +46,10 @@ public class HomeController {
 
 	@GetMapping("/guest")
 	public String guestHome(@RequestParam(required = false) String before, Model model) {
-		System.out.println("Testing heroku deploy");
-		LocalDateTime beforeDateTime = LocalDateTime.now();
-		if (before != null && !before.isEmpty()) {
-			beforeDateTime = LocalDateTime.parse(before);
-		}
+
+		LocalDateTime beforeDateTime = (before != null && !before.isEmpty()) ?
+										LocalDateTime.parse(before) : LocalDateTime.now();
+
 		List<Post> posts = postRepository.getDetailedPosts(POSTS_SIZE, beforeDateTime);
 		model.addAttribute("posts", posts);
 
@@ -62,30 +61,24 @@ public class HomeController {
 			boolean hasOlderPosts = olderPosts.size() != 0 ;
 			model.addAttribute("hasOlderPosts", hasOlderPosts);
 		}
-		
-		
 		return "home";
 	}
 
 	@GetMapping("/")
 	public String index(@RequestParam(required = false) String before, Model model, HttpServletRequest request) {
-		int userId;
-		if (request.getSession().getAttribute("id") != null) {
-			userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
-		} else {
-			if(before != null && !before.isEmpty()){
-				return "redirect:/guest?before="+before;
-			}
-			return "redirect:/guest";
-			
+		if(request.getSession().getAttribute("id") == null){
+			return "redirect:/guest?before="+before;
 		}
-		LocalDateTime beforeDateTime = LocalDateTime.now();
-		if (before != null && !before.isEmpty()) {
-			beforeDateTime = LocalDateTime.parse(before);
-		}
+		LocalDateTime beforeDateTime = (before != null && !before.isEmpty()) ?
+				LocalDateTime.parse(before) : LocalDateTime.now();
+
+		int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+
 		List<Post> posts = postRepository.getRecommendedPosts(userId, POSTS_SIZE, beforeDateTime);
 		model.addAttribute("posts", posts);
+
 		List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
+
 		if (recommendedHashTags.size() > 0) {
 			model.addAttribute("recommendedHashTags", recommendedHashTags);
 			model.addAttribute("hasRecommendations", true);
@@ -108,20 +101,14 @@ public class HomeController {
 	@GetMapping("/explore")
 	public String explore(@RequestParam(required = false) String before,
 							 Model model, HttpServletRequest request) {
-		int userId;
-		if (request.getSession().getAttribute("id") != null) {
-			userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
-		} else {
-			if(before != null && !before.isEmpty()){
-				return "redirect:/guest?before="+before;
-			}
-			return "redirect:/guest";
-			
+		if(request.getSession().getAttribute("id") == null){
+			return "redirect:/guest?before="+before;
 		}
-		LocalDateTime beforeDateTime = LocalDateTime.now();
-		if (before != null && !before.isEmpty()) {
-			beforeDateTime = LocalDateTime.parse(before);
-		}
+		LocalDateTime beforeDateTime = (before != null && !before.isEmpty()) ?
+				LocalDateTime.parse(before) : LocalDateTime.now();
+
+		int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+
 		List<Post> posts = postRepository.getExploringPosts(userId, POSTS_SIZE, beforeDateTime);
 		model.addAttribute("posts", posts);
 		List<HashTag> recommendedHashTags = followingRepository.recommendedHashTags(userId, 8);
@@ -150,10 +137,9 @@ public class HomeController {
 	public String getPostsFromHashTag(@PathVariable String hashtag, @RequestParam(required = false) String before,
 			Model model, HttpServletRequest request) {
 				hashtag = HashTag.sanitize(hashtag);
-		LocalDateTime beforeDateTime = LocalDateTime.now();
-		if (before != null && !before.isEmpty()) {
-			beforeDateTime = LocalDateTime.parse(before);
-		}
+		LocalDateTime beforeDateTime = (before != null && !before.isEmpty()) ?
+				LocalDateTime.parse(before) : LocalDateTime.now();
+
 		List<Post> posts = postRepository.getPostsFromHashTag(hashtag, POSTS_SIZE, beforeDateTime);
 		model.addAttribute("posts", posts);
 		System.out.println("posts size "+posts.size());
@@ -188,10 +174,10 @@ public class HomeController {
 			int notificationCount = notificationRepository.getNotificationCount(userId);
 			model.addAttribute("notificationCount", notificationCount);
 		}
-		
 
 		return "posts";
 	}
+
 	@GetMapping("/posts/hashtag/")
 	public String redirectToGetPostsFromHashtag(Model model, HttpServletRequest request){
 		if (request.getSession().getAttribute("id") != null) {
