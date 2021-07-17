@@ -17,10 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class StorageServiceImpl implements StorageService {
 
-	@Override
-	public void init() {
-		
-	}
 
 	@Override
 	public void store(MultipartFile file,String newName) {
@@ -36,33 +32,8 @@ public class StorageServiceImpl implements StorageService {
 				outputStream.write(c);
 			}
 			
-		} catch (IOException e) {
-			e.printStackTrace();
-			
-		}catch(Exception ex){
+		} catch(Exception ex){
 			ex.printStackTrace();
 		}
 	}
-
-	@Override
-	public Stream<Path> loadAll() {
-		return null;
-	}
-
-	@Override
-	public Path load(String filename) {
-		return null;
-	}
-
-	@Override
-	public Resource loadAsResource(String filename) {
-		return null;
-	}
-
-	@Override
-	public void deleteAll() {		
-	}
-
-	
-	
 }
