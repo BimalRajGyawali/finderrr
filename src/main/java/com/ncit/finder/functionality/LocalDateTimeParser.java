@@ -28,5 +28,16 @@ public class LocalDateTimeParser {
 		return new long[] { years, months, days, hours, minutes, seconds };
 	}
 
+	public static LocalDateTime parseOrGetCurrent(String dateTimeString){
+		if(dateTimeString != null && !dateTimeString.isEmpty()){
+			return LocalDateTime.now();
+		}
+		try{
+			return LocalDateTime.parse(dateTimeString);
+		}catch (Exception e){
+			return LocalDateTime.now();
+		}
+
+	}
     
 }

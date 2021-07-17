@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.ncit.finder.db.Response;
 import com.ncit.finder.functionality.EmitterService;
+import com.ncit.finder.functionality.LocalDateTimeParser;
 import com.ncit.finder.models.HashTag;
 import com.ncit.finder.models.JoinRequest;
 import com.ncit.finder.models.Notification;
@@ -46,10 +47,7 @@ public class HomeController {
 
 	@GetMapping("/guest")
 	public String guestHome(@RequestParam(required = false) String before, Model model) {
-
-		LocalDateTime beforeDateTime = (before != null && !before.isEmpty()) ?
-										LocalDateTime.parse(before) : LocalDateTime.now();
-
+		LocalDateTime beforeDateTime = LocalDateTimeParser.parseOrGetCurrent(before);
 		List<Post> posts = postRepository.getDetailedPosts(POSTS_SIZE, beforeDateTime);
 		model.addAttribute("posts", posts);
 
@@ -67,10 +65,9 @@ public class HomeController {
 	@GetMapping("/")
 	public String index(@RequestParam(required = false) String before, Model model, HttpServletRequest request) {
 		if(request.getSession().getAttribute("id") == null){
-			return "redirect:/guest?before="+before;
+			return before != null ? "redirect:/guest?before="+before :"redirect:/guest";
 		}
-		LocalDateTime beforeDateTime = (before != null && !before.isEmpty()) ?
-				LocalDateTime.parse(before) : LocalDateTime.now();
+		LocalDateTime beforeDateTime = LocalDateTimeParser.parseOrGetCurrent(before);
 
 		int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
 
@@ -102,10 +99,9 @@ public class HomeController {
 	public String explore(@RequestParam(required = false) String before,
 							 Model model, HttpServletRequest request) {
 		if(request.getSession().getAttribute("id") == null){
-			return "redirect:/guest?before="+before;
+			return before != null ? "redirect:/guest?before="+before :"redirect:/guest";
 		}
-		LocalDateTime beforeDateTime = (before != null && !before.isEmpty()) ?
-				LocalDateTime.parse(before) : LocalDateTime.now();
+		LocalDateTime beforeDateTime = LocalDateTimeParser.parseOrGetCurrent(before);
 
 		int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
 
