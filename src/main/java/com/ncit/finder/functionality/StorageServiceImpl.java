@@ -11,7 +11,6 @@ import java.nio.file.StandardCopyOption;
 @Component
 public class StorageServiceImpl implements StorageService {
 
-
     @Override
     public void store(MultipartFile file, String newName) {
         String uploadPath = "src/main/webapp/resources/uploads/" + newName;
