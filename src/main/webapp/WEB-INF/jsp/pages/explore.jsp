@@ -103,23 +103,23 @@
                                                             </p>
                                                             <p class="desc post-desc">
                                                                 <c:choose>
-                                                                    <c:when test="${post.yearsTillNow != 0}">
-                                                                        <c:out value="${post.yearsTillNow} y ago" />
+                                                                    <c:when test="${post.durationTillNow.years != 0}">
+                                                                        <c:out value="${post.durationTillNow.years} years ago" />
                                                                     </c:when>
-                                                                    <c:when test="${post.monthsTillNow != 0}">
-                                                                        <c:out value="${post.monthsTillNow} m ago" />
+                                                                    <c:when test="${post.durationTillNow.months != 0}">
+                                                                        <c:out value="${post.durationTillNow.months} months ago" />
                                                                     </c:when>
-                                                                    <c:when test="${post.daysTillNow != 0}">
-                                                                        <c:out value="${post.daysTillNow} d ago" />
+                                                                    <c:when test="${post.durationTillNow.days != 0}">
+                                                                        <c:out value="${post.durationTillNow.days} days ago" />
                                                                     </c:when>
-                                                                    <c:when test="${post.hoursTillNow != 0}">
-                                                                        <c:out value="${post.hoursTillNow} h ago" />
+                                                                    <c:when test="${post.durationTillNow.hours != 0}">
+                                                                        <c:out value="${post.durationTillNow.hours} hours ago" />
                                                                     </c:when>
-                                                                    <c:when test="${post.minutesTillNow != 0}">
-                                                                        <c:out value="${post.minutesTillNow} min ago" />
+                                                                    <c:when test="${post.durationTillNow.minutes != 0}">
+                                                                        <c:out value="${post.durationTillNow.minutes} min ago" />
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <c:out value="${post.secondsTillNow} sec ago" />
+                                                                        <c:out value="${post.durationTillNow.seconds} sec ago" />
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                                 .<span class="post-status ${post.status}">
@@ -242,7 +242,7 @@
                                 <c:otherwise>
                                     <p>No posts available for exploration.
 
-                                        <a href="/">Click to refresh</a></p>
+                                        <a href="/explore">Click to refresh</a></p>
                                 </c:otherwise>
 
                             </c:choose>

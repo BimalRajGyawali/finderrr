@@ -108,23 +108,6 @@ public class NotificationRepository {
 
                 if (resultSet.getTimestamp("initiated_on") != null) {
                     notification.setInitiatedOn(resultSet.getTimestamp("initiated_on").toLocalDateTime());
-
-                    LocalDateTime fromTemp = notification.getInitiatedOn();
-                    long[] parsedDateTime = LocalDateTimeParser.parse(fromTemp);
-                    long years = parsedDateTime[0];
-                    long months = parsedDateTime[1];
-                    long days = parsedDateTime[2];
-                    long hours = parsedDateTime[3];
-                    long minutes = parsedDateTime[4];
-                    long seconds = parsedDateTime[5];
-
-                    notification.setYearsTillNow(years);
-                    notification.setMonthsTillNow(months);
-                    notification.setDaysTillNow(days);
-                    notification.setHoursTillNow(hours);
-                    notification.setMinutesTillNow(minutes);
-                    notification.setSecondsTillNow(seconds);
-
                 }
                 notifications.add(notification);
 

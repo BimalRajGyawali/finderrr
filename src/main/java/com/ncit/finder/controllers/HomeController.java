@@ -220,11 +220,8 @@ public class HomeController {
 		String postStatus = request.getParameter("post-status");
 		Status pStatus = Status.valueOf(postStatus);
 		for (String hashTag : hashTagsString.split(",")) {
-			HashTag h = new HashTag();
-			h.setTitle(hashTag);
-			hashTags.add(h);
+			hashTags.add(new HashTag(hashTag));
 		}
-
 		User user = new User();
 		user.setId((int) request.getSession().getAttribute("id"));
 		user.setFirstName((String) request.getSession().getAttribute("firstname"));
@@ -344,9 +341,7 @@ public class HomeController {
 		String postStatus = request.getParameter("post-status");
 		Status pStatus = Status.valueOf(postStatus);
 		for (String hashTag : hashTagsString.split(",")) {
-			HashTag h = new HashTag();
-			h.setTitle(hashTag);
-			hashTags.add(h);
+			hashTags.add(new HashTag(hashTag));
 		}
 
 		Post post = new Post();

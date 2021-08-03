@@ -111,24 +111,23 @@ pageEncoding="ISO-8859-1"%>
                                                 </p>
                                                 <p class="desc post-desc">
                                                     <c:choose>
-                                                        <c:when test="${post.yearsTillNow != 0}">
-                                                            <c:out value="${post.yearsTillNow} y ago" />
+                                                        <c:when test="${post.durationTillNow.years != 0}">
+                                                            <c:out value="${post.durationTillNow.years} years ago" />
                                                         </c:when>
-                                                        <c:when test="${post.monthsTillNow != 0}">
-                                                            <c:out value="${post.monthsTillNow} m ago" />
+                                                        <c:when test="${post.durationTillNow.months != 0}">
+                                                            <c:out value="${post.durationTillNow.months} months ago" />
                                                         </c:when>
-                                                        <c:when test="${post.daysTillNow != 0}">
-                                                            <c:out value="${post.daysTillNow} d ago" />
+                                                        <c:when test="${post.durationTillNow.days != 0}">
+                                                            <c:out value="${post.durationTillNow.days} days ago" />
                                                         </c:when>
-
-                                                        <c:when test="${post.hoursTillNow != 0}">
-                                                            <c:out value="${post.hoursTillNow} h ago" />
+                                                        <c:when test="${post.durationTillNow.hours != 0}">
+                                                            <c:out value="${post.durationTillNow.hours} hours ago" />
                                                         </c:when>
-                                                        <c:when test="${post.minutesTillNow != 0}">
-                                                            <c:out value="${post.minutesTillNow} min ago" />
+                                                        <c:when test="${post.durationTillNow.minutes != 0}">
+                                                            <c:out value="${post.durationTillNow.minutes} min ago" />
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <c:out value="${post.secondsTillNow} sec ago" />
+                                                            <c:out value="${post.durationTillNow.seconds} sec ago" />
                                                         </c:otherwise>
                                                     </c:choose>
                                                     .<span class="post-status ${post.status}">
@@ -242,23 +241,23 @@ pageEncoding="ISO-8859-1"%>
                                                         <p class="comment-data desc post-desc">
 
                                                             <c:choose>
-                                                                <c:when test="${comment.yearsTillNow != 0}">
-                                                                    <c:out value="${comment.yearsTillNow} y ago" />
+                                                                <c:when test="${comment.durationTillNow.years != 0}">
+                                                                    <c:out value="${comment.durationTillNow.years} years ago" />
                                                                 </c:when>
-                                                                <c:when test="${comment.monthsTillNow != 0}">
-                                                                    <c:out value="${comment.monthsTillNow} m ago" />
+                                                                <c:when test="${comment.durationTillNow.months != 0}">
+                                                                    <c:out value="${comment.durationTillNow.months} months ago" />
                                                                 </c:when>
-                                                                <c:when test="${comment.daysTillNow != 0}">
-                                                                    <c:out value="${comment.daysTillNow} d ago" />
+                                                                <c:when test="${comment.durationTillNow.days != 0}">
+                                                                    <c:out value="${comment.durationTillNow.days} days ago" />
                                                                 </c:when>
-                                                                <c:when test="${comment.hoursTillNow != 0}">
-                                                                    <c:out value="${comment.hoursTillNow} h ago" />
+                                                                <c:when test="${comment.durationTillNow.hours != 0}">
+                                                                    <c:out value="${comment.durationTillNow.hours} hours ago" />
                                                                 </c:when>
-                                                                <c:when test="${comment.minutesTillNow != 0}">
-                                                                    <c:out value="${comment.minutesTillNow} min ago" />
+                                                                <c:when test="${comment.durationTillNow.minutes != 0}">
+                                                                    <c:out value="${comment.durationTillNow.minutes} min ago" />
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    <c:out value="${comment.secondsTillNow} sec ago" />
+                                                                    <c:out value="${comment.durationTillNow.seconds} sec ago" />
                                                                 </c:otherwise>
                                                             </c:choose>
                                                         </p>

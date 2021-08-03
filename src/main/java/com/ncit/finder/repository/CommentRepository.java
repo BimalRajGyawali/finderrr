@@ -11,11 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ncit.finder.db.DB;
-import com.ncit.finder.models.Comment;
-import com.ncit.finder.models.HashTag;
-import com.ncit.finder.models.Post;
-import com.ncit.finder.models.Status;
-import com.ncit.finder.models.User;
+import com.ncit.finder.functionality.LocalDateTimeParser;
+import com.ncit.finder.models.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -58,34 +55,6 @@ public class CommentRepository {
 					post.setStatus(Status.valueOf(resultSet.getString("status")));
 					if (resultSet.getTimestamp("post_posted_on") != null) {
 						post.setPostedDateTime(resultSet.getTimestamp("post_posted_on").toLocalDateTime());
-
-						LocalDateTime fromTemp = post.getPostedDateTime();
-						LocalDateTime to = LocalDateTime.now();
-
-						long years = fromTemp.until(to, ChronoUnit.YEARS);
-						fromTemp = fromTemp.plusYears(years);
-
-						long months = fromTemp.until(to, ChronoUnit.MONTHS);
-						fromTemp = fromTemp.plusMonths(months);
-
-						long days = fromTemp.until(to, ChronoUnit.DAYS);
-						fromTemp = fromTemp.plusDays(days);
-
-						long hours = fromTemp.until(to, ChronoUnit.HOURS);
-						fromTemp = fromTemp.plusHours(hours);
-
-						long minutes = fromTemp.until(to, ChronoUnit.MINUTES);
-						fromTemp = fromTemp.plusMinutes(minutes);
-
-						long seconds = fromTemp.until(to, ChronoUnit.SECONDS);
-
-						post.setYearsTillNow(years);
-						post.setMonthsTillNow(months);
-						post.setHoursTillNow(hours);
-						post.setDaysTillNow(days);
-						post.setMinutesTillNow(minutes);
-						post.setSecondsTillNow(seconds);
-
 					}
 					total_comments = resultSet.getInt("post_comments_count");
 					post.setCommentsCount(total_comments);
@@ -132,32 +101,6 @@ public class CommentRepository {
 					if (resultSet.getTimestamp("commented_on") != null) {
 						temp_comment.setCommentedOn(resultSet.getTimestamp("commented_on").toLocalDateTime());
 
-						LocalDateTime fromTemp = temp_comment.getCommentedOn();
-						LocalDateTime to = LocalDateTime.now();
-
-						long years = fromTemp.until(to, ChronoUnit.YEARS);
-						fromTemp = fromTemp.plusYears(years);
-
-						long months = fromTemp.until(to, ChronoUnit.MONTHS);
-						fromTemp = fromTemp.plusMonths(months);
-
-						long days = fromTemp.until(to, ChronoUnit.DAYS);
-						fromTemp = fromTemp.plusDays(days);
-
-						long hours = fromTemp.until(to, ChronoUnit.HOURS);
-						fromTemp = fromTemp.plusHours(hours);
-
-						long minutes = fromTemp.until(to, ChronoUnit.MINUTES);
-						fromTemp = fromTemp.plusMinutes(minutes);
-
-						long seconds = fromTemp.until(to, ChronoUnit.SECONDS);
-
-						temp_comment.setYearsTillNow(years);
-						temp_comment.setMonthsTillNow(months);
-						temp_comment.setHoursTillNow(hours);
-						temp_comment.setMinutesTillNow(minutes);
-						temp_comment.setSecondsTillNow(seconds);
-
 					}
 
 					post_comments.add(temp_comment);
@@ -173,9 +116,7 @@ public class CommentRepository {
 			preparedStatement.setInt(1, temp_id);
 			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
-				HashTag hashTag = new HashTag();
-				hashTag.setTitle(rs.getString("hashtag"));
-				hashTags.add(hashTag);
+				hashTags.add(new HashTag(rs.getString("hashtag")));
 			}
 			post.setHashTags(hashTags);
 

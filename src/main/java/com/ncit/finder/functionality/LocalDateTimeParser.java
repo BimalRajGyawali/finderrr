@@ -1,11 +1,14 @@
 package com.ncit.finder.functionality;
 
+import com.ncit.finder.models.DurationTillNow;
+import org.springframework.lang.NonNull;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class LocalDateTimeParser {
     
-    public static long[] parse(LocalDateTime fromTemp) {
+    public static DurationTillNow parse(@NonNull LocalDateTime fromTemp) {
 		LocalDateTime to = LocalDateTime.now();
 
 		long years = fromTemp.until(to, ChronoUnit.YEARS);
@@ -25,19 +28,13 @@ public class LocalDateTimeParser {
 
 		long seconds = fromTemp.until(to, ChronoUnit.SECONDS);
 
-		return new long[] { years, months, days, hours, minutes, seconds };
+		return new DurationTillNow(years, months, days, hours, minutes, seconds );
 	}
 
 	public static LocalDateTime parseOrGetCurrent(String dateTimeString){
 		if(dateTimeString != null && !dateTimeString.isEmpty()){
-			return LocalDateTime.now();
-		}
-		try{
 			return LocalDateTime.parse(dateTimeString);
-		}catch (Exception e){
-			return LocalDateTime.now();
 		}
-
+		return LocalDateTime.now();
 	}
-    
 }
