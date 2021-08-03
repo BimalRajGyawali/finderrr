@@ -1,22 +1,14 @@
 package com.ncit.finder.models;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 public class HashTag {
-	private String title;
+	private final String title;
 
-	public void setTitle(String title) {
+	public HashTag(String title){
 		this.title = sanitize(title);
 	}
-
-	/** Do not change this format. This is in JSON Format */
-	@Override
-	public String toString() {
-		return "{\"title\":\"" + title + "\"}";
-	}
-
 	public static String sanitize(String title){
 		String[] hashtagParts = title.split("#");
 		String sanitizedHashtag = "";
@@ -25,5 +17,11 @@ public class HashTag {
 		}
 		return sanitizedHashtag;
 	}
+	/** Do not change this format. This is in JSON Format */
+	@Override
+	public String toString() {
+		return "{\"title\":\"" + title + "\"}";
+	}
+
 
 }

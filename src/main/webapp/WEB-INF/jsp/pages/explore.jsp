@@ -242,7 +242,7 @@
                                 <c:otherwise>
                                     <p>No posts available for exploration.
 
-                                        <a href="/">Click to refresh</a></p>
+                                        <a href="/explore">Click to refresh</a></p>
                                 </c:otherwise>
 
                             </c:choose>

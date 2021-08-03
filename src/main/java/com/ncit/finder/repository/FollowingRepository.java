@@ -89,10 +89,7 @@ public class FollowingRepository {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                String title = rs.getString("title");
-                HashTag hashTag = new HashTag();
-                hashTag.setTitle(title);
-                hashTags.add(hashTag);
+                hashTags.add(new HashTag(rs.getString("title")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -115,10 +112,7 @@ public class FollowingRepository {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                String title = rs.getString("hashtag");
-                HashTag hashTag = new HashTag();
-                hashTag.setTitle(title);
-                hashTags.add(hashTag);
+                hashTags.add(new HashTag(rs.getString("hashtag")));
             }
         } catch (SQLException e) {
             e.printStackTrace();

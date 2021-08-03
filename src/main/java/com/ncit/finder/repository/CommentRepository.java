@@ -116,9 +116,7 @@ public class CommentRepository {
 			preparedStatement.setInt(1, temp_id);
 			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
-				HashTag hashTag = new HashTag();
-				hashTag.setTitle(rs.getString("hashtag"));
-				hashTags.add(hashTag);
+				hashTags.add(new HashTag(rs.getString("hashtag")));
 			}
 			post.setHashTags(hashTags);
 
