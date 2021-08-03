@@ -1,5 +1,6 @@
 package com.ncit.finder.models;
 
+import com.ncit.finder.functionality.LocalDateTimeParser;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -11,12 +12,10 @@ public class Comment {
 	private LocalDateTime commentedOn;
 	private User user;
 	private Post post;
+	private DurationTillNow durationTillNow;
 
-	private long yearsTillNow;
-	private long monthsTillNow;
-	private long daysTillNow;
-	private long hoursTillNow;
-	private long minutesTillNow;
-	private long secondsTillNow;
-
+	public void setCommentedOn(LocalDateTime commentedOn) {
+		this.commentedOn = commentedOn;
+		this.durationTillNow = LocalDateTimeParser.parse(commentedOn);
+	}
 }

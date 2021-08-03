@@ -1,6 +1,8 @@
 package com.ncit.finder.models;
 
+import com.ncit.finder.functionality.LocalDateTimeParser;
 import lombok.Data;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
 
@@ -12,16 +14,14 @@ public class Notification {
     private boolean seen;
     private String notificationType;
     private LocalDateTime initiatedOn;
-
-	private long yearsTillNow;
-	private long monthsTillNow;
-    private long daysTillNow;
-	private long hoursTillNow;
-	private long minutesTillNow;
-	private long secondsTillNow;
+    private DurationTillNow durationTillNow;
 
     public static final String COMMENT = "comment";
     public static final String JOIN_REQUEST = "joinrequest";
 
 
+    public void setInitiatedOn(LocalDateTime initiatedOn) {
+        this.initiatedOn = initiatedOn;
+        this.durationTillNow = LocalDateTimeParser.parse(initiatedOn);
+    }
 }

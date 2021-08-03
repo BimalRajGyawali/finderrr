@@ -1,5 +1,6 @@
 package com.ncit.finder.models;
 
+import com.ncit.finder.functionality.LocalDateTimeParser;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -17,12 +18,10 @@ public class Post {
 	private int joinRequestsCount;
 	private LocalDateTime postedDateTime;
 	private Status status;
+	private DurationTillNow durationTillNow;
 
-	private long yearsTillNow;
-	private long monthsTillNow;
-	private long daysTillNow;
-	private long hoursTillNow;
-	private long minutesTillNow;
-	private long secondsTillNow;
-
+	public void setPostedDateTime(LocalDateTime postedDateTime) {
+		this.postedDateTime = postedDateTime;
+		this.durationTillNow = LocalDateTimeParser.parse(postedDateTime);
+	}
 }

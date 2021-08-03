@@ -10,13 +10,11 @@ public class Following {
     private String hashTag;
     private LocalDateTime followedDateTime;
 
-    
     public Following(int userId, String hashTag, LocalDateTime followedDateTime) {
         this.userId = userId;
         this.hashTag = hashTag;
         this.followedDateTime = followedDateTime;
     }
-    
 
     public Following(int userId, String hashTag) {
        this(userId, hashTag, LocalDateTime.now());

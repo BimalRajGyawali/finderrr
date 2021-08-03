@@ -54,23 +54,6 @@ public class PostMapper {
                     post.setContent(resultSet.getString("content"));
                     if (resultSet.getTimestamp("posted_on") != null) {
                         post.setPostedDateTime(resultSet.getTimestamp("posted_on").toLocalDateTime());
-
-                        LocalDateTime fromTemp = post.getPostedDateTime();
-                        long[] parsedDateTime = LocalDateTimeParser.parse(fromTemp);
-                        long years = parsedDateTime[0];
-                        long months = parsedDateTime[1];
-                        long days = parsedDateTime[2];
-                        long hours = parsedDateTime[3];
-                        long minutes = parsedDateTime[4];
-                        long seconds = parsedDateTime[5];
-
-                        post.setYearsTillNow(years);
-                        post.setMonthsTillNow(months);
-                        post.setDaysTillNow(days);
-                        post.setHoursTillNow(hours);
-                        post.setMinutesTillNow(minutes);
-                        post.setSecondsTillNow(seconds);
-
                     }
                     post.setCommentsCount(resultSet.getInt("comments_count"));
                     post.setJoinRequestsCount(resultSet.getInt("join_requests_count"));
