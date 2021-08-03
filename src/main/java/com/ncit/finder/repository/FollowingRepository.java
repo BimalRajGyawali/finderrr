@@ -34,7 +34,7 @@ public class FollowingRepository {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, following.getUserId());
             preparedStatement.setString(2, following.getHashTag());
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(following.getFolloweDateTime()));
+            preparedStatement.setTimestamp(3, Timestamp.valueOf(following.getFollowedDateTime()));
             System.out.println(sql);
             preparedStatement.executeUpdate();
 
