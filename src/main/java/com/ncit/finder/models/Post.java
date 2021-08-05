@@ -1,12 +1,16 @@
 package com.ncit.finder.models;
 
 import com.ncit.finder.functionality.LocalDateTimeParser;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@Builder
+@NoArgsConstructor
 public class Post {
 	private int id;
 	private String content;

@@ -53,7 +53,7 @@ public class PostRepository implements IPostRepository {
             preparedStatement.setInt(1, postId);
             resultSet = preparedStatement.executeQuery();
 
-            return UserMapper.map(resultSet);
+            return UserMapper.ofDefaultFieldNames().map(resultSet);
 
 
         } catch (SQLException e) {
@@ -80,7 +80,7 @@ public class PostRepository implements IPostRepository {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, postId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            List<Post> posts = PostMapper.mapResultSetIntoPosts(resultSet);
+            List<Post> posts = PostMapper.ofDefaultFieldNames().mapResultSetIntoPosts(resultSet);
             post = posts.size() > 0 ? posts.get(0) : null;
 
         } catch (SQLException e) {
@@ -111,7 +111,7 @@ public class PostRepository implements IPostRepository {
         try {
             preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
-            posts = PostMapper.mapResultSetIntoPosts(resultSet);
+            posts = PostMapper.ofDefaultFieldNames().mapResultSetIntoPosts(resultSet);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -144,7 +144,7 @@ public class PostRepository implements IPostRepository {
             preparedStatement = connection.prepareStatement(followedPostsSql);
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            recommendedPosts = PostMapper.mapResultSetIntoPosts(resultSet);
+            recommendedPosts = PostMapper.ofDefaultFieldNames().mapResultSetIntoPosts(resultSet);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -174,7 +174,7 @@ public class PostRepository implements IPostRepository {
             preparedStatement = connection.prepareStatement(exploringPostsSql);
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            exploringPosts = PostMapper.mapResultSetIntoPosts(resultSet);
+            exploringPosts = PostMapper.ofDefaultFieldNames().mapResultSetIntoPosts(resultSet);
 
 
         } catch (SQLException e) {
@@ -208,7 +208,7 @@ public class PostRepository implements IPostRepository {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, "%" + hashTag.toLowerCase() + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
-            posts = PostMapper.mapResultSetIntoPosts(resultSet);
+            posts = PostMapper.ofDefaultFieldNames().mapResultSetIntoPosts(resultSet);
             System.out.println(posts.size());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -422,57 +422,50 @@ public class PostRepository implements IPostRepository {
 
         Connection connection = db.makeConnection();
         PreparedStatement statement;
-        Post post = new Post();
+
+        List<User> usersMakingJoinRequests = new ArrayList<>();
+        Post post = null;
 
         try {
             statement = connection.prepareStatement(sql);
             statement.setInt(1, postId);
             ResultSet resultSet = statement.executeQuery();
 
-            List<User> usersMakingJoinRequests = new ArrayList<>();
-
             while (resultSet.next()) {
-                User userMakingJoinRequest = new User();
-                userMakingJoinRequest.setId(resultSet.getInt("join_requests_user_id"));
-                userMakingJoinRequest.setFirstName(resultSet.getString("join_requests_user_firstname"));
-                userMakingJoinRequest.setMiddleName(resultSet.getString("join_requests_user_middlename"));
-                userMakingJoinRequest.setLastName(resultSet.getString("join_requests_user_lastname"));
-                if (resultSet.getTimestamp("join_requests_user_joined_on") != null) {
-                    userMakingJoinRequest
-                            .setJoinedOn(resultSet.getTimestamp("join_requests_user_joined_on").toLocalDateTime());
-                }
-                userMakingJoinRequest.setBio(resultSet.getString("join_requests_user_bio"));
-                userMakingJoinRequest.setEmail(resultSet.getString("join_requests_user_email"));
-                userMakingJoinRequest.setPass(resultSet.getString("join_requests_user_pass"));
-                userMakingJoinRequest.setProfilePic(resultSet.getString("join_requests_user_pp"));
-                if (userMakingJoinRequest.isValid()) {
-                    usersMakingJoinRequests.add(userMakingJoinRequest);
-                }
+                if(post == null){
+                    post = PostMapper.ofDefaultFieldNames().map(resultSet);
 
-                post.setId(resultSet.getInt("post_id"));
-                post.setContent(resultSet.getString("post_content"));
-                post.setCommentsCount(resultSet.getInt("post_comments_count"));
-                post.setJoinRequestsCount(resultSet.getInt("post_join_requests_count"));
-                post.setStatus(Status.valueOf(resultSet.getString("status")));
+                    User author = UserMapper.builder()
+                            .idFieldName("post_user_id")
+                            .firstNameFieldName("post_user_firstname")
+                            .middleNameFieldName("post_user_middlename")
+                            .lastNameFieldName("post_user_lastname")
+                            .bioFieldName("post_user_bio")
+                            .emailFieldName("post_user_email")
+                            .passwordFieldName("post_user_pass")
+                            .profilePicFieldName("post_user_pp")
+                            .joinedOnFieldName("post_user_joined_on")
+                            .build()
+                            .map(resultSet);
 
-                if (resultSet.getTimestamp("post_posted_on") != null) {
-                    post.setPostedDateTime(resultSet.getTimestamp("post_posted_on").toLocalDateTime());
+                    post.setUser(author);
+
                 }
+                User userMakingJoinRequest = UserMapper.builder()
+                        .idFieldName("join_requests_user_id")
+                        .firstNameFieldName("join_requests_user_firstname")
+                        .middleNameFieldName("join_requests_user_middlename")
+                        .lastNameFieldName("join_requests_user_lastname")
+                        .bioFieldName("join_requests_user_bio")
+                        .emailFieldName("join_requests_user_email")
+                        .passwordFieldName("join_requests_user_pass")
+                        .profilePicFieldName("join_requests_user_pp")
+                        .joinedOnFieldName("join_requests_user_joined_on")
+                        .build()
+                        .map(resultSet);
 
-                User user = new User();
-                user.setId(resultSet.getInt("post_user_id"));
-                user.setFirstName(resultSet.getString("post_user_firstname"));
-                user.setMiddleName(resultSet.getString("post_user_middlename"));
-                user.setLastName(resultSet.getString("post_user_lastname"));
-                if (resultSet.getTimestamp("post_user_joined_on") != null) {
-                    user.setJoinedOn(resultSet.getTimestamp("post_user_joined_on").toLocalDateTime());
-                }
-                user.setBio(resultSet.getString("post_user_bio"));
-                user.setEmail(resultSet.getString("post_user_email"));
-                user.setPass(resultSet.getString("post_user_pass"));
-                user.setProfilePic(resultSet.getString("post_user_pp"));
+                usersMakingJoinRequests.add(userMakingJoinRequest);
 
-                post.setUser(user);
 
             }
             post.setUsersRequestingToJoin(usersMakingJoinRequests);
@@ -551,20 +544,13 @@ public class PostRepository implements IPostRepository {
                 + "ORDER BY p.posted_on DESC LIMIT ? )sp \n"
                 + "ON ph.post_id = sp.p_id ORDER BY sp.posted_on DESC; \n";
 
-        // String sql="SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
-        // + "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
-        // + "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio,u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
-        // + "RIGHT OUTER JOIN users u ON p.user_id = u.id WHERE user_id=' "+id+" ' and p.posted_on < ' " + before + "'\n"
-        // + "ORDER BY p.posted_on DESC LIMIT\n" + n +")sp \n"
-        // + "ON ph.post_id = sp.p_id ORDER BY sp.posted_on DESC; \n";
-
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, Integer.parseInt(id));
             preparedStatement.setTimestamp(2, before);
             preparedStatement.setInt(3, n);
             ResultSet resultSet = preparedStatement.executeQuery();
-            posts = PostMapper.mapResultSetIntoPosts(resultSet);
+            posts = PostMapper.ofDefaultFieldNames().mapResultSetIntoPosts(resultSet);
 
         } catch (SQLException e) {
             e.printStackTrace();
