@@ -13,10 +13,21 @@ import com.ncit.finder.models.Post;
 import com.ncit.finder.models.Status;
 import com.ncit.finder.models.User;
 import com.ncit.finder.functionality.LocalDateTimeParser;
+import lombok.Builder;
+import lombok.Data;
 
+@Data
+@Builder
 public class PostMapper {
+    private String idFieldName;
+    private String contentFieldName;
+    private String statusFieldName;
+    private String postedDateTimeFieldName;
+    private String commentsCountFieldName;
+    private String joinRequestsCountFieldName;
 
-    public static List<Post> mapResultSetIntoPosts(ResultSet resultSet) {
+
+    public List<Post> mapResultSetIntoPosts(ResultSet resultSet) {
         Map<Integer, Post> postMap = new LinkedHashMap<>();
         try {
             while (resultSet.next()) {
@@ -28,7 +39,7 @@ public class PostMapper {
                             .getHashTags()
                             .add(new HashTag(resultSet.getString("hashtag")));
                 } else {
-                    User user = UserMapper.map(resultSet);
+                    User user = UserMapper.ofDefaultFieldNames().map(resultSet);
                     List<HashTag> hashTags = new ArrayList<>();
                     hashTags.add(new HashTag(resultSet.getString("hashtag")));
 
@@ -44,18 +55,31 @@ public class PostMapper {
         return new ArrayList<>(postMap.values());
     }
 
-    private static Post map(ResultSet resultSet) throws SQLException {
-        Post post = new Post();
 
-        int postId = resultSet.getInt("p_id");
-        post.setId(postId);
-        post.setStatus(Status.valueOf(resultSet.getString("status")));
-        post.setContent(resultSet.getString("content"));
-        post.setPostedDateTime(resultSet.getTimestamp("posted_on").toLocalDateTime());
-        post.setCommentsCount(resultSet.getInt("comments_count"));
-        post.setJoinRequestsCount(resultSet.getInt("join_requests_count"));
+    public Post map(ResultSet resultSet) throws SQLException {
+        return Post.builder()
+                .id(resultSet.getInt(idFieldName))
+                .content(resultSet.getString(contentFieldName))
+                .status(Status.valueOf(resultSet.getString(statusFieldName)))
+                .commentsCount(resultSet.getInt(commentsCountFieldName))
+                .joinRequestsCount(resultSet.getInt(joinRequestsCountFieldName))
+                .build()
+                .setPostedDateTime(resultSet.getTimestamp(postedDateTimeFieldName).toLocalDateTime());
 
-        return post;
+
+
+    }
+
+
+    public static PostMapper ofDefaultFieldNames() {
+        return PostMapper.builder()
+                .idFieldName("p_id")
+                .contentFieldName("content")
+                .statusFieldName("status")
+                .commentsCountFieldName("comments_count")
+                .joinRequestsCountFieldName("join_requests_count")
+                .postedDateTimeFieldName("posted_on")
+                .build();
     }
 
 }

@@ -1,26 +1,51 @@
 package com.ncit.finder.mappers;
 
 import com.ncit.finder.models.User;
+import lombok.Builder;
+import lombok.Data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Data
+@Builder
 public class UserMapper {
-    public static User map(ResultSet resultSet) throws SQLException {
-
-        User user = new User();
-
-        user.setId(resultSet.getInt("user_id"));
-        user.setFirstName(resultSet.getString("firstname"));
-        user.setMiddleName(resultSet.getString("middlename"));
-        user.setLastName(resultSet.getString("lastname"));
-        user.setBio(resultSet.getString("bio"));
-        user.setJoinedOn(resultSet.getTimestamp("joined_on").toLocalDateTime());
-        user.setEmail(resultSet.getString("email"));
-        user.setPass(resultSet.getString("pass"));
-        user.setProfilePic(resultSet.getString("profile_pic"));
+    private String idFieldName;
+    private String firstNameFieldName;
+    private String middleNameFieldName;
+    private String lastNameFieldName;
+    private String bioFieldName;
+    private String joinedOnFieldName;
+    private String emailFieldName;
+    private String passwordFieldName;
+    private String profilePicFieldName;
 
 
-        return user;
+    public User map(ResultSet resultSet) throws SQLException {
+        return User.builder()
+                .id(resultSet.getInt(idFieldName))
+                .firstName(resultSet.getString(firstNameFieldName))
+                .middleName(resultSet.getString(middleNameFieldName))
+                .lastName(resultSet.getString(lastNameFieldName))
+                .bio(resultSet.getString(bioFieldName))
+                .email(resultSet.getString(emailFieldName))
+                .pass(resultSet.getString(passwordFieldName))
+                .profilePic(resultSet.getString(profilePicFieldName))
+                .build();
+
+
+    }
+
+    public static UserMapper ofDefaultFieldNames() {
+        return UserMapper.builder()
+                .idFieldName("user_id")
+                .firstNameFieldName("firstname")
+                .middleNameFieldName("middlename")
+                .lastNameFieldName("lastname")
+                .emailFieldName("email")
+                .passwordFieldName("pass")
+                .bioFieldName("bio")
+                .profilePicFieldName("profile_pic")
+                .build();
     }
 }

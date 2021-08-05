@@ -141,25 +141,24 @@
                                                             </c:choose>
                                                             <span class="desc" style="font-weight: bold;">
                                                 <c:choose>
-                                                    <c:when test="${n.yearsTillNow != 0}">
-                                                        <c:out value="${n.yearsTillNow} y ago" />
+                                                    <c:when test="${n.durationTillNow.years != 0}">
+                                                        <c:out value="${n.durationTillNow.years} years ago" />
                                                     </c:when>
-                                                    <c:when test="${n.monthsTillNow != 0}">
-                                                        <c:out value="${n.monthsTillNow} m ago" />
+                                                    <c:when test="${n.durationTillNow.months != 0}">
+                                                        <c:out value="${n.durationTillNow.months} months ago" />
                                                     </c:when>
-                                                    <c:when test="${n.daysTillNow != 0}">
-                                                        <c:out value="${n.daysTillNow} d ago" />
+                                                    <c:when test="${n.durationTillNow.days != 0}">
+                                                        <c:out value="${n.durationTillNow.days} days ago" />
                                                     </c:when>
-                                                    <c:when test="${n.hoursTillNow != 0}">
-                                                        <c:out value="${n.hoursTillNow} h ago" />
+                                                    <c:when test="${n.durationTillNow.hours != 0}">
+                                                        <c:out value="${n.durationTillNow.hours} hours ago" />
                                                     </c:when>
-                                                    <c:when test="${n.minutesTillNow != 0}">
-                                                        <c:out value="${n.minutesTillNow} min ago" />
+                                                    <c:when test="${n.durationTillNow.minutes != 0}">
+                                                        <c:out value="${n.durationTillNow.minutes} min ago" />
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <c:out value="${n.secondsTillNow} sec ago" />
+                                                        <c:out value="${n.durationTillNow.seconds} sec ago" />
                                                     </c:otherwise>
-                                                    
                                                 </c:choose>
                                                 </span>
 
