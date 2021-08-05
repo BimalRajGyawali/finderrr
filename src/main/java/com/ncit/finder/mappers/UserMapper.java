@@ -21,9 +21,7 @@ public class UserMapper {
     private String profilePicFieldName;
 
 
-
     public User map(ResultSet resultSet) throws SQLException {
-
         return User.builder()
                 .id(resultSet.getInt(idFieldName))
                 .firstName(resultSet.getString(firstNameFieldName))
@@ -33,11 +31,12 @@ public class UserMapper {
                 .email(resultSet.getString(emailFieldName))
                 .pass(resultSet.getString(passwordFieldName))
                 .profilePic(resultSet.getString(profilePicFieldName))
-                .joinedOn(resultSet.getTimestamp(joinedOnFieldName).toLocalDateTime())
                 .build();
+
+
     }
 
-    public static UserMapper ofDefaultFieldNames(){
+    public static UserMapper ofDefaultFieldNames() {
         return UserMapper.builder()
                 .idFieldName("user_id")
                 .firstNameFieldName("firstname")
@@ -47,7 +46,6 @@ public class UserMapper {
                 .passwordFieldName("pass")
                 .bioFieldName("bio")
                 .profilePicFieldName("profile_pic")
-                .joinedOnFieldName("joined_on")
                 .build();
     }
 }

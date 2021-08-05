@@ -63,8 +63,11 @@ public class PostMapper {
                 .status(Status.valueOf(resultSet.getString(statusFieldName)))
                 .commentsCount(resultSet.getInt(commentsCountFieldName))
                 .joinRequestsCount(resultSet.getInt(joinRequestsCountFieldName))
-                .postedDateTime(resultSet.getTimestamp(postedDateTimeFieldName).toLocalDateTime())
-                .build();
+                .build()
+                .setPostedDateTime(resultSet.getTimestamp(postedDateTimeFieldName).toLocalDateTime());
+
+
+
     }
 
 

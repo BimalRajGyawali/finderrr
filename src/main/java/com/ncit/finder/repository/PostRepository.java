@@ -37,7 +37,7 @@ public class PostRepository implements IPostRepository {
 
     @Override
     public User getAuthor(int postId) {
-        String sql = "SELECT *\n" +
+        String sql = "SELECT u.id user_id, u.*\n" +
                 "FROM posts p\n" +
                 "INNER JOIN\n" +
                 "users u \n" +
@@ -52,9 +52,9 @@ public class PostRepository implements IPostRepository {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, postId);
             resultSet = preparedStatement.executeQuery();
-
-            return UserMapper.ofDefaultFieldNames().map(resultSet);
-
+            if(resultSet.next()) {
+                return UserMapper.ofDefaultFieldNames().map(resultSet);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -103,7 +103,7 @@ public class PostRepository implements IPostRepository {
 
         String sql = "SELECT * \n" + "FROM posts_hashtags ph\n" + "INNER JOIN \n"
                 + "( SELECT p.id p_id , p.content, p.posted_on, p.comments_count, p.join_requests_count, p.status,"
-                + "u.id user_id, u.firstname, u.lastname, u.middlename, u.joined_on, u.bio,u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
+                + "u.id user_id, u.firstname, u.lastname, u.middlename, u.bio,u.email, u.pass, u.profile_pic\n" + "FROM posts p\n"
                 + "INNER JOIN users u ON p.user_id = u.id WHERE p.posted_on < ' " + before + "'\n"
                 + "ORDER BY p.posted_on DESC LIMIT\n" + n + ")sp \n"
                 + "ON ph.post_id = sp.p_id ORDER BY sp.posted_on DESC; \n";
@@ -412,13 +412,13 @@ public class PostRepository implements IPostRepository {
 
     @Override
     public Post getPostWithJoinRequests(int postId) {
-        String sql = "SELECT sp.post_id, sp.post_content, sp.post_posted_on, sp.post_comments_count,sp.status, sp.post_join_requests_count,"
+        String sql = "SELECT sp.p_id, sp.content, sp.posted_on, sp.comments_count,sp.status, sp.join_requests_count,"
                 + "sp.post_user_id, sp.post_user_firstname , sp.post_user_middlename, sp.post_user_lastname, sp.post_user_joined_on, sp.post_user_bio, sp.post_user_email, sp.post_user_pass, sp.post_user_pp"
                 + ", u.id join_requests_user_id, u.firstname join_requests_user_firstname, u.middlename join_requests_user_middlename, u.lastname join_requests_user_lastname, u.joined_on join_requests_user_joined_on, u.bio join_requests_user_bio, u.email join_requests_user_email, u.pass join_requests_user_pass, u.profile_pic join_requests_user_pp\n"
                 + "FROM join_requests j\n" + "INNER JOIN users u on j.user_id = u.id\n" + "RIGHT JOIN\n" + "(SELECT\n"
-                + "p.id post_id, p.content post_content,p.status, p.posted_on post_posted_on, p.comments_count post_comments_count, p.join_requests_count post_join_requests_count,"
+                + "p.id p_id, p.content ,p.status, p.posted_on , p.comments_count , p.join_requests_count ,"
                 + "u.id post_user_id, u.firstname post_user_firstname , u.middlename post_user_middlename, u.lastname post_user_lastname, u.joined_on post_user_joined_on, u.bio post_user_bio, u.email post_user_email, u.pass post_user_pass, u.profile_pic post_user_pp\n"
-                + "FROM posts p INNER JOIN users u on p.user_id = u.id WHERE p.id = ?) sp ON j.post_id = sp.post_id;";
+                + "FROM posts p INNER JOIN users u on p.user_id = u.id WHERE p.id = ?) sp ON j.post_id = sp.p_id;";
 
         Connection connection = db.makeConnection();
         PreparedStatement statement;
@@ -464,8 +464,9 @@ public class PostRepository implements IPostRepository {
                         .build()
                         .map(resultSet);
 
-                usersMakingJoinRequests.add(userMakingJoinRequest);
-
+                if (userMakingJoinRequest.isValid()) {
+                    usersMakingJoinRequests.add(userMakingJoinRequest);
+                }
 
             }
             post.setUsersRequestingToJoin(usersMakingJoinRequests);
