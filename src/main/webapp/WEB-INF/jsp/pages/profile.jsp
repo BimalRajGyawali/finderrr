@@ -96,7 +96,7 @@
                                     ${singleUser.firstName} ${singleUser.middleName} ${singleUser.lastName} has never made a post.
                                 </c:when>
                                 <c:when test="${not empty posts}">
-                                     Posts belonging to ${posts[0].user.firstName} ${posts[0].user.middleName} ${posts[0].user.lastName}:
+                                    Posts belonging to <strong>${posts[0].user.firstName} ${posts[0].user.middleName} ${posts[0].user.lastName}</strong>:
                                 </c:when>
                                 
                                 <c:otherwise>

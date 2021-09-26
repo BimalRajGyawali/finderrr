@@ -102,7 +102,7 @@
                 <div id="login-box">
 
                     <h1>Verification:</h1>
-                    We are working on it ! Till then use code ${sessionScope.code}
+                    A verification code is sent to your email. Please enter it here.
 
                     <c:if test="${codeError}">
                         <p class="error">The Verification Code didnt Match</p>

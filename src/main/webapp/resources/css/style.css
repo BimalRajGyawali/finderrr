@@ -562,18 +562,18 @@ body {
     }
     .col {
         float: left;
-        padding-left: 100px;
-        padding-right: 100px;
+        padding-left: 80px;
+        padding-right: 80px;
     }
     .col1 {
-        width: 15%;
+        width: 22%;
     }
     .col2 {
-        width: 55%;
+        width: 50%;
         margin: 0 auto;
     }
     .col3 {
-        width: 25%;
+        width: 28%;
     }
 }
 

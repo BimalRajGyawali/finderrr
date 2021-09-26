@@ -16,7 +16,7 @@ public class Config {
         String database = "finder";
         String username = "postgres";
         String port = "5432";
-        String password = "password";
+        String password = "postgres";
 
 
         String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
