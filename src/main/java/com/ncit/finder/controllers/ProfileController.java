@@ -37,16 +37,11 @@ public class ProfileController {
 
 	@GetMapping("/profile/id/{profile_id}")
 	public String createComment(@PathVariable("profile_id") String id,@RequestParam(required = false) String before,HttpServletRequest request,Model model) {
-
-		int userId;
+		Boolean loggedInFlag=false;
+		int userId=0;
 		if (request.getSession().getAttribute("id") != null) {
 			userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
-		} else {
-			if(before != null && !before.isEmpty()){
-				return "redirect:/guest?before="+before;
-			}
-			return "redirect:/guest";
-
+			loggedInFlag=true;
 		}
 
 		LocalDateTime beforeDateTime = LocalDateTime.now();
@@ -80,9 +75,14 @@ public class ProfileController {
 		}
 		
 		model.addAttribute("posts", posts);
-		int notificationCount = notificationRepository.getNotificationCount(userId);
-		model.addAttribute("notificationCount", notificationCount);
-        return "profile";
+		if(loggedInFlag==false){
+			return "profile";
+		}else{
+			int notificationCount = notificationRepository.getNotificationCount(userId);
+			model.addAttribute("notificationCount", notificationCount);
+			return "profile";
+		}
+			
 	}
     
     
